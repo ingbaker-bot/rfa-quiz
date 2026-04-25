@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBS-奈AI 退休理財規劃顧問 模擬測驗系統</title>
+<title>RFA 退休理財規劃顧問 模擬測驗系統</title>
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
@@ -208,15 +208,18 @@
 <!-- LOGIN -->
 <div id="pageLogin">
   <div class="card-header">
-    <div class="header-badge">模擬測驗系統</div>
-    <div class="header-title">NBS-奈AI 退休理財規劃顧問<br>考試準備平台</div>
-    <div class="header-sub">退休基金協會 退休理財專業認證課程</div>
+    <div class="header-badge">NBS-奈AI 模擬測驗平台</div>
+    <div class="header-title">退休理財規劃顧問<br>考試準備平台</div>
+    <div class="header-sub">輸入姓名與生日即可開始・首次使用自動建立學習記錄</div>
     <div class="gold-line"></div>
   </div>
-  <div id="loginPromptMsg" class="hidden" style="background:linear-gradient(135deg,#fffbf0,#fef9e7);border:1.5px solid var(--gold);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;font-size:.87rem;color:#78350f">🔐 <strong>複雜關卡需要會員登入</strong>，請輸入您的姓名與生日繼續。</div>
+  <div id="loginPromptMsg" class="hidden" style="background:linear-gradient(135deg,#fffbf0,#fef9e7);border:1.5px solid var(--gold);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;font-size:.87rem;color:#78350f">🔐 <strong>複雜關卡需要登入</strong>，輸入姓名與生日即可，首次使用自動建立記錄。</div>
         <div class="card-body">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <p style="color:var(--muted);font-size:.9rem;line-height:1.7">請輸入您的姓名與生日以登入系統<br>系統將記錄您的學習歷程與成績進度</p>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.7">
+          輸入姓名與生日即可使用<br>
+          <span style="font-size:.82rem">首次使用自動建立記錄・換裝置輸入同樣資訊即可找回進度</span>
+        </p>
     </div>
     <div class="form-group">
       <label class="form-label">姓名</label>
@@ -228,7 +231,7 @@
       <div class="form-hint">範例：民國57年8月24日請輸入 570824</div>
     </div>
     <div class="form-error" id="loginError"></div>
-    <button class="btn btn-primary" onclick="doLogin()">🔐 登入系統</button>
+    <button class="btn btn-primary" onclick="doLogin()">🚀 開始學習</button>
   </div>
 </div>
 
@@ -468,7 +471,9 @@ function showDashboard() {
   const name = isGuest ? '訪客' : state.user.name;
 
   document.getElementById('avatarInitial').textContent = name.charAt(0);
-  document.getElementById('welcomeName').textContent   = isGuest ? '訪客模式 👋' : '歡迎，' + name + ' 👋';
+  const newUserBadge = (state.user && state.user.isNew) ? ' ✨新朋友' : '';
+  document.getElementById('welcomeName').textContent   = isGuest ? '訪客模式 👋' : '歡迎，' + name + newUserBadge + ' 👋';
+  if (state.user && state.user.isNew) state.user.isNew = false; // 只顯示一次
   document.getElementById('welcomeStatus').textContent =
     (isGuest ? '免登入可練習簡易與普通 ｜ ' : '') +
     '目前難度：' + ['簡易','普通','複雜'][ud.level-1] + '級 ｜ 連續5次90分以上可升級';
@@ -520,7 +525,11 @@ function showDashboard() {
   // 登入/登出按鈕
   const logoutRow = document.getElementById('logoutRow');
   if (isGuest) {
-    logoutRow.innerHTML = `<button class="btn btn-gold btn-sm" onclick="showLoginPage()">🔐 登入會員（解鎖複雜關卡）</button>`;
+    logoutRow.innerHTML = `
+      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;justify-content:flex-end">
+        <span style="font-size:.8rem;color:var(--muted)">輸入姓名+生日即可記錄進度、解鎖複雜關卡</span>
+        <button class="btn btn-gold btn-sm" onclick="showLoginPage()">🚀 登入 / 註冊</button>
+      </div>`;
   } else {
     logoutRow.innerHTML = `<button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>`;
   }
@@ -554,19 +563,25 @@ async function doLogin() {
   }
 
   btn.textContent='驗證中…'; btn.disabled=true;
-  const result = await gasCall('checkMember',{name, bday});
-  btn.textContent='🔐 登入系統'; btn.disabled=false;
+  const result = await gasCall('checkOrRegister',{name, bday});
+  btn.textContent='🚀 開始學習'; btn.disabled=false;
 
-  if (!result.success || !result.valid) {
+  if (!result.success) {
+    errEl.innerHTML = result.message === '網路連線失敗'
+      ? '⚠️ 網路連線失敗，請確認網路後再試。'
+      : `⚠️ ${result.message || '發生錯誤，請再試一次'}`;
+    errEl.style.display='block'; return;
+  }
+  if (!result.valid && result.reason === 'disabled') {
     const lineUrl = localStorage.getItem('rfa_line_url')||'';
     const lineHtml = lineUrl
-      ? `💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a>（加入後發訊息給管理員）<br>`
-      : `💬 請加入 LINE 官方帳號後發訊息給管理員<br>`;
-    errEl.innerHTML=`⚠️ 此系統複雜關卡為<strong>會員制</strong>，您的資料不在名單中。<br>如需加入，請聯絡管理員：<br>${lineHtml}📧 Email：<a href="mailto:${ADMIN_EMAIL}" style="color:var(--red)">${ADMIN_EMAIL}</a>`;
+      ? `💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a><br>`
+      : `💬 請聯絡管理員：${ADMIN_EMAIL}<br>`;
+    errEl.innerHTML=`⚠️ 此帳號已被停用，如有疑問請聯絡管理員。<br>${lineHtml}`;
     errEl.style.display='block'; return;
   }
 
-  state.user = { name, bday, v2: result.v2===true };
+  state.user = { name, bday, v2: result.v2===true, isNew: result.isNew===true };
 
   // 合併訪客進度到會員帳號
   const guestKey  = localStorage.getItem('rfa_guest_key');
@@ -691,7 +706,7 @@ function shuffleOpts(q){
 async function startQuiz(level) {
   // 複雜關卡需要登入
   if (level===3 && !state.user) {
-    if (confirm('複雜關卡需要登入會員才能使用。\n現在要前往登入嗎？')) {
+    if (confirm('複雜關卡需要登入才能使用。\n輸入姓名+生日即可，首次使用自動建立記錄。\n現在要前往登入嗎？')) {
       showLoginForHard();
     }
     return;
