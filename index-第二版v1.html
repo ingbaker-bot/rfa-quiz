@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFA 退休理財規劃顧問 模擬測驗系統 第二版</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+  :root{--navy:#0f2044;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f7f3ec;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--green:#2d7a4f;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;--blue-light:#eff6ff;--border:#e2d9c8;--shadow-lg:0 12px 48px rgba(15,32,68,0.2)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--navy);min-height:100vh;color:var(--text)}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(201,168,76,.08) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(201,168,76,.06) 0%,transparent 40%);pointer-events:none;z-index:0}
+  .app{position:relative;z-index:1;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+  .card{background:var(--white);border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:760px;overflow:hidden;animation:fadeUp .5s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  .card-header{background:linear-gradient(135deg,var(--navy) 0%,#1a3565 100%);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden}
+  .card-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border:2px solid rgba(201,168,76,.15);border-radius:50%}
+  .card-header::after{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border:1px solid rgba(201,168,76,.1);border-radius:50%}
+  .header-badge{display:inline-block;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);color:var(--gold-light);font-size:.7rem;letter-spacing:.15em;padding:.3rem .8rem;border-radius:20px;margin-bottom:.75rem;text-transform:uppercase}
+  .header-title{font-family:'Noto Serif TC',serif;color:var(--white);font-size:1.6rem;font-weight:700;line-height:1.3;margin-bottom:.4rem}
+  .header-sub{color:rgba(255,255,255,.55);font-size:.82rem;font-weight:300}
+  .gold-line{width:48px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:1rem 0 0}
+  .card-body{padding:2.5rem}
+  .form-group{margin-bottom:1.25rem}
+  .form-label{display:block;font-size:.8rem;font-weight:500;color:var(--navy);margin-bottom:.5rem;letter-spacing:.03em}
+  .form-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-family:inherit;color:var(--text);transition:border-color .2s,box-shadow .2s;background:var(--cream)}
+  .form-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);background:var(--white)}
+  .form-hint{font-size:.75rem;color:var(--muted);margin-top:.35rem}
+  .form-error{font-size:.82rem;color:var(--red);margin-top:.75rem;padding:.75rem 1rem;background:var(--red-light);border-radius:8px;border-left:3px solid var(--red);display:none;line-height:1.6}
+  .form-error a{color:var(--red);font-weight:700}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.8rem 1.75rem;border:none;border-radius:8px;font-family:inherit;font-weight:600;font-size:.95rem;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+  .btn-primary{background:linear-gradient(135deg,var(--navy),#1a3565);color:var(--white);box-shadow:0 4px 16px rgba(15,32,68,.3);width:100%;padding:1rem;font-size:1rem}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(15,32,68,.4)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--white);box-shadow:0 4px 16px rgba(201,168,76,.35)}
+  .btn-gold:hover{transform:translateY(-1px);filter:brightness(1.05)}
+  .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+  .btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+  .btn-danger{background:var(--red);color:var(--white)}
+  .btn-danger:hover{filter:brightness(.9)}
+  .btn-sm{padding:.5rem 1rem;font-size:.82rem}
+  .btn-xs{padding:.3rem .7rem;font-size:.75rem;border-radius:6px}
+  .section-title{font-family:'Noto Serif TC',serif;font-size:1rem;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  .section-title::before{content:'';display:block;width:4px;height:18px;background:var(--gold);border-radius:2px;flex-shrink:0}
+  .user-banner{display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--cream);border-radius:10px;margin-bottom:2rem;border:1px solid var(--border)}
+  .user-avatar{width:44px;height:44px;background:linear-gradient(135deg,var(--navy),#1a3565);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;font-weight:700;flex-shrink:0}
+  .user-info h3{font-size:.95rem;font-weight:600;color:var(--navy)}
+  .user-info p{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+  .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+  .level-card{border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;background:var(--white)}
+  .level-card:hover:not(.locked){border-color:var(--gold);box-shadow:0 4px 20px rgba(201,168,76,.15);transform:translateY(-2px)}
+  .level-card.locked{opacity:.5;cursor:not-allowed;background:#f8f8f8}
+  .level-card.current{border-color:var(--gold);background:#fffbf0}
+  .level-icon{font-size:2rem;margin-bottom:.5rem}
+  .level-name{font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:.25rem}
+  .level-desc{font-size:.72rem;color:var(--muted);line-height:1.4}
+  .level-progress{margin-top:.75rem;font-size:.7rem;font-weight:600}
+  .level-lock-icon{position:absolute;top:8px;right:8px;font-size:.9rem}
+  .progress-bar-outer{height:5px;background:var(--border);border-radius:3px;margin-top:.4rem;overflow:hidden}
+  .progress-bar-inner{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:3px;transition:width .6s ease}
+  .history-table{width:100%;border-collapse:collapse;font-size:.83rem}
+  .history-table th{text-align:left;padding:.6rem .75rem;background:var(--cream);color:var(--muted);font-weight:500;font-size:.75rem;letter-spacing:.03em}
+  .history-table td{padding:.7rem .75rem;border-top:1px solid var(--border);color:var(--text)}
+  .history-table tr:hover td{background:var(--cream)}
+  .score-badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-weight:700;font-size:.8rem}
+  .score-pass{background:var(--green-light);color:var(--green)}
+  .score-fail{background:var(--red-light);color:var(--red)}
+  .score-mid{background:#fef3c7;color:#92400e}
+  .logout-row{text-align:right;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.75rem}
+  .admin-bar{background:#1e1e2e;color:#aaa;font-size:.72rem;padding:.4rem 1rem;display:flex;justify-content:space-between;align-items:center}
+  .admin-bar a{color:#c9a84c;cursor:pointer;text-decoration:underline}
+  .admin-panel{padding:2rem 2.5rem}
+  .admin-member-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .9rem;border-radius:8px;border:1px solid var(--border);font-size:.85rem;margin-bottom:.5rem;background:var(--white)}
+  .admin-member-info{display:flex;gap:1rem;align-items:center}
+  .admin-member-name{font-weight:600;color:var(--navy)}
+  .admin-member-bday{color:var(--muted);font-size:.78rem}
+  .admin-add-row{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+  .admin-add-row .form-input{flex:1;min-width:140px;padding:.6rem .85rem}
+  .quiz-header{background:var(--cream);padding:1.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+  .quiz-meta{font-size:.8rem;color:var(--muted)}
+  .quiz-meta strong{color:var(--navy)}
+  .quiz-progress-text{font-size:.85rem;font-weight:600;color:var(--navy)}
+  .progress-strip{height:4px;background:var(--border)}
+  .progress-strip-inner{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));transition:width .4s ease}
+  .question-area{padding:2rem 2.5rem}
+  .question-type-badge{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;margin-bottom:.75rem}
+  .badge-single{background:#eff6ff;color:#1d4ed8}
+  .badge-multi{background:#fdf4ff;color:#7e22ce}
+  .multi-notice{display:inline-block;color:#1d4ed8;font-weight:700;font-size:.88rem;margin-left:.5rem;letter-spacing:.02em}
+  .question-num{font-size:.75rem;color:var(--muted);margin-bottom:.4rem}
+  .question-text{font-size:1rem;line-height:1.75;color:var(--text);margin-bottom:1.5rem;font-weight:500}
+  .options-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+  .option-item{display:flex;align-items:flex-start;gap:.75rem;padding:.9rem 1.1rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;line-height:1.5;font-size:.92rem;background:var(--white)}
+  .option-item:hover:not(.answered){border-color:var(--gold);background:#fffbf0}
+  .option-item.selected{border-color:var(--navy);background:var(--blue-light)}
+  .option-item.correct{border-color:var(--green)!important;background:var(--green-light)!important}
+  .option-item.wrong{border-color:var(--red)!important;background:var(--red-light)!important}
+  .option-item.missed{border-color:var(--green)!important;background:var(--green-light)!important;opacity:.7}
+  .option-marker{width:26px;height:26px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;color:var(--muted);transition:all .15s}
+  .option-item.selected .option-marker{border-color:var(--navy);background:var(--navy);color:var(--white)}
+  .option-item.correct .option-marker{border-color:var(--green);background:var(--green);color:var(--white)}
+  .option-item.wrong .option-marker{border-color:var(--red);background:var(--red);color:var(--white)}
+  .multi .option-marker{border-radius:5px}
+  .option-text{flex:1}
+  .multi-hint{font-size:.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:.35rem}
+  .explanation-box{margin-top:1.25rem;padding:1.1rem 1.25rem;border-radius:10px;font-size:.87rem;line-height:1.75;border-left:4px solid;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  .explanation-correct{background:var(--green-light);border-color:var(--green);color:#1a4731}
+  .explanation-wrong{background:var(--red-light);border-color:var(--red);color:#7f1d1d}
+  .explanation-title{font-weight:700;margin-bottom:.4rem;font-size:.9rem}
+  .quiz-nav{padding:1.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);background:var(--cream)}
+  .result-hero{text-align:center;padding:2.5rem 2.5rem 1.5rem}
+  .result-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.5rem;position:relative}
+  .result-ring.pass{background:conic-gradient(var(--green) calc(var(--pct)*1%),var(--border) 0);box-shadow:0 0 0 8px var(--green-light),0 8px 32px rgba(45,122,79,.2)}
+  .result-ring.fail{background:conic-gradient(var(--red) calc(var(--pct)*1%),var(--border) 0);box-shadow:0 0 0 8px var(--red-light),0 8px 32px rgba(185,28,28,.15)}
+  .result-ring-inner{width:100px;height:100px;background:var(--white);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute}
+  .result-score-num{font-size:2.2rem;font-weight:700;line-height:1}
+  .result-score-num.pass{color:var(--green)}
+  .result-score-num.fail{color:var(--red)}
+  .result-score-label{font-size:.7rem;color:var(--muted)}
+  .result-title{font-family:'Noto Serif TC',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.5rem}
+  .result-msg{font-size:.9rem;color:var(--muted);line-height:1.6}
+  .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .result-stat{background:var(--white);padding:1.25rem 1rem;text-align:center}
+  .stat-num{font-size:1.5rem;font-weight:700;color:var(--navy)}
+  .stat-label{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+  .result-actions{padding:1.75rem 2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .upgrade-notice{margin:0 2.5rem 1.5rem;padding:1rem 1.25rem;background:linear-gradient(135deg,#fffbf0,#fef9e7);border:1.5px solid var(--gold);border-radius:10px;display:flex;align-items:flex-start;gap:.75rem;font-size:.85rem;line-height:1.6;color:#78350f}
+  .upgrade-icon{font-size:1.4rem;flex-shrink:0}
+  .review-list{padding:0 2.5rem 2.5rem;display:flex;flex-direction:column;gap:1.25rem}
+  .review-item{border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+  .review-item-header{padding:.85rem 1.15rem;display:flex;align-items:center;gap:.6rem;font-size:.85rem;font-weight:500}
+  .review-item-header.correct{background:var(--green-light);color:#1a4731}
+  .review-item-header.wrong{background:var(--red-light);color:#7f1d1d}
+  .review-q{padding:.85rem 1.15rem;font-size:.88rem;line-height:1.65;border-bottom:1px solid var(--border)}
+  .review-answer{padding:.75rem 1.15rem;font-size:.82rem;color:var(--muted);line-height:1.6}
+  .review-explanation{padding:.75rem 1.15rem;font-size:.82rem;line-height:1.7;border-top:1px solid var(--border);background:var(--cream)}
+  .hidden{display:none!important}
+  @media(max-width:600px){
+    .card-body,.question-area,.quiz-nav,.result-actions,.review-list,.admin-panel{padding-left:1.25rem;padding-right:1.25rem}
+    .quiz-header{padding-left:1.25rem;padding-right:1.25rem}
+    .card-header{padding:1.75rem 1.25rem 1.5rem}
+    .level-grid{grid-template-columns:1fr}
+    .header-title{font-size:1.3rem}
+    .result-actions{flex-direction:column}
+    .admin-add-row{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<div class="card" id="mainCard">
+
+<div class="admin-bar">
+  <span>RFA 模擬測驗系統 第二版</span>
+  <a onclick="toggleAdmin()">⚙ 管理後台</a>
+</div>
+
+<!-- ADMIN -->
+<div id="pageAdmin" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">管理後台</div>
+    <div class="header-title">會員管理</div>
+    <div class="header-sub">新增或刪除可登入的會員名單</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="admin-panel">
+    <div class="section-title">現有會員名單</div>
+    <div id="adminMemberList"></div>
+    <div class="section-title" style="margin-top:1.5rem">新增會員</div>
+    <div class="admin-add-row">
+      <input class="form-input" type="text" id="newMemberName" placeholder="姓名">
+      <input class="form-input" type="text" id="newMemberBday" placeholder="生日（如 570824）" maxlength="6">
+      <button class="btn btn-gold btn-sm" onclick="addMember()">新增</button>
+    </div>
+    <div class="form-error" id="adminError" style="margin-top:.75rem"></div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <div class="section-title">LINE 官方帳號連結</div>
+      <div class="form-group">
+        <input class="form-input" type="text" id="adminLineUrl" placeholder="https://line.me/R/ti/p/@你的官方帳號ID" style="font-size:.82rem">
+        <div class="form-hint">設定後，未通過驗證的使用者會看到可點擊的LINE官方帳號連結</div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="saveLineUrl()">儲存連結</button>
+      <span id="lineUrlSaved" style="font-size:.8rem;color:var(--green);margin-left:.75rem;display:none">✅ 已儲存</span>
+    </div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <div class="section-title">所有成員成績記錄（最新20筆）</div>
+      <div id="adminScoreArea"><p style="color:var(--muted);font-size:.85rem">載入中…</p></div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-outline btn-sm" onclick="renderAdminPanel()">🔄 重新整理</button>
+      <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">關閉後台</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="pageLogin">
+  <div class="card-header">
+    <div class="header-badge">模擬測驗系統</div>
+    <div class="header-title">RFA 退休理財規劃顧問<br>考試準備平台</div>
+    <div class="header-sub">退休基金協會 退休理財專業認證課程</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="card-body">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.7">請輸入您的姓名與生日以登入系統<br>系統將記錄您的學習歷程與成績進度</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">姓名</label>
+      <input class="form-input" type="text" id="inputName" placeholder="請輸入您的中文姓名">
+    </div>
+    <div class="form-group">
+      <label class="form-label">生日（國曆，格式：570824）</label>
+      <input class="form-input" type="text" id="inputBirthday" placeholder="民國年2碼＋月2碼＋日2碼" maxlength="6">
+      <div class="form-hint">範例：民國57年8月24日請輸入 570824</div>
+    </div>
+    <div class="form-error" id="loginError"></div>
+    <button class="btn btn-primary" onclick="doLogin()">🔐 登入系統</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="pageDashboard" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">學習儀表板</div>
+    <div class="header-title">RFA 模擬測驗</div>
+    <div class="header-sub">每次隨機抽題含必考計算題，選項順序打亂，有效備考</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="card-body">
+    <div class="user-banner">
+      <div class="user-avatar" id="avatarInitial">A</div>
+      <div class="user-info">
+        <h3 id="welcomeName">歡迎回來</h3>
+        <p id="welcomeStatus">目前難度：簡易級</p>
+      </div>
+    </div>
+    <div class="section-title">選擇測驗難度</div>
+    <div class="level-grid">
+      <div class="level-card" id="cardLv1" onclick="startQuiz(1)">
+        <div class="level-icon">📗</div>
+        <div class="level-name">簡易</div>
+        <div class="level-desc">基本概念<br>社保制度</div>
+        <div class="level-progress" id="progLv1">通過 0/5 次</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv1" style="width:0%"></div></div>
+      </div>
+      <div class="level-card locked" id="cardLv2" onclick="startQuiz(2)">
+        <div class="level-lock-icon" id="lockLv2">🔒</div>
+        <div class="level-icon">📘</div>
+        <div class="level-name">普通</div>
+        <div class="level-desc">進階計算<br>年金規劃</div>
+        <div class="level-progress" id="progLv2">尚未解鎖</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv2" style="width:0%"></div></div>
+      </div>
+      <div class="level-card locked" id="cardLv3" onclick="startQuiz(3)">
+        <div class="level-lock-icon" id="lockLv3">🔒</div>
+        <div class="level-icon">📕</div>
+        <div class="level-name">複雜</div>
+        <div class="level-desc">個案分析<br>綜合計算</div>
+        <div class="level-progress" id="progLv3">尚未解鎖</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv3" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section-title">近期成績記錄</div>
+    <table class="history-table">
+      <thead><tr><th>日期</th><th>難度</th><th>分數</th><th>答對題數</th></tr></thead>
+      <tbody id="historyBody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">尚無測驗記錄</td></tr></tbody>
+    </table>
+    <div class="logout-row">
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="pageQuiz" class="hidden">
+  <div class="quiz-header">
+    <div>
+      <div class="quiz-meta"><strong id="quizLevelLabel">簡易級</strong>｜25題測驗</div>
+      <div class="quiz-meta" id="quizNameLabel"></div>
+    </div>
+    <div class="quiz-progress-text" id="quizProgressText">第 1 題 / 共 20 題</div>
+  </div>
+  <div class="progress-strip"><div class="progress-strip-inner" id="progressStrip" style="width:5%"></div></div>
+  <div class="question-area">
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+      <span class="question-type-badge" id="qtypeBadge">單選題</span>
+      <span class="multi-notice hidden" id="multiNotice">【複選題，請選擇所有正確答案】</span>
+    </div>
+    <div class="question-num" id="qNum">第 1 題</div>
+    <div class="question-text" id="qText"></div>
+    <div class="multi-hint hidden" id="multiHint">⬛ 請勾選所有正確選項，再點「確認作答」送出</div>
+    <ul class="options-list" id="optionsList"></ul>
+    <div id="explanationArea"></div>
+  </div>
+  <div class="quiz-nav">
+    <button class="btn btn-outline btn-sm" onclick="quitQuiz()">結束測驗</button>
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <span id="multiConfirmBtn" class="hidden">
+        <button class="btn btn-gold btn-sm" onclick="confirmMulti()">確認作答</button>
+      </span>
+      <button class="btn btn-primary btn-sm" id="nextBtn" onclick="nextQuestion()" style="display:none">下一題 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="pageResult" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">測驗結果</div>
+    <div class="header-title" id="resultTitle">測驗完成</div>
+    <div class="header-sub" id="resultLevelLabel">簡易級 · 20 題</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="result-hero">
+    <div class="result-ring" id="resultRing" style="--pct:0">
+      <div class="result-ring-inner">
+        <div class="result-score-num" id="resultScoreNum">0</div>
+        <div class="result-score-label">分</div>
+      </div>
+    </div>
+    <div class="result-title" id="resultHeadline">成績出來囉！</div>
+    <div class="result-msg" id="resultMsg"></div>
+  </div>
+  <div class="result-stats">
+    <div class="result-stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">答對題數</div></div>
+    <div class="result-stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">答錯題數</div></div>
+    <div class="result-stat"><div class="stat-num" id="statPct">0%</div><div class="stat-label">正確率</div></div>
+  </div>
+  <div id="upgradeNotice" class="hidden upgrade-notice">
+    <div class="upgrade-icon">🎉</div><div id="upgradeText"></div>
+  </div>
+  <div class="result-actions">
+    <button class="btn btn-outline" onclick="showReview()">查看解析</button>
+    <button class="btn btn-gold" onclick="retryQuiz()">再測一次</button>
+    <button class="btn btn-primary" onclick="backToDashboard()">回主頁</button>
+  </div>
+</div>
+
+<!-- REVIEW -->
+<div id="pageReview" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">詳細解析</div>
+    <div class="header-title">每題解析說明</div>
+    <div class="header-sub">對的題目鞏固觀念，錯的題目找出盲點</div>
+    <div class="gold-line"></div>
+  </div>
+  <div style="padding:1.25rem 2.5rem 0;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:.85rem;color:var(--muted)">共 20 題</div>
+    <button class="btn btn-outline btn-sm" onclick="showResult()">← 返回結果</button>
+  </div>
+  <div class="review-list" id="reviewList"></div>
+</div>
+
+</div><!-- /card -->
+</div><!-- /app -->
+<script>
+// ═══ CONFIG ═══
+const ADMIN_PASSWORD = '570312';
+const ADMIN_CONTACT  = { email:'ingbaker@gmail.com' };
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzCcxNA1jtyryfVbud9jpRM-X-cnevNtOHHw7VolpXXYReS9xshK3LZGOLi6BknnkMa/exec';  // Google Apps Script 網址
+const STORAGE_KEY  = 'rfa_quiz_data';  // 本機：個人成績進度
+const PASS_SCORE   = 90;
+const VERSION = 'v2'; // 第二版識別碼
+const UPGRADE_N    = 5;
+
+// ═══ GAS API 呼叫工具 ═══
+async function gasCall(action, params={}) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, ...params })
+    });
+    return await res.json();
+  } catch(e) {
+    console.error('GAS error:', e);
+    return { success: false, message: '網路連線失敗' };
+  }
+}
+
+// ═══ QUESTION BANK — 每個難度 50 單選 + 20 複選 ═══
+// 格式: { q:'題目', opts:['選項1','選項2','選項3','選項4'], ans:[正確索引,...], exp:'解析' }
+// ans 為選項索引陣列；每次出題時選項會被隨機打亂，ans 跟著更新
+// ═══════════════════════════════════════════════════════════════
+//  RFA v2 題庫 — 100單選（含計算題）+ 40複選
+//  主題涵蓋：勞保計算、退撫計算、年金現值、財務計算機操作
+//           國保、長照財務、投資組合、傳承稅務計算
+//  ★ calc:true 標記為計算題（每次必抽1題）
+// ═══════════════════════════════════════════════════════════════
+
+const QB2 = {
+1: { // 簡易
+  singles: [
+    // ── 計算題（標記 calc:true）──
+    {calc:true, q:'某勞工投保薪資45,800元，勞保年資20年，依勞保老年年金B式計算，每月可領多少元？',
+     opts:['11,252元','14,198元','17,804元','9,160元'],ans:[1],
+     exp:'B式=最高60月平均投保薪資×年資×1.55%=45,800×20×1.55%=14,198元。A式=14,198÷2+3,000=10,099元，兩式擇優選B式。'},
+    {calc:true, q:'國民年金被保險人，月投保金額21,103元，投保年資15年，依B式計算每月可領多少元？',
+     opts:['4,115元','3,265元','6,107元','2,500元'],ans:[0],
+     exp:'國保B式=月投保金額×1.3%×年資=21,103×1.3%×15=4,115元。A式=B式÷2+4,049，若A式較高則選A式。'},
+    {calc:true, q:'勞退舊制，前15年年資，每年2個基數，退前6個月平均工資50,000元，可領多少退休金？',
+     opts:['1,000,000元','1,500,000元','750,000元','2,000,000元'],ans:[1],
+     exp:'基數=15×2=30個；退休金=30×50,000=1,500,000元。勞退舊制：前15年×2基數、後15年×1基數，最多30年45個基數。'},
+    {calc:true, q:'公保養老給付，年資25年（新制），事故當月保俸40,000元，一次養老給付為多少？',
+     opts:['800,000元','960,000元','1,200,000元','1,680,000元'],ans:[2],
+     exp:'新制基數=25×1.2=30個；一次養老給付=30×40,000=1,200,000元。（上限：30年36個+最多再加6個=最多42個基數）'},
+    {calc:true, q:'某人月薪60,000元，雇主提繳勞退新制6%，每月提繳金額為多少？',
+     opts:['2,400元','3,600元','4,200元','6,000元'],ans:[1],
+     exp:'每月提繳=60,000×6%=3,600元。勞退新制雇主強制提繳6%，勞工另可自願提繳最多6%。'},
+    {calc:true, q:'公務人員退撫新制，年資30年，月退基數為多少%？',
+     opts:['60%','65%','70%','75%'],ans:[0],
+     exp:'新制月退=每年2%×年資=2%×30=60%（未超過35年70%上限）。計算基礎為退休時均俸×2×60%。'},
+    {calc:true, q:'勞保老年年金，法定請領年齡65歲，若延後2年至67歲退休，月領金額增加多少%？',
+     opts:['4%','8%','12%','16%'],ans:[1],
+     exp:'每延後1年加4%，延後2年=4%×2=8%。例如原本月領30,000元，延後2年可領30,000×108%=32,400元。'},
+    {calc:true, q:'某甲月薪50,000元，退休前投資報酬率6%，每月定存PMT，30年後欲累積1,000萬，每月約需存多少？（BGN）',
+     opts:['約9,932元','約12,649元','約8,822元','約15,000元'],ans:[0],
+     exp:'N=360，I/Y=6/12=0.5%，FV=10,000,000，BGN，CPT PMT≈9,932元。這是退休前定期定額儲蓄規劃的標準計算。'},
+
+    // ── 一般觀念題 ──
+    {q:'勞保老年年金「提前」退休，每提前1年月領金額減少多少%？',
+     opts:['2%','3%','4%','5%'],ans:[2],
+     exp:'勞保老年年金：每提前1年退休減4%，最多提前5年減20%；每延後1年退休增4%，以此激勵延後退休。'},
+    {q:'勞退新制個人帳戶，勞工自願提繳最多可達工資的多少%？',
+     opts:['3%','6%','9%','12%'],ans:[1],
+     exp:'勞退新制：雇主強制提繳6%，勞工可自願提繳最多6%（合計最高12%），自願提繳部分享所得稅扣除優惠。'},
+    {q:'國民年金老年給付，年滿幾歲起按月發給？',
+     opts:['60歲','62歲','65歲','67歲'],ans:[2],
+     exp:'國民年金老年給付：年滿65歲當月起，按月發給。與勞保老年年金請領年齡逐年調整不同，國保固定65歲。'},
+    {q:'勞保老年年金新制，年資未達15年者，給付方式為何？',
+     opts:['仍可領年金','只能領一次金（1年1基數）','不能領任何給付','改領國保年金'],ans:[1],
+     exp:'勞保新制：年資15年以上可選年金；年資未達15年只能領「老年一次金」，計算方式為1年1個基數×平均投保薪資。'},
+    {q:'勞工保險保費，一般受僱勞工的雇主負擔比例為多少？',
+     opts:['50%','60%','70%','80%'],ans:[2],
+     exp:'勞保保費負擔：雇主70%、勞工20%、政府10%。職業工會被保險人：政府40%、勞工60%（無雇主）。'},
+    {q:'公教退撫基金，政府與公務人員提撥比例為何？',
+     opts:['政府50%、個人50%','政府60%、個人40%','政府65%、個人35%','政府70%、個人30%'],ans:[2],
+     exp:'公教退撫基金提撥：政府撥繳65%、公務人員繳付35%，以本俸加一倍為基準，乘以15%提撥費率。'},
+    {q:'勞退新制，退休選擇「月退休金」時，平均餘命由誰決定？',
+     opts:['個人自行估算','保險公司精算','勞保局依年金生命表公告','由雇主決定'],ans:[2],
+     exp:'勞退新制月退休金：由勞保局依年金生命表（平均餘命）、保證收益率計算月退金額，每3年至少檢討一次。'},
+    {q:'下列何者為勞退「舊制」的主要缺點？',
+     opts:['提撥率太低','換工作年資歸零，不具可攜性','沒有投資收益','雇主不需提撥'],ans:[1],
+     exp:'勞退舊制最大缺點：年資不可攜帶，換工作歸零，勞工被迫久任同一雇主。勞退新制改為個人可攜式帳戶解決此問題。'},
+    {q:'公務人員退撫月退休金，「展期月退」是指什麼？',
+     opts:['提前退休打折領','等到法定起支年齡再領，金額不打折','一次領取全部','分10年領取'],ans:[1],
+     exp:'展期月退：未達法定起支年齡，選擇等到達法定起支年齡後才開始領取，金額不打折（與減額月退相比的優勢）。'},
+    {q:'勞保投保薪資，下列何者正確？',
+     opts:['以實際薪資直接投保','依薪資級距對應投保','雇主可任意決定','固定以最低薪資投保'],ans:[1],
+     exp:'勞保投保薪資採「薪資級距」制度，依實際薪資對應至主管機關公告的投保薪資分級表，有最高投保薪資上限。'},
+    {q:'公保養老年金給付率範圍為多少？',
+     opts:['0.5%至1.0%','0.75%至1.3%','1.0%至1.5%','1.2%至1.8%'],ans:[1],
+     exp:'公保養老年金：給付率為0.75%至1.3%，計算方式=最後10年平均保俸×投保年資×給付率（月退金額）。'},
+    {q:'軍公教退撫基金提撥費率自112年起為多少？',
+     opts:['12%','13%','15%','18%'],ans:[2],
+     exp:'軍公教退撫基金提撥費率自112年1月1日起調整為15%，法定範圍12%至18%，由考試院會同行政院釐訂。'},
+    {q:'勞保財務危機，預估約在哪一年基金可能不足？',
+     opts:['2025年','2028年','2031年','2038年'],ans:[2],
+     exp:'勞保基金依精算預估約在2031年可能出現收支不足，這是推動年金改革的重要背景，與勞退新制財務相對穩定形成對比。'},
+    {q:'「個人可攜式退休金帳戶」是哪個制度的特色？',
+     opts:['勞退舊制','勞工保險','勞退新制','公教退撫'],ans:[2],
+     exp:'個人可攜式帳戶是勞退新制最重要特色：不論換幾次工作，退休金帳戶跟著個人走，由勞保局統一管理。'},
+    {q:'公務人員退撫新制，月退基數每年累積多少%，35年上限為多少%？',
+     opts:['每年1.5%，上限52.5%','每年2%，上限70%','每年2.5%，上限87.5%','每年1%，上限35%'],ans:[1],
+     exp:'公教退撫新制月退：每年2%，最高35年70%；第36-40年每年再加1%，最高至75%。計算基礎=退休時均俸×2×基數%。'},
+    {q:'勞保老年年金，民國49年出生者，法定請領年齡為幾歲？',
+     opts:['60歲','62歲','63歲','65歲'],ans:[2],
+     exp:'依勞保老年年金法定請領年齡對照表：民國49年出生→63歲（107年首次提高，之後每兩年調高一歲）。'},
+    {q:'退休金「所得替代率」的定義為何？',
+     opts:['退休後每月領取金額÷退休前每月薪資×100%','退休金總額÷工作年數','每月儲蓄額÷月薪×100%','退休後資產÷負債×100%'],ans:[0],
+     exp:'所得替代率=退休後每月可支用金額÷退休前每月平均薪資×100%，代表退休後可維持退休前生活水準的比例。'},
+    {q:'國民年金A式老年給付的固定加給金額為多少元？',
+     opts:['3,000元','4,049元','5,000元','6,000元'],ans:[1],
+     exp:'國保A式=月投保金額×0.65%×年資+4,049元（有領取限制）；B式=月投保金額×1.3%×年資（無限制），兩式擇優。'},
+    {q:'勞退新制帳戶，60歲退休選月退，平均餘命由哪一年的生命表計算？',
+     opts:['退休前5年版本','最新公告版本','固定用110年版','退休當年版本'],ans:[1],
+     exp:'勞退新制月退：依勞保局最新公告的年金生命表計算（考試可用110年版或113年版，題目未給則自行假設均算對）。'},
+    {q:'下列何者不是勞退新制的資金來源？',
+     opts:['雇主強制提繳6%','勞工自願提繳最多6%','政府補助','投資收益'],ans:[2],
+     exp:'勞退新制資金來源：雇主強制提繳（6%）、勞工自願提繳（最多6%）、投資收益。政府不直接補助勞退新制帳戶（與勞保不同）。'},
+    {q:'公保養老年金，計算給付的平均保俸取哪段期間？',
+     opts:['最後1年','最後5年','最後10年','退休當月'],ans:[2],
+     exp:'公保養老年金：給付金額=最後10年平均保俸×年資×給付率（0.75%~1.3%）。一次養老給付則用「事故當月保俸」計算。'},
+    {q:'勞退新制，「保證收益率」的功能為何？',
+     opts:['保證帳戶不虧損','確保最低投資報酬率，低於此率由勞保局補足','確保退休金總額','限制最高收益率'],ans:[1],
+     exp:'勞退新制保證收益率（113年版1.1473%）：若實際投資報酬率低於此，勞保局補足差額，保障勞工最低收益。'},
+    {q:'公務人員退撫月退休金「減額月退」，每提前1年退休減少多少%？',
+     opts:['2%','3%','4%','5%'],ans:[2],
+     exp:'公教退撫減額月退：每提前1年退休減4%，最多提前5年共減20%。若不想打折可選「展期月退」等到法定起支年齡。'},
+    {q:'勞保老年年金，同時符合請領資格時，能否同時請領國民年金？',
+     opts:['完全不能同時領','可以同時領，但國保只能領B式','可以同時領兩種全額','只能選其中一種'],ans:[1],
+     exp:'勞保年金與國保年金可同時請領，但領取勞保老年年金者，國保只能領B式（無法領含4,049元加給的A式）。'},
+    {q:'勞退新制個人帳戶，勞工死亡時，帳戶餘額如何處理？',
+     opts:['歸政府所有','由繼承人領取','轉為遺屬年金','自動消滅'],ans:[1],
+     exp:'勞退新制個人帳戶具有繼承性：勞工死亡時，帳戶餘額（含投資收益）由法定繼承人領取，不會喪失。'},
+    {q:'軍保退伍金，服役滿20年以上可領月退俸，舊制15年起支計算基礎為多少%？',
+     opts:['60%','70%','75%','80%'],ans:[2],
+     exp:'軍保舊制月退俸：15年起75%，16年起每年加1%，最多30年90%（上將100%）。新制則為每年2%，最高35年70%。'},
+    {q:'公保費率採彈性制度，範圍為投保薪給的多少？',
+     opts:['5%至10%','7%至15%','10%至18%','12%至20%'],ans:[1],
+     exp:'公教人員保險採彈性費率，範圍為每月保俸（薪）給的7%至15%，由承保機關定期精算覈實釐定。'},
+    {q:'勞退舊制退休金「基數」計算，年資超過15年後每年幾個基數？',
+     opts:['1個','2個','3個','4個'],ans:[0],
+     exp:'勞退舊制（勞基法）：前15年每年2個基數、後15年每年1個基數，最多30年45個基數（60歲後最多再加5個）。'},
+    {q:'「確定提撥制（DC）」最大的優點為何？',
+     opts:['給付金額確定，便於規劃','不會有財務缺口（破產）風險','政府保證最低給付','給付金額較DB制高'],ans:[1],
+     exp:'DC制（確定提撥）：提撥金額確定，帳戶以投資累積，不會有財務缺口問題，也不會破產，這是DC制相較DB制的最大優勢。'},
+    {q:'國民年金被保險人欠繳保費超過幾年，不得再補繳且不計入年資？',
+     opts:['5年','8年','10年','15年'],ans:[2],
+     exp:'國民年金規定：欠繳保費逾10年（不得再請求補繳），且該期間不計入保險年資，影響A式領取資格。'},
+    {q:'公保一次養老給付，新制（88/05/31後）最多可領幾個基數？',
+     opts:['30個','36個','42個','50個'],ans:[2],
+     exp:'公保養老給付新制：每年1.2個基數，最多30年36個，之後最多再加6個，合計上限42個基數。'},
+    {q:'勞保老年年金A式計算公式中，固定金額為多少元？',
+     opts:['2,000元','3,000元','4,000元','5,000元'],ans:[1],
+     exp:'勞保老年年金A式=最高60月平均月投保薪資×年資×0.775%+3,000元；B式=×1.55%，兩式擇優。注意：國保A式加給為4,049元，兩者不同。'},
+    {q:'勞退新制「一次金」給付，適用何種情況？',
+     opts:['任何時候都可以選','僅限60歲前離職','未達退休年齡離職或未選月退時','只有死亡才能領'],ans:[2],
+     exp:'勞退新制一次金：未達退休年齡離職時，或退休時選擇一次領取時均可。退休時可自由選擇一次金或月退（年資足夠者）。'},
+    {q:'公務人員退撫新制，「兼領」是指哪種給付方式？',
+     opts:['同時領勞退和公教退撫','1/2一次金+1/2月退休金','全額月退加年終獎金','退休金加年金保險'],ans:[1],
+     exp:'公務人員退撫退休金給付方式三種：①全額一次退②全額月退③兼領（1/2一次金+1/2月退休金），可依個人需求選擇。'},
+    {q:'下列哪個社會保險制度「沒有財務缺口破產危機」？',
+     opts:['勞工保險','國民年金','公教人員保險','軍人保險'],ans:[2],
+     exp:'公保是台灣現行社會保險中（除私校退撫外）另一個沒有破產危機的制度，因88年前不足由政府撥補，且尚未全面年金化。'},
+    {q:'勞退新制，雇主提繳率不得低於工資的多少%？',
+     opts:['3%','5%','6%','8%'],ans:[2],
+     exp:'勞退新制雇主法定強制提繳最低為工資的6%，違反者依法裁罰。勞工自願提繳則為0至6%，依個人意願。'},
+    {q:'軍保退伍金，基金規模相對較小的主要原因為何？',
+     opts:['提撥率太低','在保人數少（職業軍人）','給付過多','投資失利'],ans:[1],
+     exp:'軍保在保人數遠少於勞保、公保，因限職業軍人參加，基金規模相對較小，但財務壓力也相對較輕。'},
+    {q:'國民年金被保險人，旅居海外超過多久且戶籍遷出，不屬於被保險人？',
+     opts:['6個月','1年','2年','3年'],ans:[2],
+     exp:'旅居海外之國民，超過2年未持本國護照入境而戶籍遷出國外，於遷出期間不屬於國民年金被保險人。'},
+    {q:'勞工退休金條例（新制）自何時施行？',
+     opts:['民國88年','民國91年','民國94年7月1日','民國98年1月1日'],ans:[2],
+     exp:'勞工退休金條例（勞退新制）自民國94年7月1日施行，取代勞基法退休金制度（舊制），採個人帳戶DC制。'},
+    {q:'公教退撫年改後，計算退休金的基準，118年後改為最後幾年平均俸額？',
+     opts:['5年','10年','15年','20年'],ans:[2],
+     exp:'公教退撫年改：計算基準從最後在職本俸額，改為最後5年平均（107年起），逐年往前，118年後改為最後15年平均俸額。'},
+    {q:'勞保老年年金，年資30年，以最高60月平均投保薪資45,800元，B式月領多少元？',
+     opts:['15,553元','17,804元','21,306元','25,000元'],ans:[2],
+     exp:'B式=45,800×30×1.55%=21,306元。A式=21,306÷2+3,000=13,653元，兩式擇優選B式21,306元。'},
+  ],
+  multis: [
+    {q:'勞退新制的主要特色，下列哪些正確？\nA. 個人可攜式帳戶\nB. 雇主強制提繳6%\nC. 有最低保證收益率\nD. 年資滿10年才能領取',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：勞退新制帳戶不需年資限制，任何情況離職均可保留帳戶至退休，未達退休年齡可領一次金。'},
+    {q:'勞保老年年金，下列哪些敘述正確？\nA. 年資15年以上可選年金\nB. 延後1年退休月領增4%\nC. 提前1年退休月領減4%\nD. 年資未達15年可領月退年金',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：年資未達15年只能領老年一次金（1年1基數），不能選年金。'},
+    {q:'公務人員退撫制度，月退休金的選擇方式，下列哪些正確？\nA. 全額月退休金\nB. 全額一次退休金\nC. 兼領1/2一次+1/2月退\nD. 分20年平均給付',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：法定退休金給付方式為三種。D分20年給付不是法定選項。'},
+    {q:'勞工保險保費負擔，受僱勞工的比例，下列哪些正確？\nA. 雇主負擔70%\nB. 勞工負擔20%\nC. 政府負擔10%\nD. 職業工會政府負擔40%',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確：一般受僱：雇主70%、勞工20%、政府10%；職業工會：政府40%、勞工60%（無雇主）。'},
+    {q:'確定提撥制（DC）與確定給付制（DB）的比較，下列哪些正確？\nA. DC制不會有財務缺口問題\nB. DB制給付金額事先確定\nC. DC制個人承擔投資風險\nD. DB制提撥金額固定',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：DB制提撥金額不固定，需依精算定期調整（如公教退撫的提撥費率12%至18%）；DC制才是提撥金額固定（如勞退新制6%）。'},
+    {q:'勞保老年一次給付（舊制），下列哪些正確？\nA. 平均投保薪資採退前3年計算\nB. 前15年每年1個基數\nC. 後15年每年2個基數\nD. 60歲後最多再加5個基數',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確：舊制一次給付用退前3年平均投保薪資；前15年×1基數、後15年×2基數（注意：與勞退舊制前15年×2、後15年×1相反）；60歲後最多再加5個基數。'},
+    {q:'國民年金老年給付A式，下列哪些情況不得領取？\nA. 有欠繳保費不計入年資\nB. 同時領取勞保老年年金\nC. 同時領取社會福利津貼\nD. 年資不足10年',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C不得領A式：欠繳記錄、領年金類老年給付、領社福津貼。D年資不足10年可以領B式，不影響是否能領A式的判斷（年資不是A式限制條件）。'},
+    {q:'勞退新制帳戶的資金來源，下列哪些正確？\nA. 雇主強制提繳（最低6%）\nB. 勞工自願提繳（最高6%）\nC. 政府每年補助固定金額\nD. 帳戶投資收益',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：政府不直接補助勞退新制個人帳戶（與勞保費負擔不同），資金來源為雇主提繳、勞工自提、投資收益。'},
+    {q:'公教退撫年金改革後，下列哪些屬於改革內容？\nA. 提高提撥費率至最高18%\nB. 延後月退起支年齡至65歲\nC. 調整退休計算基準（逐年往前至15年平均）\nD. 取消所有月退休金',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：均屬107年年金改革內容。D錯誤：年金改革調降替代率但未取消月退休金，月退仍是主要給付方式。'},
+    {q:'台灣社會保險中，採「確定給付制（DB）」的制度包含哪些？\nA. 勞工保險\nB. 國民年金\nC. 勞退新制\nD. 公教人員保險',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D屬DB制：勞保、國保、公保、軍保、勞退舊制、公教退撫舊制。C勞退新制屬DC制（確定提撥）。'},
+    {q:'國民年金參加資格，下列哪些人應參加國民年金？\nA. 25歲以上未滿65歲，未參加其他社保的國民\nB. 旅居海外但戶籍在台的國民\nC. 25歲服替代役（非軍保）者\nD. 已領取勞保老年年金者',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C應參加國保。D已領取勞保老年年金者，請領後不得再參加國保（屬不得參加的情況）。'},
+    {q:'勞保投保薪資制度，下列哪些敘述正確？\nA. 依薪資級距對應投保薪資\nB. 有最高投保薪資上限\nC. 雇主可任意降低申報薪資\nD. 影響日後老年年金給付金額',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：雇主不得任意申報低於實際薪資，違者可被裁罰；投保薪資與未來給付密切相關，應據實申報。'},
+    {q:'公保養老年金（月領）的適用對象，下列哪些正確？\nA. 私校教職員（103年起）\nB. 112年7月1日後新進公教人員\nC. 所有公務人員（含舊制）\nD. 服役軍人',
+     opts:['A','B','C','D'],ans:[0,1],
+     exp:'A、B正確：公保養老年金（月領）適用私校教職員（103年開辦）及112/07/01後新進公教（因第二層改DC制）。C舊制公教仍領公教退撫月退，非公保年金。D軍人有另外的軍保制度。'},
+    {q:'勞退新制月退休金計算，下列哪些利率使用正確？\nA. 帳戶累積期：勞退新制報酬率（約3.4%）\nB. 月退金額計算：保證收益率（1.1473%）\nC. 月退折現至退休時：退休後報酬率（3.6%）\nD. 帳戶累積期：退休後報酬率（3.6%）',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：三步驟各用不同利率。D錯誤：帳戶累積期用勞退報酬率（3.4%），不是退休後報酬率（3.6%）。'},
+    {q:'勞保老年年金，下列哪些計算正確（B式=最高60月平均投保薪資×年資×1.55%）？\nA. 年資30年投保薪資45,800元→月領21,306元\nB. 年資25年投保薪資45,800元→月領17,748元\nC. 年資20年投保薪資45,800元→月領14,198元\nD. 年資15年投保薪資45,800元→月領12,000元',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C計算正確：A=45800×30×1.55%=21,306；B=45800×25×1.55%=17,748；C=45800×20×1.55%=14,198。D錯誤：正確應為45800×15×1.55%=10,648元，非12,000元。'},
+  ]
+},
+2: { // 普通
+  singles: [
+    {calc:true, q:'黃先生勞退舊制年資15年，前15年年資，月薪80,000元（退前6個月平均），勞退舊制退休金為多少？',
+     opts:['1,600,000元','2,400,000元','3,200,000元','4,800,000元'],ans:[1],
+     exp:'前15年基數=15×2=30個；退休金=30×80,000=2,400,000元。（若後15年=15×1=15個，30年最多45個基數）'},
+    {calc:true, q:'王女士勞保年資25年，最高60月平均投保薪資45,800元，B式月領多少？延後1年退休後月領多少？',
+     opts:['B式17,748元；延後後18,458元','B式15,000元；延後後16,000元','B式17,748元；延後後19,000元','B式20,000元；延後後21,000元'],ans:[0],
+     exp:'B式=45,800×25×1.55%=17,748元；延後1年：17,748×(1+4%)=18,458元。每延後1年增加4%，是鼓勵延後退休的重要機制。'},
+    {calc:true, q:'公務人員退撫新制，年資28年，退休時均俸50,000元，月退休金為多少？',
+     opts:['56,000元','70,000元','84,000元','98,000元'],ans:[0],
+     exp:'月退基數=28×2%=56%；月退=50,000×2×56%=56,000元。需再與所得替代率天花板比較取低值。'},
+    {calc:true, q:'某甲現在月薪70,000元，加薪率1.5%，19年後退休時薪資終值約為多少？（財務計算機：N=19，I/Y=1.5，PV=70,000，CPT FV）',
+     opts:['約82,000元','約92,887元','約105,000元','約78,000元'],ans:[1],
+     exp:'N=19，I/Y=1.5，PV=70,000，CPT FV≈92,887元。此為計算退休時薪資的標準步驟，用於計算退休時生活費（所得替代率法）。'},
+    {calc:true, q:'退休生活費計算：退休時每月生活費65,021元，退後報酬率3.6%，通膨1.6%，終身22年（BGN），退休時生活費年金現值約為多少？',
+     opts:['約1,100萬','約1,390萬','約1,600萬','約850萬'],ans:[1],
+     exp:'N=264（22×12），I/Y=2/12≈0.1667%（實質報酬率3.6%-1.6%=2%），PMT=65,021，BGN，CPT PV≈13,900,990（約1,390萬）。'},
+    {calc:true, q:'勞退新制個人帳戶累積，月薪70,000元，提繳率12%（雇主6%+自提6%），薪資成長率1.5%，勞退報酬率3.4%，19年後帳戶「新提撥」部分約為多少？',
+     opts:['約250萬','約307萬','約400萬','約188萬'],ans:[1],
+     exp:'公式：[(1+3.4%)^19-(1+1.5%)^19]÷(3.4%-1.5%)×70,000×12%×12×(1+3.4%)≈3,075,051元（約307萬）。加上舊錢複利約188萬，合計約495萬。'},
+    {calc:true, q:'退休金缺口7,322,790元，若選單筆投資補足（19年，退前報酬率6.1%），現在需一次投入多少？',
+     opts:['約180萬','約238萬','約300萬','約150萬'],ans:[1],
+     exp:'N=19，I/Y=6.1，FV=7,322,790，CPT PV≈2,377,302元（約238萬）。這是補足退休缺口的「單筆投資」計算，另一方式是每月定存17,009元。'},
+    {calc:true, q:'長照費：47歲時每月3萬，長照費成長率2.5%，到80歲（33年後）開始使用時長照費約為多少？',
+     opts:['約5.5萬','約6.8萬','約7.5萬','約4.5萬'],ans:[1],
+     exp:'N=33，I/Y=2.5，PV=30,000，CPT FV≈67,766元（約6.8萬）。這是長照費3步曲步驟1，計算開始使用時的金額。'},
+
+    // 一般觀念
+    {q:'公教退撫年改後，所得替代率天花板，以年資35年為基準，107年時為多少%？',
+     opts:['75%','72%','70%','68%'],ans:[0],
+     exp:'107年公教退撫年改啟動，35年年資天花板從75%開始，分10年調降至118年後的60%。107年仍為75%，逐年遞減。'},
+    {q:'勞保老年年金，年資滿15年可在幾歲開始辦理「提前」退休（最早）？',
+     opts:['55歲','57歲','60歲','不能提前'],ans:[2],
+     exp:'勞保老年年金提前退休：最早可在法定請領年齡前5年申請，但每提前1年減4%，最多提前5年。提前請領需離職。'},
+    {q:'公務人員退撫年改後，所得替代率天花板「往上1年資」每年增加多少%？',
+     opts:['0.5%','1%','1.5%','2%'],ans:[0],
+     exp:'天花板調整口訣：35年75%為基準；往右（年份）每年少1.5%；往上（年資+1）每年加0.5%；往下（年資-1）每年減1.5%。'},
+    {q:'「實質報酬率」的計算公式為何？',
+     opts:['退休後報酬率+通膨率','退休後報酬率-費用成長率','名目報酬率×通膨率','名目報酬率÷通膨率'],ans:[1],
+     exp:'實質報酬率=退休後名目報酬率-費用成長率（通膨率或長照費成長率）。用於計算「隨物價調整的年金現值」，如生活費、長照費年金現值。'},
+    {q:'退休所得替代率計算，「所得替代率法」是以什麼為基礎計算退休時生活費？',
+     opts:['現在的月生活費乘以通膨率','退休時的月薪乘以所得替代率','退休金總額除以年數','固定金額'],ans:[1],
+     exp:'所得替代率法：現在薪資×加薪率（N年）→退休時薪資，再×所得替代率=退休時每月所需生活費。另一方式為生活費成長法（現在費用×通膨率累積）。'},
+    {q:'退休規劃中，長照費3步曲的正確順序為何？',
+     opts:['①計算長照費年金現值→②計算長照費成長至起始→③折現至退休時',
+           '①計算長照費成長至起始→②計算長照費年金現值→③折現至退休時',
+           '①折現至退休時→②計算長照費成長→③年金現值',
+           '①年金現值→②折現→③成長計算'],ans:[1],
+     exp:'長照費3步曲：步驟1=計算開始使用時長照費（現在費用×成長率）→步驟2=計算長照期間年金現值（用實質報酬率）→步驟3=折現至退休時（用名目退休後報酬率）。'},
+    {q:'計算退休金需求，「BGN（期初年金）」的使用時機為何？',
+     opts:['計算勞退帳戶累積終值','計算退休生活費年金現值','計算利息收入','計算投資本金'],ans:[1],
+     exp:'BGN（期初年金）：退休後第一筆生活費在退休當月即需使用，故計算生活費、長照費年金現值，以及勞退月退金額時，均應設BGN模式。'},
+    {q:'勞保老年年金，年資40年，最高60月平均投保薪資45,800元，B式月領多少元？',
+     opts:['24,232元','28,396元','17,804元','35,000元'],ans:[1],
+     exp:'B式=45,800×40×1.55%=28,396元。A式=28,396÷2+3,000=17,198元，兩式擇優選B式28,396元。'},
+    {q:'退休規劃中，「退休金達成率」的計算公式為何？',
+     opts:['缺口÷需求×100%','已備÷需求×100%','需求÷已備×100%','（需求-缺口）÷薪資×100%'],ans:[1],
+     exp:'退休金達成率=已備金額÷需求金額×100%。如已備1,037萬、需求1,770萬，達成率=1037÷1770≈58.6%，缺口=1770-1037=733萬。'},
+    {q:'財務計算機「AOS」模式與「Chn」模式的差別，下列何者正確？',
+     opts:['AOS先加減後乘除','AOS先乘除後加減（數學邏輯）','Chn先乘除後加減','兩者計算結果相同'],ans:[1],
+     exp:'AOS=先乘除後加減（符合數學邏輯，建議使用）；Chn=按輸入順序計算（容易出錯）。1+2×3：AOS得7，Chn得9。建議設定AOS模式。'},
+    {q:'公務人員退撫計算，「退休時均俸×2」的「×2」代表什麼？',
+     opts:['雙倍獎金','因公務員實際薪資約為本俸兩倍，以此計算提撥基準','退休後第二年才開始領','計算二倍月退'],ans:[1],
+     exp:'公務員薪資結構：實際薪資約為本俸的兩倍，因此退撫計算以本俸×2為基準（反映實際薪資水準），月退=均俸×2×基數%。'},
+    {q:'勞退新制，退休時選擇月退，「保證期間」是指什麼？',
+     opts:['保證投資不虧損','保證至少領取一定年數，死亡後剩餘給繼承人','保證每月金額固定','保證收益率不變'],ans:[1],
+     exp:'勞退新制月退保證期間：若退休後早逝，可由繼承人領取剩餘金額（依平均餘命計算），確保勞工應得的退休金不會因早逝而喪失。'},
+    {q:'退休金規劃中，何謂「長壽風險」的具體財務影響？',
+     opts:['股票投資虧損','實際壽命超過預期，退休金提早用完','利率下降收益減少','通膨率超過預期'],ans:[1],
+     exp:'長壽風險：實際壽命比預期更長，若退休金規劃以較短餘命計算，可能在生命最後幾年面臨財務匱乏。因此需保守估算餘命（高估）。'},
+    {q:'公教退撫年改，「所得替代率天花板」計算中，年資36年（118年後）的天花板為多少%？',
+     opts:['60%','60.5%','61.5%','62%'],ans:[1],
+     exp:'以35年60%為基準，往上1年（36年）加0.5%=60.5%。記憶口訣：35年基準；往右每年-1.5%；往上每年+0.5%；往下每年-1.5%。'},
+    {q:'退休金缺口計算：需求17,698,381元，已備10,375,591元，缺口為多少？',
+     opts:['6,322,790元','7,322,790元','8,522,790元','5,922,790元'],ans:[1],
+     exp:'退休金缺口=需求-已備=17,698,381-10,375,591=7,322,790元。達成率=10,375,591÷17,698,381≈58.6%，是典型RFA個案計算。'},
+    {q:'計算退休金，使用財務計算機，設定小數位為4位的操作步驟為何？',
+     opts:['2ND + CLR TVM + 4','2ND + FORMAT → 輸入4 → ENTER','2ND + BGN + 4','直接輸入小數'],ans:[1],
+     exp:'設定小數位4位：按[2ND][FORMAT]，螢幕顯示DEC=2.00，直接輸入4並按[ENTER]確認，再按[CE/C]離開，畫面顯示0.0000。'},
+    {q:'退休規劃中，「旅遊費年金現值」應使用哪種報酬率折現？',
+     opts:['薪資成長率','退休後報酬率-通膨率（實質）','退休後報酬率-旅遊費成長率（實質）','勞退保證收益率'],ans:[2],
+     exp:'旅遊費年金現值：用實質報酬率=退休後報酬率-旅遊費成長率（因旅遊費隨其特定成長率調整）。若旅遊費成長率=通膨率，則與生活費用相同利率。'},
+    {q:'財務計算機TVM計算，下列哪個操作正確？',
+     opts:['每次計算後自動歸零','每次計算前按2ND+CLR TVM歸零','只有計算PV時需歸零','不需要歸零'],ans:[1],
+     exp:'財務計算機每次計算前必須按[2ND][CLR TVM]歸零，避免上一題數值殘留影響計算結果。這是財務計算機使用最基本且最重要的步驟。'},
+    {q:'公教退撫「減額月退」的最大減幅為多少%？',
+     opts:['10%','15%','20%','25%'],ans:[2],
+     exp:'減額月退：每提前1年減4%，最多提前5年，最大減幅=4%×5=20%。若選擇展期月退則不打折（等到法定起支年齡）。'},
+    {q:'計算投資組合報酬率，股票70%×年報酬率8%，債券30%×年報酬率3%，組合年報酬率為多少？',
+     opts:['5.5%','6.5%','5%','7.5%'],ans:[1],
+     exp:'組合報酬率=8%×70%+3%×30%=5.6%+0.9%=6.5%。投資組合報酬率可以直接加權平均計算，但標準差不可直接加權。'},
+    {q:'下列何者是計算退休金總需求時「不需要」考慮的費用？',
+     opts:['退休後生活費','退休後長照費','子女婚禮費用','退休後旅遊費'],ans:[2],
+     exp:'退休金需求三大項：生活費+旅遊費+長照費。子女婚禮費用屬個人財富傳承規劃，非標準退休金需求計算範疇（除非題目特別說明）。'},
+    {q:'公保養老年金給付率，私校教職員最高可達多少%？',
+     opts:['1.0%','1.2%','1.3%','1.5%'],ans:[2],
+     exp:'公保養老年金給付率：0.75%至1.3%，以年資×給付率×最後10年平均保俸計算月退金額。私校教職員103年起開辦年金制度。'},
+    {q:'退休規劃中，「名目報酬率」與「實質報酬率」的差距在於什麼？',
+     opts:['投資類型','費用成長率（通膨或特定成長率）','計算期間','資產配置比例'],ans:[1],
+     exp:'名目報酬率=市場報酬率（如3.6%）；實質報酬率=名目報酬率-費用成長率（如通膨1.6%）=2%。計算「維持購買力的年金」時用實質報酬率。'},
+    {q:'勞保老年年金，年資35年，最高60月平均投保薪資45,800元，B式月領多少？',
+     opts:['22,000元','24,849元','28,000元','18,000元'],ans:[1],
+     exp:'B式=45,800×35×1.55%=24,849元。A式=24,849÷2+3,000=15,425元，兩式擇優選B式24,849元。'},
+    {q:'公教退撫年改，年資33年，118年後所得替代率天花板為多少%？',
+     opts:['57%','58.5%','60%','63%'],ans:[0],
+     exp:'35年基準60%；33年（往下2年）=60%-(1.5%×2)=60%-3%=57%。記憶：往下每年減1.5%，往上每年加0.5%。'},
+    {q:'財務計算機，計算「複利終值」，某人投資100萬，年利率5%，20年後約為多少？',
+     opts:['約200萬','約265萬','約300萬','約220萬'],ans:[1],
+     exp:'N=20，I/Y=5，PV=1,000,000，CPT FV≈2,653,298元（約265萬）。這是複利終值（CF）的標準計算，財務計算機操作：按N=20，I/Y=5，PV=-1000000，CPT FV。'},
+    {q:'退休金規劃，「生活費成長法」與「所得替代率法」的差異為何？',
+     opts:['計算結果完全相同','前者以現在生活費×通膨率，後者以退休時薪資×替代率','前者適合高薪族，後者適合低薪族','兩者使用相同數據'],ans:[1],
+     exp:'兩種方法：所得替代率法=退休時薪資（現薪×加薪率）×所得替代率；生活費成長法=現在生活費×通膨率×年數。題目會給其中一種所需數據。'},
+    {q:'公務人員退撫月退，年資40年，月退基數為多少%？',
+     opts:['70%','75%','80%','80%以上'],ans:[1],
+     exp:'年資35年上限70%；第36-40年每年再加1%，40年=70%+(5×1%)=75%。注意上限75%（40年），不能再增加。'},
+    {q:'退休後投資報酬率（3.6%）低於退休前（6.1%）的主要原因為何？',
+     opts:['退休後不工作所以收入減少','退休後需降低風險，資產配置較保守','政府規定退休後不能投資股票','退休後稅負增加'],ans:[1],
+     exp:'退休後投資策略：因退休後無薪資收入，無法承擔高風險，需將資產配置調整為較保守（增加債券、固定收益），故報酬率較退休前低。'},
+    {q:'計算退休金已備，勞保老年年金現值計算，使用哪種模式和利率？',
+     opts:['END模式，名目利率','BGN模式，名目報酬率','BGN模式，實質報酬率（退後-通膨）','END模式，實質報酬率'],ans:[2],
+     exp:'勞保/國保/公保年金現值計算：因年金隨CPI調整（實質購買力維持），使用BGN模式+實質報酬率（3.6%-1.6%=2%），N=終身年月數，PMT=月退金額。'},
+    {q:'公教退撫年改，所得替代率天花板由年改實施起分幾年調降？',
+     opts:['5年','8年','10年','15年'],ans:[2],
+     exp:'公教退撫年改107年7月實施，所得替代率分10年調降（107年至116年），以年資35年為例，從75%調降至60%，每年調降1.5%。'},
+    {q:'退休規劃中，「財務自由度」是什麼概念？',
+     opts:['退休後資產÷年支出=可支持幾年','每月被動收入÷月支出×100%，達100%即財務自由','退休金÷工作年數','資產÷負債'],ans:[1],
+     exp:'財務自由度：每月被動收入（投資、年金等）÷每月總支出×100%，達100%表示不需要工作也能支應生活，是退休規劃的終極目標。'},
+  ],
+  multis: [
+    {q:'計算退休金總需求，下列哪些費用項目的年金現值，應使用「實質報酬率」計算？\nA. 退休後生活費\nB. 退休後旅遊費\nC. 勞退新制帳戶累積\nD. 長照費',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D使用實質報酬率：生活費（退後報酬-通膨）、旅遊費（退後報酬-旅遊費成長率）、長照費（退後報酬-長照費成長率）。C勞退帳戶累積用名目勞退報酬率（3.4%）。'},
+    {q:'財務計算機使用，下列哪些操作正確？\nA. 每次計算前按2ND+CLR TVM歸零\nB. 計算期初年金設BGN模式\nC. 月利率=年利率×12\nD. 設定小數位4位：2ND+FORMAT→4→ENTER',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：月利率=年利率÷12（除以12，不是乘以12）。例如年利率6%，月利率=6÷12=0.5%。'},
+    {q:'勞保老年年金A式的限制，下列哪些情況「不得」領A式？\nA. 同時領取勞保老年年金\nB. 同時領取公保養老年金\nC. 有欠繳保費不計入年資\nD. 同時領取社福津貼',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均不得領國保A式：領取年金類老年給付（勞保/公保年金）、有欠繳記錄、領取社會福利津貼（低收入老人生活津貼等）。'},
+    {q:'公教退撫年改後，所得替代率天花板規則，下列哪些正確？\nA. 35年×118年後=60%為基準\nB. 往右（年份越晚）每年少1.5%\nC. 往上（年資+1年）每年加0.5%\nD. 往下（年資-1年）每年減1.5%',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確，這是記憶公教退撫所得替代率天花板的完整口訣，考試常考，務必熟記。'},
+    {q:'退休金規劃4大步驟，下列哪些正確？\nA. 計算退休金總需求\nB. 計算退休金已備（社保+職業退休金）\nC. 計算退休金缺口（需求-已備）\nD. 提出補缺口具體方案',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確，為RFA個案分析完整4步驟，缺一不可。步驟順序：需求→已備→缺口→方案。'},
+    {q:'投資組合理論，下列哪些敘述正確？\nA. 組合報酬率=各資產報酬率加權平均\nB. 組合標準差不可直接加權平均\nC. 相關係數=-1時可完全消除風險\nD. 持有比例不影響組合標準差',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：持有比例（權重）對組合標準差有顯著影響，是計算公式中的重要變數，不可忽略。'},
+    {q:'勞退新制月退三步驟，下列哪些利率使用正確？\nA. 步驟1（帳戶累積）：勞退報酬率3.4%\nB. 步驟2（月退計算）：保證收益率1.1473%\nC. 步驟3（折現已備）：退休後報酬率3.6%\nD. 步驟1（帳戶累積）：退休後報酬率3.6%',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確，為三步驟各自對應的利率。D錯誤：帳戶累積期用勞退報酬率（3.4%），非退休後報酬率。'},
+    {q:'退休金缺口補足方式，下列哪些屬於RFA課程建議的標準方法？\nA. 增加單筆投資（計算現值PV）\nB. 每月定期定額儲蓄（計算PMT）\nC. 設定所需退休前報酬率（計算I/Y）\nD. 延後退休年齡',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均屬補缺口方法：A單筆投資（求PV）、B定期定額（求PMT）、C設定目標報酬率（求I/Y）、D延後退休可增加已備金額並縮短需求期間，均為有效策略。'},
+    {q:'計算長照費退休時現值（3步曲），各步驟使用的利率，下列哪些正確？\nA. 步驟1（費用成長）：長照費成長率2.5%\nB. 步驟2（年金現值）：實質報酬率=3.6%-2.5%=1.1%\nC. 步驟3（折現至退休）：退休後報酬率3.6%\nD. 步驟2（年金現值）：名目退休後報酬率3.6%',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：步驟1用長照費成長率、步驟2用實質報酬率（3.6%-2.5%=1.1%）、步驟3用名目退休後報酬率（3.6%）。D錯誤：步驟2應用實質（非名目）報酬率。'},
+    {q:'公教退撫年改的主要改革內容，下列哪些正確？\nA. 提高提撥費率至最高18%\nB. 分10年調降所得替代率至60%（35年）\nC. 延後月退起支年齡至65歲\nD. 取消展期月退選項',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：提高費率、調降替代率、延後起支年齡。D錯誤：展期月退仍保留，是未達起支年齡者的重要選項（等到法定年齡才領，金額不打折）。'},
+    {q:'生命週期投資組合，隨年齡增長，資產配置如何調整，下列哪些正確？\nA. 年輕時配置較高比例股票\nB. 接近退休時降低股票比例\nC. 退休後全部轉為現金\nD. 退休後仍需持有部分成長資產',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確：年輕配置高風險、接近退休降低股票、退休後仍需部分成長資產對抗長壽風險和通膨。C退休後全部轉現金不正確，容易使資產過快縮水。'},
+    {q:'投資組合標準差計算（兩資產），下列哪些觀念正確？\nA. 公式：√(σA²wA²+σB²wB²+2wAwBρσAσB)\nB. ρ=-1時理論上可完全消除風險\nC. ρ=1時分散效果最佳\nD. ρ=0時有部分分散效果',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：ρ=1表示完全正相關，完全沒有分散效果；ρ=-1時分散效果最佳（可完全消除），ρ=0則有部分分散效果。'},
+    {q:'退休規劃中，「已備退休金」的來源，下列哪些應納入計算？\nA. 勞保老年年金（折現至退休時的現值）\nB. 勞退新制帳戶月退（折現至退休時的現值）\nC. 公教退撫月退俸（折現至退休時的現值）\nD. 個人股票投資（市值）',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C為標準已備來源。D個人股票投資若題目未給，通常不計入標準已備計算（屬個人自備第三層，需依題目判斷是否給定）。'},
+    {q:'財務計算機計算年金現值，下列哪些設定正確（計算退休生活費現值）？\nA. N=退休期間×12（月數）\nB. I/Y=年利率÷12（月利率）\nC. PMT=每月生活費\nD. 設定BGN模式',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確：計算月退休生活費年金現值時，N用月數、I/Y用月利率、PMT用月金額、並設BGN（期初年金）模式，四項缺一不可。'},
+    {q:'勞退新制帳戶累積計算，下列哪些數值需要輸入財務計算機？\nA. N=退休前工作年數×12\nB. I/Y=勞退報酬率÷12\nC. PMT=每月提撥金額\nD. PV=目前帳戶餘額',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均需輸入：N=工作月數、I/Y=月利率、PMT=月提撥金額、PV=現有帳戶餘額（若題目給定），然後CPT FV=退休時帳戶總額。'},
+  ]
+},
+3: { // 複雜 — 計算題比例更高
+  singles: [
+    {calc:true, q:'許博臨（47歲，薪資7萬，加薪1.5%，19年後66歲退休），退休時薪資終值為多少？',
+     opts:['約82,000元','約92,887元','約105,000元','約88,000元'],ans:[1],
+     exp:'N=19，I/Y=1.5，PV=70,000，CPT FV≈92,887元。此為計算退休時薪資的標準步驟，用於所得替代率法計算退休時生活費基礎。'},
+    {calc:true, q:'許博臨退休時月生活費65,021元（所得替代率70%），退後報酬率3.6%，通膨1.6%，終身22年（BGN），退休時生活費年金現值為多少？',
+     opts:['約1,200萬','約1,390萬','約1,600萬','約1,100萬'],ans:[1],
+     exp:'N=264（22×12），I/Y=2/12（實質2%），PMT=65,021，BGN，CPT PV≈13,900,990（約1,390萬）。這是退休金需求計算的核心步驟。'},
+    {calc:true, q:'王曉嵐（45歲公務員，薪資5萬，加薪1%，19年後64歲退休），退休時薪資終值為多少？',
+     opts:['約55,000元','約60,405元','約65,000元','約58,000元'],ans:[1],
+     exp:'N=19，I/Y=1，PV=50,000，CPT FV≈60,405元。退休時月生活費=60,405×70%（所得替代率）=42,284元。'},
+    {calc:true, q:'許博臨長照費計算：現在47歲，3萬元/月，長照費成長2.5%，到80歲（33年後）開始使用長照費，當時金額約為多少？',
+     opts:['約5.5萬','約6.8萬','約7.5萬','約4.8萬'],ans:[1],
+     exp:'N=33，I/Y=2.5，PV=30,000，CPT FV≈67,766元（約6.8萬）。長照3步曲步驟1：計算開始使用時的長照費金額。'},
+    {calc:true, q:'許博臨長照費8年（80-88歲），每月67,766元，實質報酬率=3.6%-2.5%=1.1%/月，BGN，長照費年金現值（80歲時）為多少？',
+     opts:['約580萬','約623萬','約700萬','約500萬'],ans:[1],
+     exp:'N=96（8×12），I/Y=1.1/12，PMT=67,766，BGN，CPT PV≈6,230,485元（約623萬）。這是長照3步曲步驟2。'},
+    {calc:true, q:'許博臨步驟3：將長照費現值623萬從80歲折現至66歲（退休時），退後報酬率3.6%，折現值約為多少？',
+     opts:['約280萬','約330萬','約380萬','約420萬'],ans:[2],
+     exp:'N=14（80-66），I/Y=3.6，FV=6,230,485，CPT PV≈3,797,391元（約380萬）。長照3步曲步驟3，得到退休時應備長照費。'},
+    {calc:true, q:'許博臨退休金總需求=生活費現值+長照費現值=13,900,990+3,797,391，合計約為多少？',
+     opts:['約1,570萬','約1,770萬','約1,950萬','約1,400萬'],ans:[1],
+     exp:'退休金總需求=13,900,990+3,797,391=17,698,381元（約1,770萬）。這是許博臨的退休金總需求，接下來計算已備金額。'},
+    {calc:true, q:'許柏堯（22歲，薪資2.7萬，加薪2%，43年後65歲退休），退休時薪資終值為多少？',
+     opts:['約5萬','約6.3萬','約7萬','約8萬'],ans:[1],
+     exp:'N=43，I/Y=2，PV=27,000，CPT FV≈63,266元（約6.3萬）。用於判斷勞保投保薪資級距及退休需求計算基礎。'},
+    {calc:true, q:'許柏堯退休金需求：退休時月生活費69,262元（生活費成長法），終身24年，實質報酬率2%，BGN，退休金總需求約為多少？',
+     opts:['約1,200萬','約1,400萬','約1,585萬','約1,800萬'],ans:[2],
+     exp:'N=288（24×12），I/Y=2/12，PMT=69,262，BGN，CPT PV≈15,858,405元（約1,585萬）。許柏堯年輕，退休期間較長，需求較大。'},
+    {calc:true, q:'許博臨勞保老年年金（延後1年，年資41年，投保薪資45,800元），月領多少元？',
+     opts:['約29,106元','約30,270元','約32,000元','約28,000元'],ans:[1],
+     exp:'B式=45,800×41×1.55%=29,106元；延後1年：29,106×104%=30,270元。延後退休可增加月領金額，是退休規劃重要建議。'},
+    {calc:true, q:'許博臨勞保年金現值：月領30,270元，終身22年，實質報酬率2%，BGN，折現現值約為多少？',
+     opts:['約480萬','約572萬','約647萬','約720萬'],ans:[2],
+     exp:'N=264（22×12），I/Y=2/12，PMT=30,270，BGN，CPT PV≈6,471,493元（約647萬）。此為勞保已備現值。'},
+    {calc:true, q:'許博臨勞退帳戶（退休時4,962,565元），66歲退休餘命20年，保證收益率0.987%/12，BGN，月退金額為多少？',
+     opts:['約18,000元','約22,775元','約28,000元','約15,000元'],ans:[1],
+     exp:'N=240（20×12），I/Y=0.987/12，PV=4,962,565，BGN，CPT PMT≈22,775元。這是勞退三步驟的步驟2。'},
+    {calc:true, q:'許博臨勞退月退折現：月領22,775元，退後報酬率3.6%/12，22年，BGN，折現現值約為多少？',
+     opts:['約270萬','約330萬','約390萬','約430萬'],ans:[2],
+     exp:'N=264，I/Y=3.6/12=0.3%，PMT=22,775，BGN，CPT PV≈3,904,098元（約390萬）。勞退三步驟的步驟3。'},
+    {calc:true, q:'許博臨已備退休金：勞保現值647萬+勞退現值390萬，合計約為多少？達成率為多少（需求1,770萬）？',
+     opts:['約1,000萬；約56.5%','約1,037萬；約58.6%','約1,200萬；約67.8%','約900萬；約50.8%'],ans:[1],
+     exp:'已備=6,471,493+3,904,098=10,375,591元（約1,037萬）；達成率=10,375,591÷17,698,381≈58.6%；缺口=17,698,381-10,375,591=7,322,790元。'},
+    {calc:true, q:'許博臨退休金缺口7,322,790元，每月定期定額補足（19年，報酬率6.1%/12，BGN），每月應存多少？',
+     opts:['約12,000元','約17,009元','約22,000元','約8,500元'],ans:[1],
+     exp:'N=228（19×12），I/Y=6.1/12，FV=7,322,790，BGN，CPT PMT≈17,009元。是補缺口的「每月定存」計算，另可選單筆投入約238萬。'},
+    {calc:true, q:'王曉嵐公教退撫月退：均俸40,000元×2×基數（34年2%=68%），但需與天花板比較，107年起35年75%天花板，王曉嵐34年天花板為何？月退為多少？',
+     opts:['天花板73.5%，月退58,800元','天花板68%，月退54,400元','天花板65%，月退52,000元','天花板70%，月退56,000元'],ans:[0],
+     exp:'34年天花板：35年75%，往下1年減1.5%=75%-1.5%=73.5%。月退基數68%<天花板73.5%，取較低值68%，月退=40,000×2×68%=54,400元。（★注意：實際需依當年天花板計算）'},
+    {calc:true, q:'投資組合標準差計算：A資產標準差0.9，比例50%；B資產標準差0.5，比例50%；相關係數0.225，投資組合標準差為多少？',
+     opts:['約0.56','約0.70','約0.45','約0.80'],ans:[0],
+     exp:'σP=√(0.9²×0.5²+0.5²×0.5²+2×0.5×0.5×0.225×0.9×0.5)=√(0.2025+0.0625+0.10125)=√0.31625≈0.562。'},
+    {calc:true, q:'黃俊憲（84年6月進入甲公司，99年1月改選勞退新制，當時月薪60,000元）舊制年資折合幾年？舊制退休金為多少？（薪資成長率3%，退休年119年60歲）',
+     opts:['14年，2,400,000元','15年，3,251,010元','16年，3,600,000元','13年，2,200,000元'],ans:[1],
+     exp:'舊制年資：84/06至98/12共14年7個月，滿半年以1年計=15年。退休薪資：60,000×(1+3%)^20=108,367元。舊制退休金=15×2×108,367=3,251,010元。'},
+    {calc:true, q:'黃俊憲勞退新制帳戶（20年，月薪60,000元成長3%，提繳6%，投資報酬率5%），新制帳戶累積約為多少？',
+     opts:['約120萬','約192萬','約250萬','約310萬'],ans:[1],
+     exp:'公式：[(1+5%)^20-(1+3%)^20]÷(5%-3%)×60,000×6%×12×(1+5%)≈1,921,419元（約192萬）。勞退新舊制合計=3,251,010+1,921,419=5,172,429元。'},
+    {calc:true, q:'私校退撫儲金（DC制），俸額740，年資30年，提撥率12%，穩健型年報酬率6.49%，帳戶月退（餘命21年，折現率1.095%，BGN）月領約多少？',
+     opts:['約28,000元','約63,858元','約42,000元','約80,000元'],ans:[1],
+     exp:'Step1：每月提撥=53,990×2×12%=12,958元。Step2：N=360，I/Y=6.49/12，PMT=12,958，BGN，FV≈14,383,403元。Step3：N=252，I/Y=1.095/12，PV=14,383,403，CPT PMT≈63,858元。'},
+    {q:'勞保老年年金，民國48年出生者，法定請領年齡為幾歲？',
+     opts:['60歲','61歲','62歲','63歲'],ans:[2],
+     exp:'依法定請領年齡對照表：46年以前→60歲；47年→61歲；48年→62歲；49年→63歲；50年→64歲；51年以後→65歲。'},
+    {q:'RFA個案分析，「退休金缺口達成率」的意義，下列何者正確？',
+     opts:['缺口越大，達成率越高','達成率越高，越接近退休目標（100%=完全足夠）','達成率=缺口÷需求','達成率超過100%代表虧損'],ans:[1],
+     exp:'退休金達成率=已備÷需求×100%，達100%表示完全足夠，不需要再補缺口。達成率越高代表退休準備越充足，反之需要補足差距。'},
+    {q:'公教退撫年改後，教育人員的月退起支年齡，高中以下校長及教師延後至幾歲？',
+     opts:['55歲','58歲','60歲','65歲'],ans:[1],
+     exp:'公教退撫年改：公務人員月退起支年齡逐年延後至65歲（10年過渡）；教育人員：高中以下校長及教師延後至58歲（15年過渡），其餘教職員延後至65歲。'},
+    {q:'「目標到期基金」與「生命週期基金」的主要差異為何？',
+     opts:['兩者完全相同','目標到期基金有固定到期日，屆期清算；生命週期基金則持續持有','目標到期基金只投資股票','生命週期基金風險固定不變'],ans:[1],
+     exp:'目標到期基金：有固定到期日，隨時間降低風險，到期清算；生命週期基金：隨持有人年齡調整，無固定到期，持續持有。兩者均採生命週期投資概念但結構不同。'},
+    {q:'財政部認定保單涉嫌規避遺產稅的8大態樣，下列何者「不屬於」8大態樣？',
+     opts:['重病期間投保','躉繳高額保費','以配偶為受益人','短期內密集投保'],ans:[2],
+     exp:'財政部8大態樣不包含「以配偶為受益人」這個條件本身（指定合法受益人是正常保險安排）。8大態樣著重在投保時機、方式、金額是否明顯以避稅為目的。'},
+    {q:'遺產稅計算，被繼承人死亡前幾年內的贈與需計入遺產？',
+     opts:['3年','5年','10年','15年'],ans:[2],
+     exp:'遺產及贈與稅法規定：被繼承人死亡前10年內贈與繼承人的財產，應計入遺產總額課徵遺產稅，以防止死前規避遺產稅。'},
+    {q:'民法繼承，「拋棄繼承」與「限定繼承」的差異為何？',
+     opts:['兩者都是完全不繼承','拋棄是完全不繼承；限定是以繼承財產為限清償債務','限定是完全不繼承；拋棄是部分繼承','兩者都需要以個人財產清償被繼承人債務'],ans:[1],
+     exp:'拋棄繼承：完全放棄，不繼承任何遺產也不負清償責任；限定繼承：以繼承到的遺產為限清償債務，個人財產不受影響（民法現行制度採限定繼承為原則）。'},
+    {q:'台灣年金改革的未來方向，「勞退自選機制」是指什麼？',
+     opts:['勞工自行選擇退休年齡','勞工可自行選擇勞退新制帳戶的投資標的','勞工選擇是否參加勞退','勞工自行計算退休金'],ans:[1],
+     exp:'勞退自選機制：讓勞工可以自行選擇勞退新制個人帳戶的投資標的（而非統一由勞保局管理），預計未來推動，可能提高投資報酬率。'},
+    {q:'「以房養老」（逆向抵押貸款）的稅務處理，每月收到的款項屬於何種所得？',
+     opts:['薪資所得','財產交易所得','利息所得','不屬於所得，無需課稅'],ans:[3],
+     exp:'逆向抵押貸款每月收到的款項，性質上是借款（非所得），因此不計入所得課稅。但需注意貸款到期或身故後，房屋出售若有增值，則可能產生財產交易所得。'},
+  ],
+  multis: [
+    {q:'RFA個案許博臨退休規劃，下列哪些計算結果正確？\nA. 退休時薪資終值約92,887元\nB. 退休時月生活費=92,887×70%≈65,021元\nC. 生活費年金現值（22年，實質2%，BGN）≈1,390萬\nD. 長照費年金現值（8年，實質1.1%，BGN）≈380萬',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：長照費8年年金現值（步驟2）≈623萬（80歲時），步驟3折現至66歲退休時才≈380萬。選項D混淆了步驟2和步驟3的結果。'},
+    {q:'勞退新制帳戶計算，下列哪些步驟正確？\nA. 步驟1：帳戶累積=舊錢FV+新錢FV\nB. 步驟2：月退=PV（帳戶總額）÷N（月數）\nC. 步驟2：用保證收益率計算月退金額（BGN）\nD. 步驟3：月退折現用退休後報酬率（BGN）',
+     opts:['A','B','C','D'],ans:[0,2,3],
+     exp:'A、C、D正確。B錯誤：月退金額不是簡單除以月數，而是用保證收益率（BGN年金）計算，確保在平均餘命期間按月給付（步驟2用財務計算機CPT PMT）。'},
+    {q:'公教退撫月退計算，王曉嵐（34年，均俸40,000），下列哪些計算步驟正確？\nA. 月退基數=34×2%=68%\nB. 月退=40,000×2×68%=54,400元\nC. 需與所得替代率天花板比較取低值\nD. 月退=40,000×68%=27,200元',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：基數68%（34×2%）；月退=40,000×2×68%=54,400元（均俸×2×基數%）；需與天花板比較取低。D錯誤：少乘以2倍，均俸需乘以2才是計算基礎。'},
+    {q:'投資組合理論實務應用，下列哪些建議正確？\nA. 建議客戶同時持有股票與債券降低波動\nB. 相關係數越低，分散風險效果越好\nC. 退休前可配置較高比例高風險資產\nD. 退休後應全部轉為定存',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確。D錯誤：退休後全部轉定存無法對抗長壽風險和通膨，建議保留部分成長資產，視剩餘壽命和風險承受能力調整配置。'},
+    {q:'私校退撫儲金DC制計算，下列哪些步驟正確？\nA. Step1：月提撥=俸額×2×提撥率\nB. Step2：用定期定額年金終值（BGN）計算帳戶總值\nC. Step3：帳戶總值÷平均餘命月數=月退\nD. Step3：用年金現值計算月退（BGN）',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：不是直接除以月數，而是用財務計算機（年金現值），以折現率1.095%/12、BGN模式計算月退金額，考量資金時間價值。'},
+    {q:'遺產稅規劃，下列哪些屬於合法的遺產稅節稅方式？\nA. 指定受益人的人壽保險理賠金（合理保額）\nB. 重病期間大量購買保險\nC. 提前贈與（考量10年內計入遺產規定）\nD. 成立信託',
+     opts:['A','B','C','D'],ans:[0,2,3],
+     exp:'A、C、D屬合法節稅：合理保額的指定受益人保險、提前規劃贈與（考量10年期限）、信託規劃。B重病期間大量投保屬財政部8大態樣，可能被認定為以避稅為目的。'},
+    {q:'RFA個案分析，補足退休金缺口的具體建議，下列哪些正確？\nA. 計算每月需定存多少（求PMT）\nB. 計算現在需單筆投入多少（求PV）\nC. 建議設定目標報酬率（求I/Y）\nD. 只要延後退休就一定夠',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：三種補缺口方式。D錯誤：延後退休雖可縮小缺口（增加已備、縮短需求期），但不一定完全足夠，仍需搭配定存或投資計畫。'},
+    {q:'生命週期基金（Target-Date Fund），下列哪些描述正確？\nA. 隨目標時間臨近自動降低風險\nB. 年輕時以成長型資產（股票）為主\nC. 退休後立即全部清算\nD. 退休後逐漸轉為保守型資產',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：目標到期基金到期後清算，但生命週期基金不一定在退休時清算，而是繼續持有並調整為保守配置。'},
+    {q:'民法繼承，代位繼承的適用條件，下列哪些正確？\nA. 繼承人在繼承開始前死亡\nB. 繼承人喪失繼承權\nC. 繼承人主動拋棄繼承\nD. 由其直系血親卑親屬代位繼承',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確：繼承人死亡或喪失繼承權，由其直系血親卑親屬代位繼承。C拋棄繼承不適用代位繼承（拋棄後視為自始不繼承，其子女也不得代位）。'},
+    {q:'台灣退休金三層保障完整規劃，下列哪些屬於完整規劃應考慮的面向？\nA. 第一層社保年金（已備計算）\nB. 第二層職業退休金（已備計算）\nC. 第三層個人自備（補缺口方案）\nD. 保險風險管理（疾病、長照保障）',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均屬完整退休規劃面向：三層退休保障計算+風險管理（保險）缺一不可。RFA的完整個案分析應涵蓋退休金計算、保險規劃、投資配置、傳承規劃等面向。'},
+    {q:'財務計算機TVM計算，下列哪些操作原則正確？\nA. PV與FV符號相反（一入一出）\nB. 同時輸入PV和PMT時需注意正負號\nC. I/Y輸入年利率，不需除以12\nD. N為期數（月計算時輸入總月數）',
+     opts:['A','B','C','D'],ans:[0,1,3],
+     exp:'A、B、D正確。C錯誤：若計算月期，I/Y需輸入月利率（年利率÷12），N輸入總月數；若計算年期，I/Y輸入年利率，N輸入年數。需與N的期間單位一致。'},
+    {q:'公教退撫年改，計算「退休時均俸」的方式，下列哪些正確？\nA. 107年：最後在職本俸額\nB. 112年：最後在職前5年平均俸額（往前5年）\nC. 118年後：最後在職前15年平均俸額\nD. 始終固定為退休當月本俸',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C正確：107年改革起，計算基準逐年往前，從最後1年→5年→15年（118年後）平均俸額。D錯誤：107年年改後已非固定用退休當月本俸，而是逐年調整為平均俸額。'},
+    {q:'退休規劃個案分析，已備退休金現值計算，下列哪些使用BGN模式正確？\nA. 勞保/國保老年年金現值\nB. 勞退新制月退折現現值\nC. 公教退撫月退俸折現現值\nD. 勞退新制帳戶累積終值',
+     opts:['A','B','C','D'],ans:[0,1,2],
+     exp:'A、B、C使用BGN：年金類給付均從退休當月開始領（期初），故折現現值計算用BGN。D勞退帳戶累積終值：每月初提繳（也用BGN），但性質是算FV（帳戶終值），而非PV折現。'},
+    {q:'RFA整合個案計算，下列哪些比較描述正確？\nA. 許博臨達成率58.6%，缺口最大\nB. 王曉嵐達成率93.5%，缺口最小\nC. 許柏堯達成率57.4%，年輕工作期長缺口可每月少存\nD. 三人均需補足退休金缺口',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均正確：許博臨58.6%、王曉嵐93.5%（公教保障最完整）、許柏堯57.4%（年輕可用43年積累，每月定存較少只需2,695元）。三人均有不同程度的缺口需補足。'},
+    {q:'遺產稅規劃，指定受益人的人壽保險，符合哪些條件較可能被認定為正當保險而非避稅工具？\nA. 保額合理（與遺產規模相當，非明顯過大）\nB. 健康時規律投保\nC. 繳費期間正常（非躉繳）\nD. 保障目的明確（如家庭收入保護）',
+     opts:['A','B','C','D'],ans:[0,1,2,3],
+     exp:'A、B、C、D均屬正當保險規劃的特徵，與財政部8大態樣（重病投保、躉繳、高齡投保、明顯以避稅為目的）相對，合理規劃的保險不應被認定為避稅工具。'},
+  ]
+}
+};
+
+
+const QB = QB2;
+
+};
+
+// ═══ MEMBER STORAGE — 改用 GAS / Google Sheets ═══
+// 本機暫存：登入後快取，避免重複查詢
+let memberCache = null;
+
+// ═══ QUIZ DATA STORAGE ═══
+function getDb(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){return {};}}
+function saveDb(db){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(db));}catch(e){}}
+function getUserData(key){const db=getDb();return db[key]||{level:1,history:[],passStreak:[0,0,0]};}
+function saveUserData(key,ud){const db=getDb();db[key]=ud;saveDb(db);}
+
+// ═══ SHUFFLE WITH ANSWER REMAP ═══
+// 打亂選項順序，並同步更新正確答案索引
+function shuffleOpts(q){
+  const idx=[0,1,2,3].slice(0,q.opts.length);
+  // Fisher-Yates shuffle
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const newOpts=idx.map(i=>q.opts[i]);
+  // 重新映射正確答案索引
+  const newAns=q.ans.map(a=>idx.indexOf(a));
+  return{...q,opts:newOpts,ans:newAns};
+}
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+// ═══ ADMIN ═══
+let state={user:null,quiz:{level:1,questions:[],currentIdx:0,answers:[],score:0}};
+let adminVisible=false;
+
+// ═══ ADMIN — 連接 Google Sheets ═══
+let adminPwd = null; // 本次登入後台的密碼快取
+
+function toggleAdmin(){
+  if(!adminVisible){
+    const pwd=prompt('請輸入管理員密碼：');
+    if(pwd===null)return;
+    if(pwd!==ADMIN_PASSWORD){alert('密碼錯誤');return;}
+    adminPwd=pwd;
+    adminVisible=true;
+    renderAdminPanel();
+    showPage('pageAdmin');
+  }else{
+    adminVisible=false;adminPwd=null;
+    if(state.user)showDashboard();else showPage('pageLogin');
+  }
+}
+
+async function renderAdminPanel(){
+  const list=document.getElementById('adminMemberList');
+  list.innerHTML='<p style="color:var(--muted);font-size:.85rem">載入中…</p>';
+
+  const result = await gasCall('getMembers',{pwd:adminPwd});
+  if(!result.success){
+    list.innerHTML=`<p style="color:var(--red);font-size:.85rem">載入失敗：${result.message}</p>`;return;
+  }
+  const members=result.members||[];
+  if(members.length===0){
+    list.innerHTML='<p style="color:var(--muted);font-size:.85rem">目前沒有會員，請新增。</p>';
+  } else {
+    list.innerHTML=members.map(m=>`
+      <div class="admin-member-row">
+        <div class="admin-member-info">
+          <span class="admin-member-name">${m.name}</span>
+          <span class="admin-member-bday">生日：${m.bday}　狀態：<strong style="color:${m.status==='啟用'?'var(--green)':'var(--red)'}">${m.status}</strong></span>
+        </div>
+        <button class="btn btn-danger btn-xs" onclick="deleteMember('${m.name}','${m.bday}')">停用</button>
+      </div>`).join('');
+  }
+
+  // 同時載入成績摘要
+  const sr = await gasCall('getScores',{pwd:adminPwd});
+  const scoreArea = document.getElementById('adminScoreArea');
+  if(scoreArea && sr.success){
+    const scores = (sr.scores||[]).slice(0,20);
+    if(scores.length===0){
+      scoreArea.innerHTML='<p style="color:var(--muted);font-size:.85rem">尚無成績記錄</p>';
+    } else {
+      scoreArea.innerHTML=`<table class="history-table">
+        <thead><tr><th>時間</th><th>姓名</th><th>難度</th><th>分數</th><th>答對</th><th>裝置</th></tr></thead>
+        <tbody>${scores.map(s=>{
+          const cls=s.score>=90?'score-pass':s.score>=70?'score-mid':'score-fail';
+          return`<tr><td style="font-size:.75rem">${s.time}</td><td>${s.name}</td><td>${s.level}</td><td><span class="score-badge ${cls}">${s.score}分</span></td><td>${s.correct}</td><td>${s.device}</td></tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    }
+  }
+
+  const urlEl=document.getElementById('adminLineUrl');
+  if(urlEl)urlEl.value=localStorage.getItem('rfa_line_url')||'';
+}
+
+async function addMember(){
+  const name=document.getElementById('newMemberName').value.trim();
+  const bday=document.getElementById('newMemberBday').value.trim();
+  const errEl=document.getElementById('adminError');
+  const note=document.getElementById('newMemberNote')?document.getElementById('newMemberNote').value.trim():'';
+  errEl.style.display='none';
+  if(!name){errEl.textContent='請輸入姓名';errEl.style.display='block';return;}
+  if(!/^\d{6}$/.test(bday)){errEl.textContent='生日需為6位數字';errEl.style.display='block';return;}
+
+  const btn=document.querySelector('#pageAdmin .btn-gold');
+  btn.textContent='新增中…';btn.disabled=true;
+  const result=await gasCall('addMember',{pwd:adminPwd,name,bday,note});
+  btn.textContent='新增';btn.disabled=false;
+
+  if(!result.success){errEl.textContent=result.message||'新增失敗';errEl.style.display='block';return;}
+  document.getElementById('newMemberName').value='';
+  document.getElementById('newMemberBday').value='';
+  renderAdminPanel();
+}
+
+async function deleteMember(name,bday){
+  if(!confirm(`確定要停用會員「${name}」嗎？\n（停用後該會員無法登入，資料仍保留在試算表）`))return;
+  const result=await gasCall('deleteMember',{pwd:adminPwd,name,bday});
+  if(!result.success){alert('操作失敗：'+result.message);return;}
+  renderAdminPanel();
+}
+
+function saveLineUrl(){
+  const url=document.getElementById('adminLineUrl').value.trim();
+  localStorage.setItem('rfa_line_url',url);
+  const saved=document.getElementById('lineUrlSaved');
+  saved.style.display='inline';setTimeout(()=>{saved.style.display='none';},2000);
+}
+
+// ═══ LOGIN ═══
+async function doLogin(){
+  const name=document.getElementById('inputName').value.trim();
+  const bday=document.getElementById('inputBirthday').value.trim();
+  const errEl=document.getElementById('loginError');
+  const btn=document.querySelector('#pageLogin .btn-primary');
+  errEl.style.display='none';
+
+  if(!name||!/^\d{6}$/.test(bday)){
+    errEl.innerHTML='請確認姓名及生日格式（生日需為6位數字）';errEl.style.display='block';return;
+  }
+
+  // 顯示載入中
+  btn.textContent='驗證中…';btn.disabled=true;
+
+  const result = await gasCall('checkMember',{name,bday});
+
+  btn.textContent='🔐 登入系統';btn.disabled=false;
+
+  if(!result.success||!result.valid){
+    const lineUrl=localStorage.getItem('rfa_line_url')||'';
+    const lineHtml=lineUrl
+      ?`💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a>（加入後發訊息給管理員）<br>`
+      :`💬 請加入 LINE 官方帳號後發訊息給管理員<br>`;
+    const reason = result.success ? '' : '<br>⚠️ 網路連線異常，請稍後再試';
+    errEl.innerHTML=`⚠️ 此系統為<strong>會員制</strong>，您的資料不在名單中。${reason}<br>如需加入，請聯絡管理員：<br>${lineHtml}📧 Email：<a href="mailto:${ADMIN_CONTACT.email}" style="color:var(--red)">${ADMIN_CONTACT.email}</a>`;
+    errEl.style.display='block';return;
+  }
+  state.user={name,key:name+'_'+bday,v2:result.v2===true};showDashboard();
+}
+function doLogout(){state.user=null;showPage('pageLogin');}
+
+// ═══ PAGES ═══
+function showPage(id){
+  ['pageAdmin','pageLogin','pageDashboard','pageQuiz','pageResult','pageReview'].forEach(p=>{
+    document.getElementById(p).classList.toggle('hidden',p!==id);
+  });
+}
+function showDashboard(){
+  adminVisible=false;
+  const ud=getUserData(state.user.key);
+  const name=state.user.name;
+  document.getElementById('welcomeName').textContent='歡迎，'+name+' 👋';
+  document.getElementById('avatarInitial').textContent=name.charAt(0);
+  document.getElementById('welcomeStatus').textContent='目前難度：'+['簡易','普通','複雜'][ud.level-1]+'級 ｜ 連續5次90分以上自動升級';
+  for(let i=1;i<=3;i++){
+    const card=document.getElementById('cardLv'+i);
+    const lock=document.getElementById('lockLv'+i);
+    const prog=document.getElementById('progLv'+i);
+    const bar=document.getElementById('barLv'+i);
+    const streak=ud.passStreak?(ud.passStreak[i-1]||0):0;
+    card.classList.toggle('locked',i>ud.level);
+    card.classList.toggle('current',i===ud.level);
+    if(lock)lock.style.display=(i>ud.level)?'block':'none';
+    if(i>ud.level){prog.textContent='尚未解鎖';bar.style.width='0%';}
+    else if(i<ud.level){prog.textContent='✅ 已解鎖升級';bar.style.width='100%';}
+    else{prog.textContent='通過 '+streak+'/'+UPGRADE_N+' 次';bar.style.width=(streak/UPGRADE_N*100)+'%';}
+  }
+  const tbody=document.getElementById('historyBody');
+  const hist=ud.history||[];
+  if(hist.length===0){
+    tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">尚無測驗記錄，快來開始第一次練習！</td></tr>';
+  }else{
+    tbody.innerHTML=[...hist].reverse().slice(0,10).map(h=>{
+      const cls=h.score>=90?'score-pass':h.score>=70?'score-mid':'score-fail';
+      return`<tr><td>${h.date}</td><td>${['簡易','普通','複雜'][h.level-1]}</td><td><span class="score-badge ${cls}">${h.score}分</span></td><td>${h.correct}/20</td></tr>`;
+    }).join('');
+  }
+  showPage('pageDashboard');
+}
+
+// ═══ QUIZ ═══
+function startQuiz(level){
+  const ud=getUserData(state.user.key);
+  if(level>ud.level)return;
+  const bank=QB[level];
+  // ★ v2：抽取19題一般單選 + 1題必考計算題 + 5題複選 = 25題
+  const calcQs   = shuffle(bank.singles.filter(q=>q.calc));
+  const normalQs = shuffle(bank.singles.filter(q=>!q.calc));
+  const calcPick = calcQs.slice(0,1).map(q=>shuffleOpts({...q,type:'single'}));
+  const normalPick = normalQs.slice(0,19).map(q=>shuffleOpts({...q,type:'single'}));
+  const singles = shuffle([...calcPick,...normalPick]); // 混合排列
+  const multis=shuffle(bank.multis).slice(0,5).map(q=>shuffleOpts({...q,type:'multi'}));
+  const questions=[...singles,...multis];
+  state.quiz={level,questions,currentIdx:0,answers:questions.map(()=>({selected:[],confirmed:false,correct:null})),score:0};
+  document.getElementById('quizLevelLabel').textContent=['簡易','普通','複雜'][level-1]+'級';
+  document.getElementById('quizNameLabel').textContent=state.user.name;
+  showPage('pageQuiz');renderQuestion();
+}
+
+function getLabel(q,idx){
+  if(q.type==='single')return['①','②','③','④'][idx]||String(idx+1);
+  return['A','B','C','D','E'][idx]||String.fromCharCode(65+idx);
+}
+function formatAnsText(q,idxArr){
+  // 永遠顯示完整選項文字，不依賴字母，選項打亂後答案仍正確
+  return idxArr.map(i=>q.opts[i]).join('、');
+}
+
+function renderQuestion(){
+  const{questions,currentIdx,answers}=state.quiz;
+  const q=questions[currentIdx];const a=answers[currentIdx];const total=questions.length;
+  document.getElementById('quizProgressText').textContent=`第 ${currentIdx+1} 題 / 共 ${total} 題`;
+  document.getElementById('progressStrip').style.width=((currentIdx+1)/total*100)+'%';
+  document.getElementById('qNum').textContent=`第 ${currentIdx+1} 題`;
+  const badge=document.getElementById('qtypeBadge');const notice=document.getElementById('multiNotice');
+  if(q.type==='single'&&q.calc){badge.textContent='計算題🔢';badge.className='question-type-badge badge-calc';notice.classList.add('hidden');}
+  else if(q.type==='single'){badge.textContent='單選題';badge.className='question-type-badge badge-single';notice.classList.add('hidden');}
+  else{badge.textContent='複選題';badge.className='question-type-badge badge-multi';notice.classList.remove('hidden');}
+  document.getElementById('multiHint').classList.toggle('hidden',q.type!=='multi');
+  document.getElementById('qText').innerHTML=q.q.replace(/\n/g,'<br>');
+  const list=document.getElementById('optionsList');
+  list.className='options-list'+(q.type==='multi'?' multi':'');
+  list.innerHTML=q.opts.map((opt,i)=>{
+    const label=getLabel(q,i);
+    const sc=a.confirmed?getOptionClass(q,a,i):(a.selected.includes(i)?'selected':'');
+    return`<li class="option-item ${sc} ${a.confirmed?'answered':''}" onclick="${a.confirmed?'':('selectOption('+i+')')}"><div class="option-marker">${label}</div><div class="option-text">${opt}</div></li>`;
+  }).join('');
+  const expArea=document.getElementById('explanationArea');
+  if(a.confirmed){
+    const cls=a.correct?'explanation-correct':'explanation-wrong';
+    const icon=a.correct?'✅':'❌';
+    const ansText=formatAnsText(q,q.ans);
+    expArea.innerHTML=`<div class="explanation-box ${cls}"><div class="explanation-title">${icon} ${a.correct?'答對了！':'答錯了'}</div><div><strong>正確答案：</strong>${ansText}</div><div style="margin-top:.5rem"><strong>解析：</strong>${q.exp.replace(/\n/g,'<br>')}</div></div>`;
+  }else{expArea.innerHTML='';}
+  const nextBtn=document.getElementById('nextBtn');const multiConfirm=document.getElementById('multiConfirmBtn');
+  if(a.confirmed){nextBtn.style.display='inline-flex';nextBtn.textContent=currentIdx<total-1?'下一題 →':'查看成績 →';multiConfirm.classList.add('hidden');}
+  else{nextBtn.style.display='none';multiConfirm.classList.toggle('hidden',q.type!=='multi');}
+}
+function getOptionClass(q,a,idx){
+  const c=q.ans.includes(idx);const s=a.selected.includes(idx);
+  if(c&&s)return'correct';if(!c&&s)return'wrong';if(c&&!s)return'missed';return'';
+}
+function selectOption(idx){
+  const{questions,currentIdx,answers}=state.quiz;const q=questions[currentIdx];const a=answers[currentIdx];
+  if(a.confirmed)return;
+  if(q.type==='single'){a.selected=[idx];renderQuestion();setTimeout(()=>confirmAnswer(),200);}
+  else{if(a.selected.includes(idx))a.selected=a.selected.filter(i=>i!==idx);else a.selected.push(idx);renderQuestion();}
+}
+function confirmMulti(){const a=state.quiz.answers[state.quiz.currentIdx];if(a.selected.length===0){alert('請至少選擇一個選項');return;}confirmAnswer();}
+function confirmAnswer(){
+  const{questions,currentIdx,answers}=state.quiz;const q=questions[currentIdx];const a=answers[currentIdx];
+  a.confirmed=true;a.correct=JSON.stringify([...q.ans].sort())===JSON.stringify([...a.selected].sort());renderQuestion();
+}
+function nextQuestion(){
+  const{questions,currentIdx}=state.quiz;
+  if(currentIdx<questions.length-1){state.quiz.currentIdx++;renderQuestion();}else{finishQuiz();}
+}
+function quitQuiz(){if(confirm('確定要結束測驗嗎？'))showDashboard();}
+
+// ═══ RESULT ═══
+function finishQuiz(){
+  const{questions,answers,level}=state.quiz;
+  const correct=answers.filter(a=>a.correct).length;
+  const score=Math.round(correct/25*100);
+  state.quiz.score=score;state.quiz.correctCount=correct;
+  const ud=getUserData(state.user.key);
+  if(!ud.passStreak)ud.passStreak=[0,0,0];
+  const passed=score>=PASS_SCORE;let upgraded=false;let nextLevel=null;
+  if(passed){
+    ud.passStreak[level-1]=(ud.passStreak[level-1]||0)+1;
+    if(ud.passStreak[level-1]>=UPGRADE_N&&level<3&&ud.level===level){ud.level=level+1;ud.passStreak[level-1]=0;upgraded=true;nextLevel=level+1;}
+  }else{ud.passStreak[level-1]=0;}
+  const now=new Date();if(!ud.history)ud.history=[];
+  ud.history.push({date:`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`,level,score,correct});
+  saveUserData(state.user.key,ud);
+
+  // ★ 同步成績到 Google Sheets（背景執行，不阻擋畫面）
+  const device = /Mobi|Android/i.test(navigator.userAgent) ? '手機' : '電腦';
+  gasCall('saveScore',{
+    name: state.user.name,
+    level, score, correct, device,
+    version: VERSION
+  });
+
+  const lvN=['簡易','普通','複雜'];
+  document.getElementById('resultLevelLabel').textContent=lvN[level-1]+'級 · 25 題';
+  const ring=document.getElementById('resultRing');ring.style.setProperty('--pct',score);ring.className='result-ring '+(passed?'pass':'fail');
+  document.getElementById('resultScoreNum').textContent=score;
+  document.getElementById('resultScoreNum').className='result-score-num '+(passed?'pass':'fail');
+  document.getElementById('resultTitle').textContent=passed?'恭喜通過！🎉':'繼續加油！💪';
+  const streakNow=ud.passStreak[level-1]||0;
+  let msg='';
+  if(upgraded)msg=`太厲害了！您已連續5次通過${lvN[level-1]}級，<strong>自動升級為${lvN[nextLevel-1]}級</strong>！`;
+  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>連續通過 ${streakNow}/${UPGRADE_N} 次可升級下一難度。`;
+  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！連續通過計數歸零。`;
+  document.getElementById('resultMsg').innerHTML=msg;
+  document.getElementById('statCorrect').textContent=correct;
+  document.getElementById('statWrong').textContent=25-correct;
+  document.getElementById('statPct').textContent=score+'%';
+  const noticeEl=document.getElementById('upgradeNotice');
+  if(upgraded){noticeEl.classList.remove('hidden');document.getElementById('upgradeText').innerHTML=`🎊 恭喜！從<strong>${lvN[level-1]}級</strong>升級到<strong>${lvN[nextLevel-1]}級</strong>！繼續挑戰！`;}
+  else{noticeEl.classList.add('hidden');}
+  showPage('pageResult');
+}
+
+// ═══ REVIEW ═══
+function showReview(){
+  const{questions,answers}=state.quiz;
+  const list=document.getElementById('reviewList');
+  list.innerHTML=questions.map((q,i)=>{
+    const a=answers[i];const hdr=a.correct?'correct':'wrong';const icon=a.correct?'✅ 答對':'❌ 答錯';
+    const typeLbl=q.type==='single'
+      ?'<span style="font-size:.7rem;background:#eff6ff;color:#1d4ed8;padding:.15rem .5rem;border-radius:10px">單選</span>'
+      :'<span style="font-size:.7rem;background:#fdf4ff;color:#7e22ce;padding:.15rem .5rem;border-radius:10px">複選</span>';
+    const selText=a.selected.length?formatAnsText(q,a.selected):'（未作答）';
+    const ansText=formatAnsText(q,q.ans);
+    return`<div class="review-item"><div class="review-item-header ${hdr}">${icon} &nbsp;第 ${i+1} 題 &nbsp;${typeLbl}</div><div class="review-q">${q.q.replace(/\n/g,'<br>')}</div><div class="review-answer"><div>您的答案：${selText}</div>${!a.correct?`<div style="color:var(--green);margin-top:.25rem;font-weight:600">正確答案：${ansText}</div>`:''}</div><div class="review-explanation"><strong>📖 解析：</strong><br>${q.exp.replace(/\n/g,'<br>')}</div></div>`;
+  }).join('');
+  showPage('pageReview');
+}
+function showResult(){showPage('pageResult');}
+function retryQuiz(){startQuiz(state.quiz.level);}
+function backToDashboard(){showDashboard();}
+</script>
+</body>
+</html>
