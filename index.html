@@ -182,7 +182,12 @@
       <button class="btn btn-gold btn-sm" onclick="saveLineUrl()">儲存連結</button>
       <span id="lineUrlSaved" style="font-size:.8rem;color:var(--green);margin-left:.75rem;display:none">✅ 已儲存</span>
     </div>
-    <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <div class="section-title">所有成員成績記錄（最新20筆）</div>
+      <div id="adminScoreArea"><p style="color:var(--muted);font-size:.85rem">載入中…</p></div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-outline btn-sm" onclick="renderAdminPanel()">🔄 重新整理</button>
       <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">關閉後台</button>
     </div>
   </div>
@@ -353,11 +358,24 @@
 // ═══ CONFIG ═══
 const ADMIN_PASSWORD = '570312';
 const ADMIN_CONTACT  = { email:'ingbaker@gmail.com' };
-const DEFAULT_MEMBERS = [{ name:'李丞敏', bday:'570824' }];
-const STORAGE_KEY  = 'rfa_quiz_data';
-const MEMBERS_KEY  = 'rfa_members';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzCcxNA1jtyryfVbud9jpRM-X-cnevNtOHHw7VolpXXYReS9xshK3LZGOLi6BknnkMa/exec';  // Google Apps Script 網址
+const STORAGE_KEY  = 'rfa_quiz_data';  // 本機：個人成績進度
 const PASS_SCORE   = 90;
 const UPGRADE_N    = 5;
+
+// ═══ GAS API 呼叫工具 ═══
+async function gasCall(action, params={}) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, ...params })
+    });
+    return await res.json();
+  } catch(e) {
+    console.error('GAS error:', e);
+    return { success: false, message: '網路連線失敗' };
+  }
+}
 
 // ═══ QUESTION BANK — 每個難度 50 單選 + 20 複選 ═══
 // 格式: { q:'題目', opts:['選項1','選項2','選項3','選項4'], ans:[正確索引,...], exp:'解析' }
@@ -567,14 +585,9 @@ multis:[
 }
 };
 
-// ═══ MEMBER STORAGE ═══
-function getMembers(){
-  try{const r=localStorage.getItem(MEMBERS_KEY);if(r)return JSON.parse(r);}catch(e){}
-  const init=DEFAULT_MEMBERS.map(m=>({name:m.name.trim(),bday:m.bday.trim()}));
-  localStorage.setItem(MEMBERS_KEY,JSON.stringify(init));return init;
-}
-function saveMembers(list){localStorage.setItem(MEMBERS_KEY,JSON.stringify(list));}
-function isMember(name,bday){return getMembers().some(m=>m.name===name.trim()&&m.bday===bday.trim());}
+// ═══ MEMBER STORAGE — 改用 GAS / Google Sheets ═══
+// 本機暫存：登入後快取，避免重複查詢
+let memberCache = null;
 
 // ═══ QUIZ DATA STORAGE ═══
 function getDb(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){return {};}}
@@ -604,44 +617,95 @@ function shuffle(arr){
 let state={user:null,quiz:{level:1,questions:[],currentIdx:0,answers:[],score:0}};
 let adminVisible=false;
 
+// ═══ ADMIN — 連接 Google Sheets ═══
+let adminPwd = null; // 本次登入後台的密碼快取
+
 function toggleAdmin(){
   if(!adminVisible){
     const pwd=prompt('請輸入管理員密碼：');
     if(pwd===null)return;
     if(pwd!==ADMIN_PASSWORD){alert('密碼錯誤');return;}
-    adminVisible=true;renderAdminPanel();showPage('pageAdmin');
+    adminPwd=pwd;
+    adminVisible=true;
+    renderAdminPanel();
+    showPage('pageAdmin');
   }else{
-    adminVisible=false;
+    adminVisible=false;adminPwd=null;
     if(state.user)showDashboard();else showPage('pageLogin');
   }
 }
-function renderAdminPanel(){
-  const members=getMembers();
+
+async function renderAdminPanel(){
   const list=document.getElementById('adminMemberList');
-  list.innerHTML=members.length===0
-    ?'<p style="color:var(--muted);font-size:.85rem">目前沒有會員，請新增。</p>'
-    :members.map((m,i)=>`<div class="admin-member-row"><div class="admin-member-info"><span class="admin-member-name">${m.name}</span><span class="admin-member-bday">生日：${m.bday}</span></div><button class="btn btn-danger btn-xs" onclick="deleteMember(${i})">刪除</button></div>`).join('');
+  list.innerHTML='<p style="color:var(--muted);font-size:.85rem">載入中…</p>';
+
+  const result = await gasCall('getMembers',{pwd:adminPwd});
+  if(!result.success){
+    list.innerHTML=`<p style="color:var(--red);font-size:.85rem">載入失敗：${result.message}</p>`;return;
+  }
+  const members=result.members||[];
+  if(members.length===0){
+    list.innerHTML='<p style="color:var(--muted);font-size:.85rem">目前沒有會員，請新增。</p>';
+  } else {
+    list.innerHTML=members.map(m=>`
+      <div class="admin-member-row">
+        <div class="admin-member-info">
+          <span class="admin-member-name">${m.name}</span>
+          <span class="admin-member-bday">生日：${m.bday}　狀態：<strong style="color:${m.status==='啟用'?'var(--green)':'var(--red)'}">${m.status}</strong></span>
+        </div>
+        <button class="btn btn-danger btn-xs" onclick="deleteMember('${m.name}','${m.bday}')">停用</button>
+      </div>`).join('');
+  }
+
+  // 同時載入成績摘要
+  const sr = await gasCall('getScores',{pwd:adminPwd});
+  const scoreArea = document.getElementById('adminScoreArea');
+  if(scoreArea && sr.success){
+    const scores = (sr.scores||[]).slice(0,20);
+    if(scores.length===0){
+      scoreArea.innerHTML='<p style="color:var(--muted);font-size:.85rem">尚無成績記錄</p>';
+    } else {
+      scoreArea.innerHTML=`<table class="history-table">
+        <thead><tr><th>時間</th><th>姓名</th><th>難度</th><th>分數</th><th>答對</th><th>裝置</th></tr></thead>
+        <tbody>${scores.map(s=>{
+          const cls=s.score>=90?'score-pass':s.score>=70?'score-mid':'score-fail';
+          return`<tr><td style="font-size:.75rem">${s.time}</td><td>${s.name}</td><td>${s.level}</td><td><span class="score-badge ${cls}">${s.score}分</span></td><td>${s.correct}</td><td>${s.device}</td></tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    }
+  }
+
   const urlEl=document.getElementById('adminLineUrl');
   if(urlEl)urlEl.value=localStorage.getItem('rfa_line_url')||'';
 }
-function addMember(){
+
+async function addMember(){
   const name=document.getElementById('newMemberName').value.trim();
   const bday=document.getElementById('newMemberBday').value.trim();
   const errEl=document.getElementById('adminError');
+  const note=document.getElementById('newMemberNote')?document.getElementById('newMemberNote').value.trim():'';
   errEl.style.display='none';
   if(!name){errEl.textContent='請輸入姓名';errEl.style.display='block';return;}
   if(!/^\d{6}$/.test(bday)){errEl.textContent='生日需為6位數字';errEl.style.display='block';return;}
-  const members=getMembers();
-  if(members.some(m=>m.name===name&&m.bday===bday)){errEl.textContent='此會員已存在';errEl.style.display='block';return;}
-  members.push({name,bday});saveMembers(members);
+
+  const btn=document.querySelector('#pageAdmin .btn-gold');
+  btn.textContent='新增中…';btn.disabled=true;
+  const result=await gasCall('addMember',{pwd:adminPwd,name,bday,note});
+  btn.textContent='新增';btn.disabled=false;
+
+  if(!result.success){errEl.textContent=result.message||'新增失敗';errEl.style.display='block';return;}
   document.getElementById('newMemberName').value='';
   document.getElementById('newMemberBday').value='';
   renderAdminPanel();
 }
-function deleteMember(idx){
-  if(!confirm('確定要刪除此會員嗎？'))return;
-  const members=getMembers();members.splice(idx,1);saveMembers(members);renderAdminPanel();
+
+async function deleteMember(name,bday){
+  if(!confirm(`確定要停用會員「${name}」嗎？\n（停用後該會員無法登入，資料仍保留在試算表）`))return;
+  const result=await gasCall('deleteMember',{pwd:adminPwd,name,bday});
+  if(!result.success){alert('操作失敗：'+result.message);return;}
+  renderAdminPanel();
 }
+
 function saveLineUrl(){
   const url=document.getElementById('adminLineUrl').value.trim();
   localStorage.setItem('rfa_line_url',url);
@@ -650,20 +714,31 @@ function saveLineUrl(){
 }
 
 // ═══ LOGIN ═══
-function doLogin(){
+async function doLogin(){
   const name=document.getElementById('inputName').value.trim();
   const bday=document.getElementById('inputBirthday').value.trim();
   const errEl=document.getElementById('loginError');
+  const btn=document.querySelector('#pageLogin .btn-primary');
   errEl.style.display='none';
+
   if(!name||!/^\d{6}$/.test(bday)){
     errEl.innerHTML='請確認姓名及生日格式（生日需為6位數字）';errEl.style.display='block';return;
   }
-  if(!isMember(name,bday)){
+
+  // 顯示載入中
+  btn.textContent='驗證中…';btn.disabled=true;
+
+  const result = await gasCall('checkMember',{name,bday});
+
+  btn.textContent='🔐 登入系統';btn.disabled=false;
+
+  if(!result.success||!result.valid){
     const lineUrl=localStorage.getItem('rfa_line_url')||'';
     const lineHtml=lineUrl
       ?`💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a>（加入後發訊息給管理員）<br>`
       :`💬 請加入 LINE 官方帳號後發訊息給管理員<br>`;
-    errEl.innerHTML=`⚠️ 此系統為<strong>會員制</strong>，您的資料不在名單中。<br>如需加入，請聯絡管理員：<br>${lineHtml}📧 Email：<a href="mailto:${ADMIN_CONTACT.email}" style="color:var(--red)">${ADMIN_CONTACT.email}</a>`;
+    const reason = result.success ? '' : '<br>⚠️ 網路連線異常，請稍後再試';
+    errEl.innerHTML=`⚠️ 此系統為<strong>會員制</strong>，您的資料不在名單中。${reason}<br>如需加入，請聯絡管理員：<br>${lineHtml}📧 Email：<a href="mailto:${ADMIN_CONTACT.email}" style="color:var(--red)">${ADMIN_CONTACT.email}</a>`;
     errEl.style.display='block';return;
   }
   state.user={name,key:name+'_'+bday};showDashboard();
@@ -799,6 +874,14 @@ function finishQuiz(){
   const now=new Date();if(!ud.history)ud.history=[];
   ud.history.push({date:`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`,level,score,correct});
   saveUserData(state.user.key,ud);
+
+  // ★ 同步成績到 Google Sheets（背景執行，不阻擋畫面）
+  const device = /Mobi|Android/i.test(navigator.userAgent) ? '手機' : '電腦';
+  gasCall('saveScore',{
+    name: state.user.name,
+    level, score, correct, device
+  });
+
   const lvN=['簡易','普通','複雜'];
   document.getElementById('resultLevelLabel').textContent=lvN[level-1]+'級 · 20 題';
   const ring=document.getElementById('resultRing');ring.style.setProperty('--pct',score);ring.className='result-ring '+(passed?'pass':'fail');
