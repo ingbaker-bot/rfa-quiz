@@ -579,23 +579,24 @@ async function doLogin() {
     name, bday, hard: result.hard===true, v2: result.v2===true
   }));
 
-  // 從雲端讀取學習進度（換裝置也能找回）
+  // 從GAS雲端讀取學習進度（換裝置也能找回）
   const progressResult = await gasCall('getProgress', { name, bday });
+  const localKey = name + '_' + bday;
+  const local = getUserProgress(localKey);
   if (progressResult.success && progressResult.found) {
     const cloud = progressResult;
-    const localKey = name + '_' + bday;
-    const local = getUserProgress(localKey);
-    // 取雲端與本機較高的值，避免覆蓋較新進度
+    // 雲端優先：取較高值合併，確保換裝置不退步
     const mergedLevel = Math.max(local.level || 1, cloud.level || 1);
     const mergedCount = [
       Math.max((local.passCount||[0,0,0])[0], (cloud.passCount||[0,0,0])[0]),
       Math.max((local.passCount||[0,0,0])[1], (cloud.passCount||[0,0,0])[1]),
       Math.max((local.passCount||[0,0,0])[2], (cloud.passCount||[0,0,0])[2])
     ];
+    // 保留本機history（成績紀錄），但用雲端的level和passCount
     saveUserProgress(localKey, {
-      ...local,
-      level: mergedLevel,
-      passCount: mergedCount
+      level:     mergedLevel,
+      passCount: mergedCount,
+      history:   local.history || []   // 保留本機成績記錄
     });
   }
 
@@ -850,6 +851,8 @@ function finishQuiz(){
     date:`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`,
     level, score, correct
   });
+  // 本機只保留最近50筆，避免無限累積
+  if(ud.history.length>50) ud.history=ud.history.slice(-50);
   saveUserProgress(key, ud);
 
   // 同步成績 + 進度到GAS（所有登入用戶）
@@ -884,9 +887,9 @@ function finishQuiz(){
   const passNow=ud.passCount[level-1]||0;
   let msg='';
   if(upgraded&&nextLevel===3&&!state.user)msg=`太厲害了！您已連續5次通過<strong>${lvN[level-1]}級</strong>！<br>🔐 複雜關卡需要登入會員才能解鎖。`;
-  else if(upgraded)msg=`太厲害了！已連續5次通過${lvN[level-1]}級，<strong>自動升級為${lvN[nextLevel-1]}級</strong>！`;
-  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>累計通過 ${streakNow}/${UPGRADE_N} 次可升級下一難度。`;
-  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！累計通過計數歸零。`;
+  else if(upgraded)msg=`太厲害了！累計5次通過${lvN[level-1]}級，<strong>自動升級為${lvN[nextLevel-1]}級</strong>！`;
+  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>累計通過 ${passNow}/${UPGRADE_N} 次可升級下一難度。`;
+  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！目前累計通過 ${passNow}/${UPGRADE_N} 次。`;
   document.getElementById('resultMsg').innerHTML=msg;
   document.getElementById('statCorrect').textContent=correct;
   document.getElementById('statWrong').textContent=20-correct;
@@ -925,7 +928,24 @@ window.addEventListener('DOMContentLoaded', ()=>{
     try {
       const parsed = JSON.parse(saved);
       state.user = { name: parsed.name, bday: parsed.bday, hard: parsed.hard===true, v2: parsed.v2===true };
-      showDashboard();
+      // 自動登入時也從GAS同步最新進度
+      const localKey = parsed.name + '_' + parsed.bday;
+      const local = getUserProgress(localKey);
+      gasCall('getProgress', { name: parsed.name, bday: parsed.bday }).then(r => {
+        if (r.success && r.found) {
+          const mergedLevel = Math.max(local.level||1, r.level||1);
+          const mergedCount = [
+            Math.max((local.passCount||[0,0,0])[0], (r.passCount||[0,0,0])[0]),
+            Math.max((local.passCount||[0,0,0])[1], (r.passCount||[0,0,0])[1]),
+            Math.max((local.passCount||[0,0,0])[2], (r.passCount||[0,0,0])[2])
+          ];
+          saveUserProgress(localKey, {
+            level: mergedLevel, passCount: mergedCount, history: local.history||[]
+          });
+          showDashboard(); // 同步後刷新儀表板
+        }
+      }).catch(()=>{});
+      showDashboard(); // 先顯示本機資料，等GAS回應後刷新
     } catch(e) {
       showPage('pageLogin');
     }
