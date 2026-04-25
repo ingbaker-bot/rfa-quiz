@@ -427,13 +427,10 @@ function saveUserProgress(key, ud) {
   saveLocalData(db);
 }
 
-// ── 訪客 key ──
+// ── 進度 key（永遠用姓名+生日，因為都需要登入）──
 function getProgressKey() {
   if (state.user) return state.user.name + '_' + state.user.bday;
-  // 訪客用固定本機key
-  let k = localStorage.getItem('rfa_guest_key');
-  if (!k) { k='guest_'+Date.now(); localStorage.setItem('rfa_guest_key',k); }
-  return k;
+  return 'anonymous'; // 不應發生，保險用
 }
 
 // ═══════════════ 題庫載入 ═══════════════
@@ -486,17 +483,17 @@ function showDashboard() {
     const bar    = document.getElementById('barLv'+i);
     const streak = ud.passStreak ? (ud.passStreak[i-1]||0) : 0;
 
-    // 複雜（level 3）訪客鎖定
-    const memberLocked = (i===3 && isGuest);
+    // 複雜（level 3）需管理員開通
+    const adminLocked  = (i===3 && state.user && !state.user.v2 && !state.user.hardUnlocked);
     const levelLocked  = (i > ud.level);
-    const isLocked     = memberLocked || levelLocked;
+    const isLocked     = adminLocked || levelLocked;
 
     card.classList.toggle('locked', isLocked);
     card.classList.toggle('current', i===ud.level && !isLocked);
     if (lock) lock.style.display = isLocked ? 'block' : 'none';
 
-    if (memberLocked) {
-      prog.innerHTML = '<span style="color:var(--gold);font-size:.68rem">🔒 需要會員登入</span>';
+    if (adminLocked) {
+      prog.innerHTML = '<span style="color:var(--gold);font-size:.68rem">🔒 需要管理員開通</span>';
       bar.style.width = '0%';
     } else if (levelLocked) {
       prog.textContent = '尚未解鎖';
@@ -522,17 +519,9 @@ function showDashboard() {
     }).join('');
   }
 
-  // 登入/登出按鈕
+  // 登出按鈕
   const logoutRow = document.getElementById('logoutRow');
-  if (isGuest) {
-    logoutRow.innerHTML = `
-      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;justify-content:flex-end">
-        <span style="font-size:.8rem;color:var(--muted)">輸入姓名+生日即可記錄進度、解鎖複雜關卡</span>
-        <button class="btn btn-gold btn-sm" onclick="showLoginPage()">🚀 登入 / 註冊</button>
-      </div>`;
-  } else {
-    logoutRow.innerHTML = `<button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>`;
-  }
+  logoutRow.innerHTML = `<button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>`;
 
   showPage('pageDashboard');
 }
@@ -582,6 +571,8 @@ async function doLogin() {
   }
 
   state.user = { name, bday, v2: result.v2===true, isNew: result.isNew===true };
+  // 儲存登入狀態，下次開啟同一瀏覽器自動登入
+  localStorage.setItem('rfa_current_user', JSON.stringify({ name, bday, v2: result.v2===true }));
 
   // 合併訪客進度到會員帳號
   const guestKey  = localStorage.getItem('rfa_guest_key');
@@ -603,7 +594,8 @@ async function doLogin() {
 
 function doLogout() {
   state.user = null;
-  showDashboard(); // 訪客模式儀表板
+  localStorage.removeItem('rfa_current_user');
+  showPage('pageLogin');
 }
 
 // ═══════════════ 後台管理 ═══════════════
@@ -704,11 +696,11 @@ function shuffleOpts(q){
 }
 
 async function startQuiz(level) {
-  // 複雜關卡需要登入
-  if (level===3 && !state.user) {
-    if (confirm('複雜關卡需要登入才能使用。\n輸入姓名+生日即可，首次使用自動建立記錄。\n現在要前往登入嗎？')) {
-      showLoginForHard();
-    }
+  // 複雜關卡需要管理員開通
+  if (level===3 && state.user && !state.user.v2 && !state.user.hardUnlocked) {
+    // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
+    // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
+    alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
     return;
   }
 
@@ -891,9 +883,19 @@ function retryQuiz(){startQuiz(state.quiz.level);}
 function backToDashboard(){showDashboard();}
 
 // ═══════════════ 啟動 ═══════════════
-// 直接進入儀表板（訪客模式）
+// 檢查本機是否已有登入記錄，有則直接進儀表板，否則顯示登入頁
 window.addEventListener('DOMContentLoaded', ()=>{
-  showDashboard();
+  const saved = localStorage.getItem('rfa_current_user');
+  if (saved) {
+    try {
+      state.user = JSON.parse(saved);
+      showDashboard();
+    } catch(e) {
+      showPage('pageLogin');
+    }
+  } else {
+    showPage('pageLogin');
+  }
 });
 
 </script>
