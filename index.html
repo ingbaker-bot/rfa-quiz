@@ -419,7 +419,7 @@ function saveLocalData(d) {
 }
 function getUserProgress(key) {
   const db = getLocalData();
-  return db[key] || { level:1, passStreak:[0,0,0], history:[] };
+  return db[key] || { level:1, passCount:[0,0,0], history:[] };
 }
 function saveUserProgress(key, ud) {
   const db = getLocalData();
@@ -464,16 +464,14 @@ function showDashboard() {
   state.adminVisible = false;
   const key = getProgressKey();
   const ud  = getUserProgress(key);
-  const isGuest = !state.user;
-  const name = isGuest ? '訪客' : state.user.name;
+  const name = state.user ? state.user.name : '訪客';
+  const newUserBadge = (state.user && state.user.isNew) ? ' ✨' : '';
 
   document.getElementById('avatarInitial').textContent = name.charAt(0);
-  const newUserBadge = (state.user && state.user.isNew) ? ' ✨新朋友' : '';
-  document.getElementById('welcomeName').textContent   = isGuest ? '訪客模式 👋' : '歡迎，' + name + newUserBadge + ' 👋';
-  if (state.user && state.user.isNew) state.user.isNew = false; // 只顯示一次
+  document.getElementById('welcomeName').textContent   = '歡迎，' + name + newUserBadge + ' 👋';
+  if (state.user && state.user.isNew) state.user.isNew = false;
   document.getElementById('welcomeStatus').textContent =
-    (isGuest ? '免登入可練習簡易與普通 ｜ ' : '') +
-    '目前難度：' + ['簡易','普通','複雜'][ud.level-1] + '級 ｜ 連續5次90分以上可升級';
+    '目前難度：' + ['簡易','普通','複雜'][ud.level-1] + '級 ｜ 累計5次90分以上可升級';
 
   // 難度卡片
   for (let i=1; i<=3; i++) {
@@ -481,10 +479,10 @@ function showDashboard() {
     const lock   = document.getElementById('lockLv'+i);
     const prog   = document.getElementById('progLv'+i);
     const bar    = document.getElementById('barLv'+i);
-    const streak = ud.passStreak ? (ud.passStreak[i-1]||0) : 0;
+    const streak = ud.passCount  ? (ud.passCount[i-1] ||0) : 0;
 
     // 複雜（level 3）需管理員開通
-    const adminLocked  = (i===3 && state.user && !state.user.v2 && !state.user.hardUnlocked);
+    const adminLocked  = (i===3 && state.user && !state.user.hard);
     const levelLocked  = (i > ud.level);
     const isLocked     = adminLocked || levelLocked;
 
@@ -502,7 +500,7 @@ function showDashboard() {
       prog.textContent = '✅ 已解鎖升級';
       bar.style.width  = '100%';
     } else {
-      prog.textContent = '通過 '+streak+'/'+UPGRADE_N+' 次';
+      prog.textContent = '累計 '+streak+'/'+UPGRADE_N+' 次通過';
       bar.style.width  = (streak/UPGRADE_N*100)+'%';
     }
   }
@@ -570,9 +568,36 @@ async function doLogin() {
     errEl.style.display='block'; return;
   }
 
-  state.user = { name, bday, v2: result.v2===true, isNew: result.isNew===true };
+  state.user = {
+    name, bday,
+    hard: result.hard === true,
+    v2:   result.v2   === true,
+    isNew: result.isNew === true
+  };
   // 儲存登入狀態，下次開啟同一瀏覽器自動登入
-  localStorage.setItem('rfa_current_user', JSON.stringify({ name, bday, v2: result.v2===true }));
+  localStorage.setItem('rfa_current_user', JSON.stringify({
+    name, bday, hard: result.hard===true, v2: result.v2===true
+  }));
+
+  // 從雲端讀取學習進度（換裝置也能找回）
+  const progressResult = await gasCall('getProgress', { name, bday });
+  if (progressResult.success && progressResult.found) {
+    const cloud = progressResult;
+    const localKey = name + '_' + bday;
+    const local = getUserProgress(localKey);
+    // 取雲端與本機較高的值，避免覆蓋較新進度
+    const mergedLevel = Math.max(local.level || 1, cloud.level || 1);
+    const mergedCount = [
+      Math.max((local.passCount||[0,0,0])[0], (cloud.passCount||[0,0,0])[0]),
+      Math.max((local.passCount||[0,0,0])[1], (cloud.passCount||[0,0,0])[1]),
+      Math.max((local.passCount||[0,0,0])[2], (cloud.passCount||[0,0,0])[2])
+    ];
+    saveUserProgress(localKey, {
+      ...local,
+      level: mergedLevel,
+      passCount: mergedCount
+    });
+  }
 
   // 合併訪客進度到會員帳號
   const guestKey  = localStorage.getItem('rfa_guest_key');
@@ -697,7 +722,7 @@ function shuffleOpts(q){
 
 async function startQuiz(level) {
   // 複雜關卡需要管理員開通
-  if (level===3 && state.user && !state.user.v2 && !state.user.hardUnlocked) {
+  if (level===3 && state.user && !state.user.hard) {
     // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
     // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
     alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
@@ -808,15 +833,17 @@ function finishQuiz(){
 
   const key=getProgressKey();
   const ud=getUserProgress(key);
-  if(!ud.passStreak)ud.passStreak=[0,0,0];
+  if(!ud.passCount)ud.passCount=[0,0,0];  // 累計通過次數
 
   const passed=score>=PASS_SCORE;let upgraded=false;let nextLevel=null;
   if(passed){
-    ud.passStreak[level-1]=(ud.passStreak[level-1]||0)+1;
-    if(ud.passStreak[level-1]>=UPGRADE_N&&level<3&&ud.level===level){
-      ud.level=level+1;ud.passStreak[level-1]=0;upgraded=true;nextLevel=level+1;
+    ud.passCount[level-1]=(ud.passCount[level-1]||0)+1;  // 累計+1，不歸零
+    if(ud.passCount[level-1]>=UPGRADE_N&&level<3&&ud.level===level){
+      ud.level=level+1;upgraded=true;nextLevel=level+1;
+      // 升級後該難度累計次數保留（不歸零），繼續記錄
     }
-  }else{ud.passStreak[level-1]=0;}
+  }
+  // 注意：未達90分不扣減累計次數，只是不加
 
   const now=new Date();if(!ud.history)ud.history=[];
   ud.history.push({
@@ -825,10 +852,18 @@ function finishQuiz(){
   });
   saveUserProgress(key, ud);
 
-  // 同步成績到GAS（僅會員）
+  // 同步成績 + 進度到GAS（所有登入用戶）
   if(state.user){
     const device=/Mobi|Android/i.test(navigator.userAgent)?'手機':'電腦';
+    // 儲存成績
     gasCall('saveScore',{name:state.user.name,level,score,correct,device,version:VERSION});
+    // 同步學習進度（level + passCount）到雲端，換裝置也能找回
+    gasCall('saveProgress',{
+      name:      state.user.name,
+      bday:      state.user.bday,
+      level:     ud.level,
+      passCount: ud.passCount
+    });
   }
 
   // 升級到複雜時提示登入（訪客）
@@ -846,12 +881,12 @@ function finishQuiz(){
   document.getElementById('resultScoreNum').textContent=score;
   document.getElementById('resultScoreNum').className='result-score-num '+(passed?'pass':'fail');
   document.getElementById('resultTitle').textContent=passed?'恭喜通過！🎉':'繼續加油！💪';
-  const streakNow=ud.passStreak[level-1]||0;
+  const passNow=ud.passCount[level-1]||0;
   let msg='';
   if(upgraded&&nextLevel===3&&!state.user)msg=`太厲害了！您已連續5次通過<strong>${lvN[level-1]}級</strong>！<br>🔐 複雜關卡需要登入會員才能解鎖。`;
   else if(upgraded)msg=`太厲害了！已連續5次通過${lvN[level-1]}級，<strong>自動升級為${lvN[nextLevel-1]}級</strong>！`;
-  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>連續通過 ${streakNow}/${UPGRADE_N} 次可升級下一難度。`;
-  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！連續通過計數歸零。`;
+  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>累計通過 ${streakNow}/${UPGRADE_N} 次可升級下一難度。`;
+  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！累計通過計數歸零。`;
   document.getElementById('resultMsg').innerHTML=msg;
   document.getElementById('statCorrect').textContent=correct;
   document.getElementById('statWrong').textContent=20-correct;
@@ -888,7 +923,953 @@ window.addEventListener('DOMContentLoaded', ()=>{
   const saved = localStorage.getItem('rfa_current_user');
   if (saved) {
     try {
-      state.user = JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      state.user = { name: parsed.name, bday: parsed.bday, hard: parsed.hard===true, v2: parsed.v2===true };
+      showDashboard();
+    } catch(e) {
+      showPage('pageLogin');
+    }
+  } else {
+    showPage('pageLogin');
+  }
+});
+
+</script>
+</body>
+</htmlconst name = state.user ? state.user.name : '訪客';
+  const newUserBadge = (state.user && state.user.isNew) ? ' ✨' : '';
+  document.getElementById('avatarInitial').textContent = name.charAt(0);
+  document.getElementById('welcomeName').textContent   = '歡迎，' + name + newUserBadge + ' 👋';
+  if (state.user && state.user.isNew) state.user.isNew = false;
+  document.getElementById('welcomeStatus').textContent =
+    '目前難度：' + ['簡易','普通','複雜'][ud.level-1] + '級 ｜ 累計5次90分以上可升級';
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFA 退休理財規劃顧問 模擬測驗系統</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+  :root{--navy:#0f2044;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f7f3ec;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--green:#2d7a4f;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;--blue-light:#eff6ff;--border:#e2d9c8;--shadow-lg:0 12px 48px rgba(15,32,68,0.2)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--navy);min-height:100vh;color:var(--text)}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(201,168,76,.08) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(201,168,76,.06) 0%,transparent 40%);pointer-events:none;z-index:0}
+  .app{position:relative;z-index:1;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+  .card{background:var(--white);border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:760px;overflow:hidden;animation:fadeUp .5s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  .card-header{background:linear-gradient(135deg,var(--navy) 0%,#1a3565 100%);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden}
+  .card-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border:2px solid rgba(201,168,76,.15);border-radius:50%}
+  .card-header::after{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border:1px solid rgba(201,168,76,.1);border-radius:50%}
+  .header-badge{display:inline-block;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);color:var(--gold-light);font-size:.7rem;letter-spacing:.15em;padding:.3rem .8rem;border-radius:20px;margin-bottom:.75rem;text-transform:uppercase}
+  .header-title{font-family:'Noto Serif TC',serif;color:var(--white);font-size:1.6rem;font-weight:700;line-height:1.3;margin-bottom:.4rem}
+  .header-sub{color:rgba(255,255,255,.55);font-size:.82rem;font-weight:300}
+  .gold-line{width:48px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:1rem 0 0}
+  .card-body{padding:2.5rem}
+  .form-group{margin-bottom:1.25rem}
+  .form-label{display:block;font-size:.8rem;font-weight:500;color:var(--navy);margin-bottom:.5rem;letter-spacing:.03em}
+  .form-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-family:inherit;color:var(--text);transition:border-color .2s,box-shadow .2s;background:var(--cream)}
+  .form-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);background:var(--white)}
+  .form-hint{font-size:.75rem;color:var(--muted);margin-top:.35rem}
+  .form-error{font-size:.82rem;color:var(--red);margin-top:.75rem;padding:.75rem 1rem;background:var(--red-light);border-radius:8px;border-left:3px solid var(--red);display:none;line-height:1.6}
+  .form-error a{color:var(--red);font-weight:700}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.8rem 1.75rem;border:none;border-radius:8px;font-family:inherit;font-weight:600;font-size:.95rem;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+  .btn-primary{background:linear-gradient(135deg,var(--navy),#1a3565);color:var(--white);box-shadow:0 4px 16px rgba(15,32,68,.3);width:100%;padding:1rem;font-size:1rem}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(15,32,68,.4)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--white);box-shadow:0 4px 16px rgba(201,168,76,.35)}
+  .btn-gold:hover{transform:translateY(-1px);filter:brightness(1.05)}
+  .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+  .btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+  .btn-danger{background:var(--red);color:var(--white)}
+  .btn-danger:hover{filter:brightness(.9)}
+  .btn-sm{padding:.5rem 1rem;font-size:.82rem}
+  .btn-xs{padding:.3rem .7rem;font-size:.75rem;border-radius:6px}
+  .section-title{font-family:'Noto Serif TC',serif;font-size:1rem;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  .section-title::before{content:'';display:block;width:4px;height:18px;background:var(--gold);border-radius:2px;flex-shrink:0}
+  .user-banner{display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--cream);border-radius:10px;margin-bottom:2rem;border:1px solid var(--border)}
+  .user-avatar{width:44px;height:44px;background:linear-gradient(135deg,var(--navy),#1a3565);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;font-weight:700;flex-shrink:0}
+  .user-info h3{font-size:.95rem;font-weight:600;color:var(--navy)}
+  .user-info p{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+  .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+  .level-card{border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;background:var(--white)}
+  .level-card:hover:not(.locked){border-color:var(--gold);box-shadow:0 4px 20px rgba(201,168,76,.15);transform:translateY(-2px)}
+  .level-card.locked{opacity:.5;cursor:not-allowed;background:#f8f8f8}
+  .level-card.current{border-color:var(--gold);background:#fffbf0}
+  .level-icon{font-size:2rem;margin-bottom:.5rem}
+  .level-name{font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:.25rem}
+  .level-desc{font-size:.72rem;color:var(--muted);line-height:1.4}
+  .level-progress{margin-top:.75rem;font-size:.7rem;font-weight:600}
+  .level-lock-icon{position:absolute;top:8px;right:8px;font-size:.9rem}
+  .progress-bar-outer{height:5px;background:var(--border);border-radius:3px;margin-top:.4rem;overflow:hidden}
+  .progress-bar-inner{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:3px;transition:width .6s ease}
+  .history-table{width:100%;border-collapse:collapse;font-size:.83rem}
+  .history-table th{text-align:left;padding:.6rem .75rem;background:var(--cream);color:var(--muted);font-weight:500;font-size:.75rem;letter-spacing:.03em}
+  .history-table td{padding:.7rem .75rem;border-top:1px solid var(--border);color:var(--text)}
+  .history-table tr:hover td{background:var(--cream)}
+  .score-badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-weight:700;font-size:.8rem}
+  .score-pass{background:var(--green-light);color:var(--green)}
+  .score-fail{background:var(--red-light);color:var(--red)}
+  .score-mid{background:#fef3c7;color:#92400e}
+  .logout-row{text-align:right;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.75rem}
+  .admin-bar{background:#1e1e2e;color:#aaa;font-size:.72rem;padding:.4rem 1rem;display:flex;justify-content:space-between;align-items:center}
+  .admin-bar a{color:#c9a84c;cursor:pointer;text-decoration:underline}
+  .admin-panel{padding:2rem 2.5rem}
+  .admin-member-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .9rem;border-radius:8px;border:1px solid var(--border);font-size:.85rem;margin-bottom:.5rem;background:var(--white)}
+  .admin-member-info{display:flex;gap:1rem;align-items:center}
+  .admin-member-name{font-weight:600;color:var(--navy)}
+  .admin-member-bday{color:var(--muted);font-size:.78rem}
+  .admin-add-row{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+  .admin-add-row .form-input{flex:1;min-width:140px;padding:.6rem .85rem}
+  .quiz-header{background:var(--cream);padding:1.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+  .quiz-meta{font-size:.8rem;color:var(--muted)}
+  .quiz-meta strong{color:var(--navy)}
+  .quiz-progress-text{font-size:.85rem;font-weight:600;color:var(--navy)}
+  .progress-strip{height:4px;background:var(--border)}
+  .progress-strip-inner{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));transition:width .4s ease}
+  .question-area{padding:2rem 2.5rem}
+  .question-type-badge{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;margin-bottom:.75rem}
+  .badge-single{background:#eff6ff;color:#1d4ed8}
+  .badge-multi{background:#fdf4ff;color:#7e22ce}
+  .multi-notice{display:inline-block;color:#1d4ed8;font-weight:700;font-size:.88rem;margin-left:.5rem;letter-spacing:.02em}
+  .question-num{font-size:.75rem;color:var(--muted);margin-bottom:.4rem}
+  .question-text{font-size:1rem;line-height:1.75;color:var(--text);margin-bottom:1.5rem;font-weight:500}
+  .options-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+  .option-item{display:flex;align-items:flex-start;gap:.75rem;padding:.9rem 1.1rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;line-height:1.5;font-size:.92rem;background:var(--white)}
+  .option-item:hover:not(.answered){border-color:var(--gold);background:#fffbf0}
+  .option-item.selected{border-color:var(--navy);background:var(--blue-light)}
+  .option-item.correct{border-color:var(--green)!important;background:var(--green-light)!important}
+  .option-item.wrong{border-color:var(--red)!important;background:var(--red-light)!important}
+  .option-item.missed{border-color:var(--green)!important;background:var(--green-light)!important;opacity:.7}
+  .option-marker{width:26px;height:26px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;color:var(--muted);transition:all .15s}
+  .option-item.selected .option-marker{border-color:var(--navy);background:var(--navy);color:var(--white)}
+  .option-item.correct .option-marker{border-color:var(--green);background:var(--green);color:var(--white)}
+  .option-item.wrong .option-marker{border-color:var(--red);background:var(--red);color:var(--white)}
+  .multi .option-marker{border-radius:5px}
+  .option-text{flex:1}
+  .multi-hint{font-size:.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:.35rem}
+  .explanation-box{margin-top:1.25rem;padding:1.1rem 1.25rem;border-radius:10px;font-size:.87rem;line-height:1.75;border-left:4px solid;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  .explanation-correct{background:var(--green-light);border-color:var(--green);color:#1a4731}
+  .explanation-wrong{background:var(--red-light);border-color:var(--red);color:#7f1d1d}
+  .explanation-title{font-weight:700;margin-bottom:.4rem;font-size:.9rem}
+  .quiz-nav{padding:1.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);background:var(--cream)}
+  .result-hero{text-align:center;padding:2.5rem 2.5rem 1.5rem}
+  .result-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.5rem;position:relative}
+  .result-ring.pass{background:conic-gradient(var(--green) calc(var(--pct)*1%),var(--border) 0);box-shadow:0 0 0 8px var(--green-light),0 8px 32px rgba(45,122,79,.2)}
+  .result-ring.fail{background:conic-gradient(var(--red) calc(var(--pct)*1%),var(--border) 0);box-shadow:0 0 0 8px var(--red-light),0 8px 32px rgba(185,28,28,.15)}
+  .result-ring-inner{width:100px;height:100px;background:var(--white);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute}
+  .result-score-num{font-size:2.2rem;font-weight:700;line-height:1}
+  .result-score-num.pass{color:var(--green)}
+  .result-score-num.fail{color:var(--red)}
+  .result-score-label{font-size:.7rem;color:var(--muted)}
+  .result-title{font-family:'Noto Serif TC',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.5rem}
+  .result-msg{font-size:.9rem;color:var(--muted);line-height:1.6}
+  .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .result-stat{background:var(--white);padding:1.25rem 1rem;text-align:center}
+  .stat-num{font-size:1.5rem;font-weight:700;color:var(--navy)}
+  .stat-label{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+  .result-actions{padding:1.75rem 2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .upgrade-notice{margin:0 2.5rem 1.5rem;padding:1rem 1.25rem;background:linear-gradient(135deg,#fffbf0,#fef9e7);border:1.5px solid var(--gold);border-radius:10px;display:flex;align-items:flex-start;gap:.75rem;font-size:.85rem;line-height:1.6;color:#78350f}
+  .upgrade-icon{font-size:1.4rem;flex-shrink:0}
+  .review-list{padding:0 2.5rem 2.5rem;display:flex;flex-direction:column;gap:1.25rem}
+  .review-item{border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+  .review-item-header{padding:.85rem 1.15rem;display:flex;align-items:center;gap:.6rem;font-size:.85rem;font-weight:500}
+  .review-item-header.correct{background:var(--green-light);color:#1a4731}
+  .review-item-header.wrong{background:var(--red-light);color:#7f1d1d}
+  .review-q{padding:.85rem 1.15rem;font-size:.88rem;line-height:1.65;border-bottom:1px solid var(--border)}
+  .review-answer{padding:.75rem 1.15rem;font-size:.82rem;color:var(--muted);line-height:1.6}
+  .review-explanation{padding:.75rem 1.15rem;font-size:.82rem;line-height:1.7;border-top:1px solid var(--border);background:var(--cream)}
+  .hidden{display:none!important}
+  @media(max-width:600px){
+    .card-body,.question-area,.quiz-nav,.result-actions,.review-list,.admin-panel{padding-left:1.25rem;padding-right:1.25rem}
+    .quiz-header{padding-left:1.25rem;padding-right:1.25rem}
+    .card-header{padding:1.75rem 1.25rem 1.5rem}
+    .level-grid{grid-template-columns:1fr}
+    .header-title{font-size:1.3rem}
+    .result-actions{flex-direction:column}
+    .admin-add-row{flex-direction:column}
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .badge-calc { background: #fff7ed; color: #c2410c; }
+
+</style>
+
+</head>
+<body>
+<div class="app">
+<div class="card" id="mainCard">
+
+<div class="admin-bar">
+  <span>RFA 模擬測驗系統 v4</span>
+  <a onclick="toggleAdmin()">⚙ 管理後台</a>
+</div>
+
+<!-- ADMIN -->
+<div id="pageAdmin" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">管理後台</div>
+    <div class="header-title">會員管理</div>
+    <div class="header-sub">新增或刪除可登入的會員名單</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="admin-panel">
+    <div class="section-title">現有會員名單</div>
+    <div id="adminMemberList"></div>
+    <div class="section-title" style="margin-top:1.5rem">新增會員</div>
+    <div class="admin-add-row">
+      <input class="form-input" type="text" id="newMemberName" placeholder="姓名">
+      <input class="form-input" type="text" id="newMemberBday" placeholder="生日（如 570824）" maxlength="6">
+      <button class="btn btn-gold btn-sm" onclick="addMember()">新增</button>
+    </div>
+    <div class="form-error" id="adminError" style="margin-top:.75rem"></div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <div class="section-title">LINE 官方帳號連結</div>
+      <div class="form-group">
+        <input class="form-input" type="text" id="adminLineUrl" placeholder="https://line.me/R/ti/p/@你的官方帳號ID" style="font-size:.82rem">
+        <div class="form-hint">設定後，未通過驗證的使用者會看到可點擊的LINE官方帳號連結</div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="saveLineUrl()">儲存連結</button>
+      <span id="lineUrlSaved" style="font-size:.8rem;color:var(--green);margin-left:.75rem;display:none">✅ 已儲存</span>
+    </div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <div class="section-title">所有成員成績記錄（最新20筆）</div>
+      <div id="adminScoreArea"><p style="color:var(--muted);font-size:.85rem">載入中…</p></div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-outline btn-sm" onclick="renderAdminPanel()">🔄 重新整理</button>
+      <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">關閉後台</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(15,32,68,.7);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <div style="width:48px;height:48px;border:4px solid rgba(201,168,76,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite"></div>
+  <div style="color:var(--white);font-size:.9rem">載入題庫中…</div>
+</div>
+
+<!-- LOGIN -->
+<div id="pageLogin">
+  <div class="card-header">
+    <div class="header-badge">NBS-奈AI 模擬測驗平台</div>
+    <div class="header-title">退休理財規劃顧問<br>考試準備平台</div>
+    <div class="header-sub">輸入姓名與生日即可開始・首次使用自動建立學習記錄</div>
+    <div class="gold-line"></div>
+  </div>
+  <div id="loginPromptMsg" class="hidden" style="background:linear-gradient(135deg,#fffbf0,#fef9e7);border:1.5px solid var(--gold);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;font-size:.87rem;color:#78350f">🔐 <strong>複雜關卡需要登入</strong>，輸入姓名與生日即可，首次使用自動建立記錄。</div>
+        <div class="card-body">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.7">
+          輸入姓名與生日即可使用<br>
+          <span style="font-size:.82rem">首次使用自動建立記錄・換裝置輸入同樣資訊即可找回進度</span>
+        </p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">姓名</label>
+      <input class="form-input" type="text" id="inputName" placeholder="請輸入您的中文姓名">
+    </div>
+    <div class="form-group">
+      <label class="form-label">生日（國曆，格式：570824）</label>
+      <input class="form-input" type="text" id="inputBirthday" placeholder="民國年2碼＋月2碼＋日2碼" maxlength="6">
+      <div class="form-hint">範例：民國57年8月24日請輸入 570824</div>
+    </div>
+    <div class="form-error" id="loginError"></div>
+    <button class="btn btn-primary" onclick="doLogin()">🚀 開始學習</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="pageDashboard" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">學習儀表板</div>
+    <div class="header-title">RFA 模擬測驗</div>
+    <div class="header-sub">每次隨機抽題，選項順序也會打亂，讓練習更有效</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="card-body">
+    <div class="user-banner">
+      <div class="user-avatar" id="avatarInitial">A</div>
+      <div class="user-info">
+        <h3 id="welcomeName">歡迎回來</h3>
+        <p id="welcomeStatus">目前難度：簡易級</p>
+      </div>
+    </div>
+    <div class="section-title">選擇測驗難度</div>
+    <div class="level-grid">
+      <div class="level-card" id="cardLv1" onclick="startQuiz(1)">
+        <div class="level-icon">📗</div>
+        <div class="level-name">簡易</div>
+        <div class="level-desc">基本概念<br>社保制度</div>
+        <div class="level-progress" id="progLv1">通過 0/5 次</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv1" style="width:0%"></div></div>
+      </div>
+      <div class="level-card locked" id="cardLv2" onclick="startQuiz(2)">
+        <div class="level-lock-icon" id="lockLv2">🔒</div>
+        <div class="level-icon">📘</div>
+        <div class="level-name">普通</div>
+        <div class="level-desc">進階計算<br>年金規劃</div>
+        <div class="level-progress" id="progLv2">尚未解鎖</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv2" style="width:0%"></div></div>
+      </div>
+      <div class="level-card locked" id="cardLv3" onclick="startQuiz(3)">
+        <div class="level-lock-icon" id="lockLv3">🔒</div>
+        <div class="level-icon">📕</div>
+        <div class="level-name">複雜</div>
+        <div class="level-desc">個案分析<br>綜合計算</div>
+        <div class="level-progress" id="progLv3">尚未解鎖</div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="barLv3" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section-title">近期成績記錄</div>
+    <table class="history-table">
+      <thead><tr><th>日期</th><th>難度</th><th>分數</th><th>答對題數</th></tr></thead>
+      <tbody id="historyBody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">尚無測驗記錄</td></tr></tbody>
+    </table>
+    <div class="logout-row" id="logoutRow">
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="pageQuiz" class="hidden">
+  <div class="quiz-header">
+    <div>
+      <div class="quiz-meta"><strong id="quizLevelLabel">簡易級</strong>｜20題測驗</div>
+      <div class="quiz-meta" id="quizNameLabel"></div>
+    </div>
+    <div class="quiz-progress-text" id="quizProgressText">第 1 題 / 共 20 題</div>
+  </div>
+  <div class="progress-strip"><div class="progress-strip-inner" id="progressStrip" style="width:5%"></div></div>
+  <div class="question-area">
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+      <span class="question-type-badge" id="qtypeBadge">單選題</span>
+      <span class="multi-notice hidden" id="multiNotice">【複選題，請選擇所有正確答案】</span>
+    </div>
+    <div class="question-num" id="qNum">第 1 題</div>
+    <div class="question-text" id="qText"></div>
+    <div class="multi-hint hidden" id="multiHint">⬛ 請勾選所有正確選項，再點「確認作答」送出</div>
+    <ul class="options-list" id="optionsList"></ul>
+    <div id="explanationArea"></div>
+  </div>
+  <div class="quiz-nav">
+    <button class="btn btn-outline btn-sm" onclick="quitQuiz()">結束測驗</button>
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <span id="multiConfirmBtn" class="hidden">
+        <button class="btn btn-gold btn-sm" onclick="confirmMulti()">確認作答</button>
+      </span>
+      <button class="btn btn-primary btn-sm" id="nextBtn" onclick="nextQuestion()" style="display:none">下一題 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="pageResult" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">測驗結果</div>
+    <div class="header-title" id="resultTitle">測驗完成</div>
+    <div class="header-sub" id="resultLevelLabel">簡易級 · 20 題</div>
+    <div class="gold-line"></div>
+  </div>
+  <div class="result-hero">
+    <div class="result-ring" id="resultRing" style="--pct:0">
+      <div class="result-ring-inner">
+        <div class="result-score-num" id="resultScoreNum">0</div>
+        <div class="result-score-label">分</div>
+      </div>
+    </div>
+    <div class="result-title" id="resultHeadline">成績出來囉！</div>
+    <div class="result-msg" id="resultMsg"></div>
+  </div>
+  <div class="result-stats">
+    <div class="result-stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">答對題數</div></div>
+    <div class="result-stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">答錯題數</div></div>
+    <div class="result-stat"><div class="stat-num" id="statPct">0%</div><div class="stat-label">正確率</div></div>
+  </div>
+  <div id="upgradeNotice" class="hidden upgrade-notice">
+    <div class="upgrade-icon">🎉</div><div id="upgradeText"></div>
+  </div>
+  <div class="result-actions">
+    <button class="btn btn-outline" onclick="showReview()">查看解析</button>
+    <button class="btn btn-gold" onclick="retryQuiz()">再測一次</button>
+    <button class="btn btn-primary" onclick="backToDashboard()">回主頁</button>
+  </div>
+</div>
+
+<!-- REVIEW -->
+<div id="pageReview" class="hidden">
+  <div class="card-header">
+    <div class="header-badge">詳細解析</div>
+    <div class="header-title">每題解析說明</div>
+    <div class="header-sub">對的題目鞏固觀念，錯的題目找出盲點</div>
+    <div class="gold-line"></div>
+  </div>
+  <div style="padding:1.25rem 2.5rem 0;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:.85rem;color:var(--muted)">共 20 題</div>
+    <button class="btn btn-outline btn-sm" onclick="showResult()">← 返回結果</button>
+  </div>
+  <div class="review-list" id="reviewList"></div>
+</div>
+
+</div><!-- /card -->
+</div><!-- /app -->
+
+<script>
+
+// ═══════════════════════════════════════════════════════
+//  RFA 模擬測驗系統 v5
+//  ✦ 簡易／普通：訪客免登入可用
+//  ✦ 複雜：需會員驗證
+//  ✦ 題庫：從外部 JSON 動態載入
+// ═══════════════════════════════════════════════════════
+
+const GAS_URL      = 'https://script.google.com/macros/s/AKfycbzCcxNA1jtyryfVbud9jpRM-X-cnevNtOHHw7VolpXXYReS9xshK3LZGOLi6BknnkMa/exec';
+const ADMIN_PWD    = '570312';
+const ADMIN_EMAIL  = 'ingbaker@gmail.com';
+const PASS_SCORE   = 90;
+const UPGRADE_N    = 5;
+const STORAGE_KEY  = 'rfa_v5_data';   // 本機進度（訪客也有）
+const VERSION      = 'v1';
+
+// ── GAS 呼叫工具 ──
+async function gasCall(action, params={}) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method:'POST', body: JSON.stringify({ action, ...params })
+    });
+    return await res.json();
+  } catch(e) {
+    return { success:false, message:'網路連線失敗' };
+  }
+}
+
+// ── App 狀態 ──
+let state = {
+  user: null,          // null = 訪客
+  qBank: {},           // 已載入的題庫 {1:{singles,multis}, 2:...}
+  quiz: { level:1, questions:[], currentIdx:0, answers:[], score:0 },
+  adminVisible: false,
+  adminPwd: null
+};
+
+// ── 本機資料 ──
+function getLocalData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }
+  catch(e) { return {}; }
+}
+function saveLocalData(d) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e){}
+}
+function getUserProgress(key) {
+  const db = getLocalData();
+  return db[key] || { level:1, passCount:[0,0,0], history:[] };
+}
+function saveUserProgress(key, ud) {
+  const db = getLocalData();
+  db[key] = ud;
+  saveLocalData(db);
+}
+
+// ── 進度 key（永遠用姓名+生日，因為都需要登入）──
+function getProgressKey() {
+  if (state.user) return state.user.name + '_' + state.user.bday;
+  return 'anonymous'; // 不應發生，保險用
+}
+
+// ═══════════════ 題庫載入 ═══════════════
+const LEVEL_FILES = { 1:'q-easy.json', 2:'q-normal.json', 3:'q-hard.json' };
+
+async function loadQuestionBank(level) {
+  if (state.qBank[level]) return true; // 已快取
+  try {
+    const res = await fetch(LEVEL_FILES[level] + '?v=' + Date.now());
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    state.qBank[level] = {
+      singles: data.singles,
+      multis:  data.multis
+    };
+    return true;
+  } catch(e) {
+    console.error('載入題庫失敗:', e);
+    return false;
+  }
+}
+
+// ═══════════════ 頁面切換 ═══════════════
+function showPage(id) {
+  ['pageAdmin','pageLogin','pageDashboard','pageQuiz','pageResult','pageReview']
+    .forEach(p => document.getElementById(p).classList.toggle('hidden', p!==id));
+}
+
+// ═══════════════ 儀表板 ═══════════════
+function showDashboard() {
+  state.adminVisible = false;
+  const key = getProgressKey();
+  const ud  = getUserProgress(key);
+  const name = state.user ? state.user.name : '訪客';
+  const newUserBadge = (state.user && state.user.isNew) ? ' ✨' : '';
+
+  document.getElementById('avatarInitial').textContent = name.charAt(0);
+  document.getElementById('welcomeName').textContent   = '歡迎，' + name + newUserBadge + ' 👋';
+  if (state.user && state.user.isNew) state.user.isNew = false;
+  document.getElementById('welcomeStatus').textContent =
+    '目前難度：' + ['簡易','普通','複雜'][ud.level-1] + '級 ｜ 累計5次90分以上可升級';
+
+  // 難度卡片
+  for (let i=1; i<=3; i++) {
+    const card   = document.getElementById('cardLv'+i);
+    const lock   = document.getElementById('lockLv'+i);
+    const prog   = document.getElementById('progLv'+i);
+    const bar    = document.getElementById('barLv'+i);
+    const streak = ud.passCount  ? (ud.passCount[i-1] ||0) : 0;
+
+    // 複雜（level 3）需管理員開通
+    const adminLocked  = (i===3 && state.user && !state.user.hard);
+    const levelLocked  = (i > ud.level);
+    const isLocked     = adminLocked || levelLocked;
+
+    card.classList.toggle('locked', isLocked);
+    card.classList.toggle('current', i===ud.level && !isLocked);
+    if (lock) lock.style.display = isLocked ? 'block' : 'none';
+
+    if (adminLocked) {
+      prog.innerHTML = '<span style="color:var(--gold);font-size:.68rem">🔒 需要管理員開通</span>';
+      bar.style.width = '0%';
+    } else if (levelLocked) {
+      prog.textContent = '尚未解鎖';
+      bar.style.width  = '0%';
+    } else if (i < ud.level) {
+      prog.textContent = '✅ 已解鎖升級';
+      bar.style.width  = '100%';
+    } else {
+      prog.textContent = '累計 '+streak+'/'+UPGRADE_N+' 次通過';
+      bar.style.width  = (streak/UPGRADE_N*100)+'%';
+    }
+  }
+
+  // 成績記錄
+  const tbody = document.getElementById('historyBody');
+  const hist  = ud.history || [];
+  if (hist.length===0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">尚無測驗記錄</td></tr>';
+  } else {
+    tbody.innerHTML = [...hist].reverse().slice(0,10).map(h=>{
+      const cls = h.score>=90?'score-pass':h.score>=70?'score-mid':'score-fail';
+      return `<tr><td>${h.date}</td><td>${['簡易','普通','複雜'][h.level-1]}</td><td><span class="score-badge ${cls}">${h.score}分</span></td><td>${h.correct}/20</td></tr>`;
+    }).join('');
+  }
+
+  // 登出按鈕
+  const logoutRow = document.getElementById('logoutRow');
+  logoutRow.innerHTML = `<button class="btn btn-outline btn-sm" onclick="doLogout()">登出</button>`;
+
+  showPage('pageDashboard');
+}
+
+// ═══════════════ 登入 ═══════════════
+function showLoginPage() {
+  document.getElementById('loginError').style.display='none';
+  document.getElementById('inputName').value='';
+  document.getElementById('inputBirthday').value='';
+  showPage('pageLogin');
+}
+
+function showLoginForHard() {
+  document.getElementById('loginPromptMsg').classList.remove('hidden');
+  showLoginPage();
+}
+
+async function doLogin() {
+  const name = document.getElementById('inputName').value.trim();
+  const bday = document.getElementById('inputBirthday').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn   = document.querySelector('#pageLogin .btn-primary');
+  errEl.style.display='none';
+
+  if (!name || !/^\d{6}$/.test(bday)) {
+    errEl.innerHTML='請確認姓名及生日格式（生日需為6位數字）';
+    errEl.style.display='block'; return;
+  }
+
+  btn.textContent='驗證中…'; btn.disabled=true;
+  const result = await gasCall('checkOrRegister',{name, bday});
+  btn.textContent='🚀 開始學習'; btn.disabled=false;
+
+  if (!result.success) {
+    errEl.innerHTML = result.message === '網路連線失敗'
+      ? '⚠️ 網路連線失敗，請確認網路後再試。'
+      : `⚠️ ${result.message || '發生錯誤，請再試一次'}`;
+    errEl.style.display='block'; return;
+  }
+  if (!result.valid && result.reason === 'disabled') {
+    const lineUrl = localStorage.getItem('rfa_line_url')||'';
+    const lineHtml = lineUrl
+      ? `💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a><br>`
+      : `💬 請聯絡管理員：${ADMIN_EMAIL}<br>`;
+    errEl.innerHTML=`⚠️ 此帳號已被停用，如有疑問請聯絡管理員。<br>${lineHtml}`;
+    errEl.style.display='block'; return;
+  }
+
+  state.user = {
+    name, bday,
+    hard: result.hard === true,
+    v2:   result.v2   === true,
+    isNew: result.isNew === true
+  };
+  // 儲存登入狀態，下次開啟同一瀏覽器自動登入
+  localStorage.setItem('rfa_current_user', JSON.stringify({
+    name, bday, hard: result.hard===true, v2: result.v2===true
+  }));
+
+  // 從雲端讀取學習進度（換裝置也能找回）
+  const progressResult = await gasCall('getProgress', { name, bday });
+  if (progressResult.success && progressResult.found) {
+    const cloud = progressResult;
+    const localKey = name + '_' + bday;
+    const local = getUserProgress(localKey);
+    // 取雲端與本機較高的值，避免覆蓋較新進度
+    const mergedLevel = Math.max(local.level || 1, cloud.level || 1);
+    const mergedCount = [
+      Math.max((local.passCount||[0,0,0])[0], (cloud.passCount||[0,0,0])[0]),
+      Math.max((local.passCount||[0,0,0])[1], (cloud.passCount||[0,0,0])[1]),
+      Math.max((local.passCount||[0,0,0])[2], (cloud.passCount||[0,0,0])[2])
+    ];
+    saveUserProgress(localKey, {
+      ...local,
+      level: mergedLevel,
+      passCount: mergedCount
+    });
+  }
+
+  // 合併訪客進度到會員帳號
+  const guestKey  = localStorage.getItem('rfa_guest_key');
+  const memberKey = name+'_'+bday;
+  if (guestKey && guestKey !== memberKey) {
+    const guestData  = getUserProgress(guestKey);
+    const memberData = getUserProgress(memberKey);
+    // 若訪客已通過的關卡更高，合併進度
+    if (guestData.level > memberData.level) {
+      memberData.level      = guestData.level;
+      memberData.passStreak = guestData.passStreak;
+    }
+    memberData.history = [...(guestData.history||[]), ...(memberData.history||[])];
+    saveUserProgress(memberKey, memberData);
+  }
+
+  showDashboard();
+}
+
+function doLogout() {
+  state.user = null;
+  localStorage.removeItem('rfa_current_user');
+  showPage('pageLogin');
+}
+
+// ═══════════════ 後台管理 ═══════════════
+function toggleAdmin() {
+  if (!state.adminVisible) {
+    const pwd = prompt('請輸入管理員密碼：');
+    if (pwd===null) return;
+    if (pwd!==ADMIN_PWD) { alert('密碼錯誤'); return; }
+    state.adminPwd = pwd;
+    state.adminVisible = true;
+    renderAdminPanel();
+    showPage('pageAdmin');
+  } else {
+    state.adminVisible = false;
+    showDashboard();
+  }
+}
+
+async function renderAdminPanel() {
+  const list = document.getElementById('adminMemberList');
+  list.innerHTML = '<p style="color:var(--muted);font-size:.85rem">載入中…</p>';
+  const result = await gasCall('getMembers',{pwd:state.adminPwd});
+  if (!result.success) {
+    list.innerHTML=`<p style="color:var(--red);font-size:.85rem">載入失敗：${result.message}</p>`; return;
+  }
+  const members = result.members||[];
+  list.innerHTML = members.length===0
+    ? '<p style="color:var(--muted);font-size:.85rem">目前沒有會員，請新增。</p>'
+    : members.map(m=>`
+      <div class="admin-member-row">
+        <div class="admin-member-info">
+          <span class="admin-member-name">${m.name}</span>
+          <span class="admin-member-bday">生日：${m.bday}　狀態：<strong style="color:${m.status==='啟用'?'var(--green)':'var(--red)'}">${m.status}</strong>　v2：${m.v2==='是'?'✅':'—'}</span>
+        </div>
+        <button class="btn btn-danger btn-xs" onclick="deleteMember('${m.name}','${m.bday}')">停用</button>
+      </div>`).join('');
+
+  // 成績摘要
+  const sr = await gasCall('getScores',{pwd:state.adminPwd});
+  const scoreArea = document.getElementById('adminScoreArea');
+  if (scoreArea && sr.success) {
+    const scores = (sr.scores||[]).slice(0,20);
+    scoreArea.innerHTML = scores.length===0
+      ? '<p style="color:var(--muted);font-size:.85rem">尚無成績記錄</p>'
+      : `<table class="history-table"><thead><tr><th>時間</th><th>姓名</th><th>難度</th><th>分數</th><th>答對</th><th>版本</th></tr></thead><tbody>
+        ${scores.map(s=>{
+          const cls=s.score>=90?'score-pass':s.score>=70?'score-mid':'score-fail';
+          return `<tr><td style="font-size:.72rem">${s.time}</td><td>${s.name}</td><td>${s.level}</td><td><span class="score-badge ${cls}">${s.score}分</span></td><td>${s.correct}</td><td>${s.version||'v1'}</td></tr>`;
+        }).join('')}
+        </tbody></table>`;
+  }
+  const urlEl=document.getElementById('adminLineUrl');
+  if(urlEl) urlEl.value=localStorage.getItem('rfa_line_url')||'';
+}
+
+async function addMember() {
+  const name  = document.getElementById('newMemberName').value.trim();
+  const bday  = document.getElementById('newMemberBday').value.trim();
+  const errEl = document.getElementById('adminError');
+  errEl.style.display='none';
+  if (!name)            { errEl.textContent='請輸入姓名';       errEl.style.display='block'; return; }
+  if (!/^\d{6}$/.test(bday)) { errEl.textContent='生日需為6位數字'; errEl.style.display='block'; return; }
+  const btn=document.querySelector('#pageAdmin .btn-gold');
+  btn.textContent='新增中…'; btn.disabled=true;
+  const result=await gasCall('addMember',{pwd:state.adminPwd,name,bday});
+  btn.textContent='新增'; btn.disabled=false;
+  if (!result.success) { errEl.textContent=result.message||'新增失敗'; errEl.style.display='block'; return; }
+  document.getElementById('newMemberName').value='';
+  document.getElementById('newMemberBday').value='';
+  renderAdminPanel();
+}
+
+async function deleteMember(name,bday) {
+  if (!confirm(`確定要停用會員「${name}」嗎？`)) return;
+  const result=await gasCall('deleteMember',{pwd:state.adminPwd,name,bday});
+  if (!result.success) { alert('操作失敗：'+result.message); return; }
+  renderAdminPanel();
+}
+
+function saveLineUrl() {
+  const url=document.getElementById('adminLineUrl').value.trim();
+  localStorage.setItem('rfa_line_url',url);
+  const saved=document.getElementById('lineUrlSaved');
+  saved.style.display='inline';
+  setTimeout(()=>{saved.style.display='none';},2000);
+}
+
+// ═══════════════ 測驗 ═══════════════
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleOpts(q){
+  const idx=[0,1,2,3].slice(0,q.opts.length);
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  return{...q, opts:idx.map(i=>q.opts[i]), ans:q.ans.map(a=>idx.indexOf(a))};
+}
+
+async function startQuiz(level) {
+  // 複雜關卡需要管理員開通
+  if (level===3 && state.user && !state.user.hard) {
+    // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
+    // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
+    alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
+    return;
+  }
+
+  const ud = getUserProgress(getProgressKey());
+  if (level > ud.level) return;
+
+  // 載入題庫（從JSON）
+  const loadingEl = document.getElementById('loadingOverlay');
+  if (loadingEl) loadingEl.classList.remove('hidden');
+
+  const ok = await loadQuestionBank(level);
+  if (loadingEl) loadingEl.classList.add('hidden');
+
+  if (!ok) {
+    alert('題庫載入失敗，請重新整理頁面後再試。');
+    return;
+  }
+
+  const bank = state.qBank[level];
+  const singles = shuffle(bank.singles.filter(q=>q.type==='single'||!q.type)).slice(0,15).map(q=>shuffleOpts({...q,type:'single'}));
+  const multis  = shuffle(bank.multis).slice(0,5).map(q=>shuffleOpts({...q,type:'multi'}));
+  const questions = [...singles, ...multis];
+
+  state.quiz = { level, questions, currentIdx:0, answers:questions.map(()=>({selected:[],confirmed:false,correct:null})), score:0 };
+
+  document.getElementById('quizLevelLabel').textContent = ['簡易','普通','複雜'][level-1]+'級';
+  document.getElementById('quizNameLabel').textContent  = state.user ? state.user.name : '訪客';
+  showPage('pageQuiz');
+  renderQuestion();
+}
+
+function getLabel(q,idx){
+  if(q.type==='single')return['①','②','③','④'][idx]||String(idx+1);
+  return['A','B','C','D','E'][idx]||String.fromCharCode(65+idx);
+}
+function formatAnsText(q,idxArr){
+  return idxArr.map(i=>q.opts[i]).join('、');
+}
+
+function renderQuestion(){
+  const{questions,currentIdx,answers}=state.quiz;
+  const q=questions[currentIdx];const a=answers[currentIdx];const total=questions.length;
+  document.getElementById('quizProgressText').textContent=`第 ${currentIdx+1} 題 / 共 ${total} 題`;
+  document.getElementById('progressStrip').style.width=((currentIdx+1)/total*100)+'%';
+  document.getElementById('qNum').textContent=`第 ${currentIdx+1} 題`;
+  const badge=document.getElementById('qtypeBadge');const notice=document.getElementById('multiNotice');
+  if(q.type==='single'){badge.textContent='單選題';badge.className='question-type-badge badge-single';notice.classList.add('hidden');}
+  else{badge.textContent='複選題';badge.className='question-type-badge badge-multi';notice.classList.remove('hidden');}
+  document.getElementById('multiHint').classList.toggle('hidden',q.type!=='multi');
+  document.getElementById('qText').innerHTML=q.q.replace(/\n/g,'<br>');
+  const list=document.getElementById('optionsList');
+  list.className='options-list'+(q.type==='multi'?' multi':'');
+  list.innerHTML=q.opts.map((opt,i)=>{
+    const label=getLabel(q,i);
+    const sc=a.confirmed?getOptionClass(q,a,i):(a.selected.includes(i)?'selected':'');
+    return`<li class="option-item ${sc} ${a.confirmed?'answered':''}" onclick="${a.confirmed?'':'selectOption('+i+')'}"><div class="option-marker">${label}</div><div class="option-text">${opt}</div></li>`;
+  }).join('');
+  const expArea=document.getElementById('explanationArea');
+  if(a.confirmed){
+    const cls=a.correct?'explanation-correct':'explanation-wrong';
+    const icon=a.correct?'✅':'❌';
+    const ansText=formatAnsText(q,q.ans);
+    // 加入法條連結
+    const lawHtml = q.law && q.lawUrl
+      ? `<div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(0,0,0,.1);font-size:.8rem">
+           📋 <strong>法條依據：</strong>
+           <a href="${q.lawUrl}" target="_blank" rel="noopener"
+              style="color:inherit;text-decoration:underline;">${q.law}</a>
+         </div>`
+      : '';
+    expArea.innerHTML=`<div class="explanation-box ${cls}"><div class="explanation-title">${icon} ${a.correct?'答對了！':'答錯了'}</div><div><strong>正確答案：</strong>${ansText}</div><div style="margin-top:.5rem"><strong>解析：</strong>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}</div>`;
+  }else{expArea.innerHTML='';}
+  const nextBtn=document.getElementById('nextBtn');const multiConfirm=document.getElementById('multiConfirmBtn');
+  if(a.confirmed){nextBtn.style.display='inline-flex';nextBtn.textContent=currentIdx<total-1?'下一題 →':'查看成績 →';multiConfirm.classList.add('hidden');}
+  else{nextBtn.style.display='none';multiConfirm.classList.toggle('hidden',q.type!=='multi');}
+}
+
+function getOptionClass(q,a,idx){
+  const c=q.ans.includes(idx);const s=a.selected.includes(idx);
+  if(c&&s)return'correct';if(!c&&s)return'wrong';if(c&&!s)return'missed';return'';
+}
+function selectOption(idx){
+  const{questions,currentIdx,answers}=state.quiz;const q=questions[currentIdx];const a=answers[currentIdx];
+  if(a.confirmed)return;
+  if(q.type==='single'){a.selected=[idx];renderQuestion();setTimeout(()=>confirmAnswer(),200);}
+  else{if(a.selected.includes(idx))a.selected=a.selected.filter(i=>i!==idx);else a.selected.push(idx);renderQuestion();}
+}
+function confirmMulti(){const a=state.quiz.answers[state.quiz.currentIdx];if(a.selected.length===0){alert('請至少選擇一個選項');return;}confirmAnswer();}
+function confirmAnswer(){
+  const{questions,currentIdx,answers}=state.quiz;const q=questions[currentIdx];const a=answers[currentIdx];
+  a.confirmed=true;a.correct=JSON.stringify([...q.ans].sort())===JSON.stringify([...a.selected].sort());renderQuestion();
+}
+function nextQuestion(){
+  const{questions,currentIdx}=state.quiz;
+  if(currentIdx<questions.length-1){state.quiz.currentIdx++;renderQuestion();}else{finishQuiz();}
+}
+function quitQuiz(){if(confirm('確定要結束測驗嗎？'))showDashboard();}
+
+// ═══════════════ 成績 ═══════════════
+function finishQuiz(){
+  const{questions,answers,level}=state.quiz;
+  const correct=answers.filter(a=>a.correct).length;
+  const score=Math.round(correct/20*100);
+  state.quiz.score=score; state.quiz.correctCount=correct;
+
+  const key=getProgressKey();
+  const ud=getUserProgress(key);
+  if(!ud.passCount)ud.passCount=[0,0,0];  // 累計通過次數
+
+  const passed=score>=PASS_SCORE;let upgraded=false;let nextLevel=null;
+  if(passed){
+    ud.passCount[level-1]=(ud.passCount[level-1]||0)+1;  // 累計+1，不歸零
+    if(ud.passCount[level-1]>=UPGRADE_N&&level<3&&ud.level===level){
+      ud.level=level+1;upgraded=true;nextLevel=level+1;
+      // 升級後該難度累計次數保留（不歸零），繼續記錄
+    }
+  }
+  // 注意：未達90分不扣減累計次數，只是不加
+
+  const now=new Date();if(!ud.history)ud.history=[];
+  ud.history.push({
+    date:`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`,
+    level, score, correct
+  });
+  saveUserProgress(key, ud);
+
+  // 同步成績 + 進度到GAS（所有登入用戶）
+  if(state.user){
+    const device=/Mobi|Android/i.test(navigator.userAgent)?'手機':'電腦';
+    // 儲存成績
+    gasCall('saveScore',{name:state.user.name,level,score,correct,device,version:VERSION});
+    // 同步學習進度（level + passCount）到雲端，換裝置也能找回
+    gasCall('saveProgress',{
+      name:      state.user.name,
+      bday:      state.user.bday,
+      level:     ud.level,
+      passCount: ud.passCount
+    });
+  }
+
+  // 升級到複雜時提示登入（訪客）
+  if(upgraded && nextLevel===3 && !state.user){
+    setTimeout(()=>{
+      if(confirm('🎉 恭喜！您已解鎖「複雜」關卡！\n複雜關卡需要登入會員才能進入。\n現在要登入嗎？')){
+        showLoginForHard();
+      }
+    }, 2000);
+  }
+
+  const lvN=['簡易','普通','複雜'];
+  document.getElementById('resultLevelLabel').textContent=lvN[level-1]+'級 · 20 題';
+  const ring=document.getElementById('resultRing');ring.style.setProperty('--pct',score);ring.className='result-ring '+(passed?'pass':'fail');
+  document.getElementById('resultScoreNum').textContent=score;
+  document.getElementById('resultScoreNum').className='result-score-num '+(passed?'pass':'fail');
+  document.getElementById('resultTitle').textContent=passed?'恭喜通過！🎉':'繼續加油！💪';
+  const passNow=ud.passCount[level-1]||0;
+  let msg='';
+  if(upgraded&&nextLevel===3&&!state.user)msg=`太厲害了！您已連續5次通過<strong>${lvN[level-1]}級</strong>！<br>🔐 複雜關卡需要登入會員才能解鎖。`;
+  else if(upgraded)msg=`太厲害了！已連續5次通過${lvN[level-1]}級，<strong>自動升級為${lvN[nextLevel-1]}級</strong>！`;
+  else if(passed)msg=`答對 ${correct}/20 題，得分 ${score} 分！<br>累計通過 ${streakNow}/${UPGRADE_N} 次可升級下一難度。`;
+  else msg=`答對 ${correct}/20 題，得分 ${score} 分。<br>本次未達90分，請繼續複習再試！累計通過計數歸零。`;
+  document.getElementById('resultMsg').innerHTML=msg;
+  document.getElementById('statCorrect').textContent=correct;
+  document.getElementById('statWrong').textContent=20-correct;
+  document.getElementById('statPct').textContent=score+'%';
+  const noticeEl=document.getElementById('upgradeNotice');
+  if(upgraded&&!(nextLevel===3&&!state.user)){noticeEl.classList.remove('hidden');document.getElementById('upgradeText').innerHTML=`🎊 恭喜！從<strong>${lvN[level-1]}級</strong>升級到<strong>${lvN[nextLevel-1]}級</strong>！繼續挑戰！`;}
+  else{noticeEl.classList.add('hidden');}
+  showPage('pageResult');
+}
+
+// ═══════════════ 解析 ═══════════════
+function showReview(){
+  const{questions,answers}=state.quiz;
+  document.getElementById('reviewList').innerHTML=questions.map((q,i)=>{
+    const a=answers[i];const hdr=a.correct?'correct':'wrong';const icon=a.correct?'✅ 答對':'❌ 答錯';
+    const typeLbl=q.type==='single'
+      ?'<span style="font-size:.7rem;background:#eff6ff;color:#1d4ed8;padding:.15rem .5rem;border-radius:10px">單選</span>'
+      :'<span style="font-size:.7rem;background:#fdf4ff;color:#7e22ce;padding:.15rem .5rem;border-radius:10px">複選</span>';
+    const selText=a.selected.length?formatAnsText(q,a.selected):'（未作答）';
+    const ansText=formatAnsText(q,q.ans);
+    const lawHtml=q.law&&q.lawUrl
+      ?`<div style="margin-top:.4rem;font-size:.78rem">📋 <a href="${q.lawUrl}" target="_blank" style="color:var(--navy)">${q.law}</a></div>`:'';
+    return`<div class="review-item"><div class="review-item-header ${hdr}">${icon} &nbsp;第 ${i+1} 題 &nbsp;${typeLbl}</div><div class="review-q">${q.q.replace(/\n/g,'<br>')}</div><div class="review-answer"><div>您的答案：${selText}</div>${!a.correct?`<div style="color:var(--green);margin-top:.25rem;font-weight:600">正確答案：${ansText}</div>`:''}</div><div class="review-explanation"><strong>📖 解析：</strong><br>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}</div>`;
+  }).join('');
+  showPage('pageReview');
+}
+function showResult(){showPage('pageResult');}
+function retryQuiz(){startQuiz(state.quiz.level);}
+function backToDashboard(){showDashboard();}
+
+// ═══════════════ 啟動 ═══════════════
+// 檢查本機是否已有登入記錄，有則直接進儀表板，否則顯示登入頁
+window.addEventListener('DOMContentLoaded', ()=>{
+  const saved = localStorage.getItem('rfa_current_user');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state.user = { name: parsed.name, bday: parsed.bday, hard: parsed.hard===true, v2: parsed.v2===true };
       showDashboard();
     } catch(e) {
       showPage('pageLogin');
