@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RFA 退休理財規劃顧問 模擬測驗系統 第二版</title>
+<title>NBS 退休理財規劃顧問 模擬測驗系統 第二版</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
   :root{--navy:#0f2044;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f7f3ec;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--green:#2d7a4f;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;--blue-light:#eff6ff;--border:#e2d9c8;--shadow-lg:0 12px 48px rgba(15,32,68,0.2)}
@@ -151,7 +151,7 @@
 <div class="card" id="mainCard">
 
 <div class="admin-bar">
-  <span>RFA 模擬測驗系統 第二版</span>
+  <span>NBS 模擬測驗系統 第二版</span>
   <a onclick="toggleAdmin()">⚙ 管理後台</a>
 </div>
 
@@ -197,7 +197,7 @@
 <div id="pageLogin">
   <div class="card-header">
     <div class="header-badge">模擬測驗系統</div>
-    <div class="header-title">RFA 退休理財規劃顧問<br>考試準備平台</div>
+    <div class="header-title">NBS 退休理財規劃顧問<br>考試準備平台</div>
     <div class="header-sub">退休基金協會 退休理財專業認證課程</div>
     <div class="gold-line"></div>
   </div>
@@ -223,7 +223,7 @@
 <div id="pageDashboard" class="hidden">
   <div class="card-header">
     <div class="header-badge">學習儀表板</div>
-    <div class="header-title">RFA 模擬測驗</div>
+    <div class="header-title">NBS 模擬測驗</div>
     <div class="header-sub">每次隨機抽題含必考計算題，選項順序打亂，有效備考</div>
     <div class="gold-line"></div>
   </div>
@@ -359,7 +359,7 @@
 const ADMIN_PASSWORD = '570312';
 const ADMIN_CONTACT  = { email:'ingbaker@gmail.com' };
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzCcxNA1jtyryfVbud9jpRM-X-cnevNtOHHw7VolpXXYReS9xshK3LZGOLi6BknnkMa/exec';  // Google Apps Script 網址
-const STORAGE_KEY  = 'rfa_quiz_data';  // 本機：個人成績進度
+const STORAGE_KEY  = 'NBS_quiz_data';  // 本機：個人成績進度
 const PASS_SCORE   = 90;
 const VERSION = 'v2'; // 第二版識別碼
 const UPGRADE_N    = 5;
@@ -382,7 +382,7 @@ async function gasCall(action, params={}) {
 // 格式: { q:'題目', opts:['選項1','選項2','選項3','選項4'], ans:[正確索引,...], exp:'解析' }
 // ans 為選項索引陣列；每次出題時選項會被隨機打亂，ans 跟著更新
 // ═══════════════════════════════════════════════════════════════
-//  RFA v2 題庫 — 100單選（含計算題）+ 40複選
+//  NBS v2 題庫 — 100單選（含計算題）+ 40複選
 //  主題涵蓋：勞保計算、退撫計算、年金現值、財務計算機操作
 //           國保、長照財務、投資組合、傳承稅務計算
 //  ★ calc:true 標記為計算題（每次必抽1題）
@@ -665,7 +665,7 @@ const QB2 = {
      exp:'以35年60%為基準，往上1年（36年）加0.5%=60.5%。記憶口訣：35年基準；往右每年-1.5%；往上每年+0.5%；往下每年-1.5%。'},
     {q:'退休金缺口計算：需求17,698,381元，已備10,375,591元，缺口為多少？',
      opts:['6,322,790元','7,322,790元','8,522,790元','5,922,790元'],ans:[1],
-     exp:'退休金缺口=需求-已備=17,698,381-10,375,591=7,322,790元。達成率=10,375,591÷17,698,381≈58.6%，是典型RFA個案計算。'},
+     exp:'退休金缺口=需求-已備=17,698,381-10,375,591=7,322,790元。達成率=10,375,591÷17,698,381≈58.6%，是典型NBS個案計算。'},
     {q:'計算退休金，使用財務計算機，設定小數位為4位的操作步驟為何？',
      opts:['2ND + CLR TVM + 4','2ND + FORMAT → 輸入4 → ENTER','2ND + BGN + 4','直接輸入小數'],ans:[1],
      exp:'設定小數位4位：按[2ND][FORMAT]，螢幕顯示DEC=2.00，直接輸入4並按[ENTER]確認，再按[CE/C]離開，畫面顯示0.0000。'},
@@ -733,14 +733,14 @@ const QB2 = {
      exp:'A、B、C、D均正確，這是記憶公教退撫所得替代率天花板的完整口訣，考試常考，務必熟記。'},
     {q:'退休金規劃4大步驟，下列哪些正確？\nA. 計算退休金總需求\nB. 計算退休金已備（社保+職業退休金）\nC. 計算退休金缺口（需求-已備）\nD. 提出補缺口具體方案',
      opts:['A','B','C','D'],ans:[0,1,2,3],
-     exp:'A、B、C、D均正確，為RFA個案分析完整4步驟，缺一不可。步驟順序：需求→已備→缺口→方案。'},
+     exp:'A、B、C、D均正確，為NBS個案分析完整4步驟，缺一不可。步驟順序：需求→已備→缺口→方案。'},
     {q:'投資組合理論，下列哪些敘述正確？\nA. 組合報酬率=各資產報酬率加權平均\nB. 組合標準差不可直接加權平均\nC. 相關係數=-1時可完全消除風險\nD. 持有比例不影響組合標準差',
      opts:['A','B','C','D'],ans:[0,1,2],
      exp:'A、B、C正確。D錯誤：持有比例（權重）對組合標準差有顯著影響，是計算公式中的重要變數，不可忽略。'},
     {q:'勞退新制月退三步驟，下列哪些利率使用正確？\nA. 步驟1（帳戶累積）：勞退報酬率3.4%\nB. 步驟2（月退計算）：保證收益率1.1473%\nC. 步驟3（折現已備）：退休後報酬率3.6%\nD. 步驟1（帳戶累積）：退休後報酬率3.6%',
      opts:['A','B','C','D'],ans:[0,1,2],
      exp:'A、B、C正確，為三步驟各自對應的利率。D錯誤：帳戶累積期用勞退報酬率（3.4%），非退休後報酬率。'},
-    {q:'退休金缺口補足方式，下列哪些屬於RFA課程建議的標準方法？\nA. 增加單筆投資（計算現值PV）\nB. 每月定期定額儲蓄（計算PMT）\nC. 設定所需退休前報酬率（計算I/Y）\nD. 延後退休年齡',
+    {q:'退休金缺口補足方式，下列哪些屬於NBS課程建議的標準方法？\nA. 增加單筆投資（計算現值PV）\nB. 每月定期定額儲蓄（計算PMT）\nC. 設定所需退休前報酬率（計算I/Y）\nD. 延後退休年齡',
      opts:['A','B','C','D'],ans:[0,1,2,3],
      exp:'A、B、C、D均屬補缺口方法：A單筆投資（求PV）、B定期定額（求PMT）、C設定目標報酬率（求I/Y）、D延後退休可增加已備金額並縮短需求期間，均為有效策略。'},
     {q:'計算長照費退休時現值（3步曲），各步驟使用的利率，下列哪些正確？\nA. 步驟1（費用成長）：長照費成長率2.5%\nB. 步驟2（年金現值）：實質報酬率=3.6%-2.5%=1.1%\nC. 步驟3（折現至退休）：退休後報酬率3.6%\nD. 步驟2（年金現值）：名目退休後報酬率3.6%',
@@ -831,7 +831,7 @@ const QB2 = {
     {q:'勞保老年年金，民國48年出生者，法定請領年齡為幾歲？',
      opts:['60歲','61歲','62歲','63歲'],ans:[2],
      exp:'依法定請領年齡對照表：46年以前→60歲；47年→61歲；48年→62歲；49年→63歲；50年→64歲；51年以後→65歲。'},
-    {q:'RFA個案分析，「退休金缺口達成率」的意義，下列何者正確？',
+    {q:'NBS個案分析，「退休金缺口達成率」的意義，下列何者正確？',
      opts:['缺口越大，達成率越高','達成率越高，越接近退休目標（100%=完全足夠）','達成率=缺口÷需求','達成率超過100%代表虧損'],ans:[1],
      exp:'退休金達成率=已備÷需求×100%，達100%表示完全足夠，不需要再補缺口。達成率越高代表退休準備越充足，反之需要補足差距。'},
     {q:'公教退撫年改後，教育人員的月退起支年齡，高中以下校長及教師延後至幾歲？',
@@ -857,7 +857,7 @@ const QB2 = {
      exp:'逆向抵押貸款每月收到的款項，性質上是借款（非所得），因此不計入所得課稅。但需注意貸款到期或身故後，房屋出售若有增值，則可能產生財產交易所得。'},
   ],
   multis: [
-    {q:'RFA個案許博臨退休規劃，下列哪些計算結果正確？\nA. 退休時薪資終值約92,887元\nB. 退休時月生活費=92,887×70%≈65,021元\nC. 生活費年金現值（22年，實質2%，BGN）≈1,390萬\nD. 長照費年金現值（8年，實質1.1%，BGN）≈380萬',
+    {q:'NBS個案許博臨退休規劃，下列哪些計算結果正確？\nA. 退休時薪資終值約92,887元\nB. 退休時月生活費=92,887×70%≈65,021元\nC. 生活費年金現值（22年，實質2%，BGN）≈1,390萬\nD. 長照費年金現值（8年，實質1.1%，BGN）≈380萬',
      opts:['A','B','C','D'],ans:[0,1,2],
      exp:'A、B、C正確。D錯誤：長照費8年年金現值（步驟2）≈623萬（80歲時），步驟3折現至66歲退休時才≈380萬。選項D混淆了步驟2和步驟3的結果。'},
     {q:'勞退新制帳戶計算，下列哪些步驟正確？\nA. 步驟1：帳戶累積=舊錢FV+新錢FV\nB. 步驟2：月退=PV（帳戶總額）÷N（月數）\nC. 步驟2：用保證收益率計算月退金額（BGN）\nD. 步驟3：月退折現用退休後報酬率（BGN）',
@@ -875,7 +875,7 @@ const QB2 = {
     {q:'遺產稅規劃，下列哪些屬於合法的遺產稅節稅方式？\nA. 指定受益人的人壽保險理賠金（合理保額）\nB. 重病期間大量購買保險\nC. 提前贈與（考量10年內計入遺產規定）\nD. 成立信託',
      opts:['A','B','C','D'],ans:[0,2,3],
      exp:'A、C、D屬合法節稅：合理保額的指定受益人保險、提前規劃贈與（考量10年期限）、信託規劃。B重病期間大量投保屬財政部8大態樣，可能被認定為以避稅為目的。'},
-    {q:'RFA個案分析，補足退休金缺口的具體建議，下列哪些正確？\nA. 計算每月需定存多少（求PMT）\nB. 計算現在需單筆投入多少（求PV）\nC. 建議設定目標報酬率（求I/Y）\nD. 只要延後退休就一定夠',
+    {q:'NBS個案分析，補足退休金缺口的具體建議，下列哪些正確？\nA. 計算每月需定存多少（求PMT）\nB. 計算現在需單筆投入多少（求PV）\nC. 建議設定目標報酬率（求I/Y）\nD. 只要延後退休就一定夠',
      opts:['A','B','C','D'],ans:[0,1,2],
      exp:'A、B、C正確：三種補缺口方式。D錯誤：延後退休雖可縮小缺口（增加已備、縮短需求期），但不一定完全足夠，仍需搭配定存或投資計畫。'},
     {q:'生命週期基金（Target-Date Fund），下列哪些描述正確？\nA. 隨目標時間臨近自動降低風險\nB. 年輕時以成長型資產（股票）為主\nC. 退休後立即全部清算\nD. 退休後逐漸轉為保守型資產',
@@ -886,7 +886,7 @@ const QB2 = {
      exp:'A、B、D正確：繼承人死亡或喪失繼承權，由其直系血親卑親屬代位繼承。C拋棄繼承不適用代位繼承（拋棄後視為自始不繼承，其子女也不得代位）。'},
     {q:'台灣退休金三層保障完整規劃，下列哪些屬於完整規劃應考慮的面向？\nA. 第一層社保年金（已備計算）\nB. 第二層職業退休金（已備計算）\nC. 第三層個人自備（補缺口方案）\nD. 保險風險管理（疾病、長照保障）',
      opts:['A','B','C','D'],ans:[0,1,2,3],
-     exp:'A、B、C、D均屬完整退休規劃面向：三層退休保障計算+風險管理（保險）缺一不可。RFA的完整個案分析應涵蓋退休金計算、保險規劃、投資配置、傳承規劃等面向。'},
+     exp:'A、B、C、D均屬完整退休規劃面向：三層退休保障計算+風險管理（保險）缺一不可。NBS的完整個案分析應涵蓋退休金計算、保險規劃、投資配置、傳承規劃等面向。'},
     {q:'財務計算機TVM計算，下列哪些操作原則正確？\nA. PV與FV符號相反（一入一出）\nB. 同時輸入PV和PMT時需注意正負號\nC. I/Y輸入年利率，不需除以12\nD. N為期數（月計算時輸入總月數）',
      opts:['A','B','C','D'],ans:[0,1,3],
      exp:'A、B、D正確。C錯誤：若計算月期，I/Y需輸入月利率（年利率÷12），N輸入總月數；若計算年期，I/Y輸入年利率，N輸入年數。需與N的期間單位一致。'},
@@ -896,7 +896,7 @@ const QB2 = {
     {q:'退休規劃個案分析，已備退休金現值計算，下列哪些使用BGN模式正確？\nA. 勞保/國保老年年金現值\nB. 勞退新制月退折現現值\nC. 公教退撫月退俸折現現值\nD. 勞退新制帳戶累積終值',
      opts:['A','B','C','D'],ans:[0,1,2],
      exp:'A、B、C使用BGN：年金類給付均從退休當月開始領（期初），故折現現值計算用BGN。D勞退帳戶累積終值：每月初提繳（也用BGN），但性質是算FV（帳戶終值），而非PV折現。'},
-    {q:'RFA整合個案計算，下列哪些比較描述正確？\nA. 許博臨達成率58.6%，缺口最大\nB. 王曉嵐達成率93.5%，缺口最小\nC. 許柏堯達成率57.4%，年輕工作期長缺口可每月少存\nD. 三人均需補足退休金缺口',
+    {q:'NBS整合個案計算，下列哪些比較描述正確？\nA. 許博臨達成率58.6%，缺口最大\nB. 王曉嵐達成率93.5%，缺口最小\nC. 許柏堯達成率57.4%，年輕工作期長缺口可每月少存\nD. 三人均需補足退休金缺口',
      opts:['A','B','C','D'],ans:[0,1,2,3],
      exp:'A、B、C、D均正確：許博臨58.6%、王曉嵐93.5%（公教保障最完整）、許柏堯57.4%（年輕可用43年積累，每月定存較少只需2,695元）。三人均有不同程度的缺口需補足。'},
     {q:'遺產稅規劃，指定受益人的人壽保險，符合哪些條件較可能被認定為正當保險而非避稅工具？\nA. 保額合理（與遺產規模相當，非明顯過大）\nB. 健康時規律投保\nC. 繳費期間正常（非躉繳）\nD. 保障目的明確（如家庭收入保護）',
@@ -1002,7 +1002,7 @@ async function renderAdminPanel(){
   }
 
   const urlEl=document.getElementById('adminLineUrl');
-  if(urlEl)urlEl.value=localStorage.getItem('rfa_line_url')||'';
+  if(urlEl)urlEl.value=localStorage.getItem('NBS_line_url')||'';
 }
 
 async function addMember(){
@@ -1034,7 +1034,7 @@ async function deleteMember(name,bday){
 
 function saveLineUrl(){
   const url=document.getElementById('adminLineUrl').value.trim();
-  localStorage.setItem('rfa_line_url',url);
+  localStorage.setItem('NBS_line_url',url);
   const saved=document.getElementById('lineUrlSaved');
   saved.style.display='inline';setTimeout(()=>{saved.style.display='none';},2000);
 }
@@ -1059,7 +1059,7 @@ async function doLogin(){
   btn.textContent='🔐 登入系統';btn.disabled=false;
 
   if(!result.success||!result.valid){
-    const lineUrl=localStorage.getItem('rfa_line_url')||'';
+    const lineUrl=localStorage.getItem('NBS_line_url')||'';
     const lineHtml=lineUrl
       ?`💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a>（加入後發訊息給管理員）<br>`
       :`💬 請加入 LINE 官方帳號後發訊息給管理員<br>`;
