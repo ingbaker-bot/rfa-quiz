@@ -784,7 +784,12 @@ function renderQuestion(){
               style="color:inherit;text-decoration:underline;">${q.law}</a>
          </div>`
       : '';
-    expArea.innerHTML=`<div class="explanation-box ${cls}"><div class="explanation-title">${icon} ${a.correct?'答對了！':'答錯了'}</div><div><strong>正確答案：</strong>${ansText}</div><div style="margin-top:.5rem"><strong>解析：</strong>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}</div>`;
+    const pageHtml = q.page
+      ? `<div style="margin-top:.35rem;font-size:.8rem">
+           📖 <strong>教材出處：</strong>線上考前複習教材 p.${q.page}
+         </div>`
+      : '';
+    expArea.innerHTML=`<div class="explanation-box ${cls}"><div class="explanation-title">${icon} ${a.correct?'答對了！':'答錯了'}</div><div><strong>正確答案：</strong>${ansText}</div><div style="margin-top:.5rem"><strong>解析：</strong>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}${pageHtml}</div>`;
   }else{expArea.innerHTML='';}
   const nextBtn=document.getElementById('nextBtn');const multiConfirm=document.getElementById('multiConfirmBtn');
   if(a.confirmed){nextBtn.style.display='inline-flex';nextBtn.textContent=currentIdx<total-1?'下一題 →':'查看成績 →';multiConfirm.classList.add('hidden');}
@@ -912,7 +917,9 @@ function showReview(){
     const ansText=formatAnsText(q,q.ans);
     const lawHtml=q.law&&q.lawUrl
       ?`<div style="margin-top:.4rem;font-size:.78rem">📋 <a href="${q.lawUrl}" target="_blank" style="color:var(--navy)">${q.law}</a></div>`:'';
-    return`<div class="review-item"><div class="review-item-header ${hdr}">${icon} &nbsp;第 ${i+1} 題 &nbsp;${typeLbl}</div><div class="review-q">${q.q.replace(/\n/g,'<br>')}</div><div class="review-answer"><div>您的答案：${selText}</div>${!a.correct?`<div style="color:var(--green);margin-top:.25rem;font-weight:600">正確答案：${ansText}</div>`:''}</div><div class="review-explanation"><strong>📖 解析：</strong><br>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}</div>`;
+    const pageHtml=q.page
+      ?`<div style="margin-top:.3rem;font-size:.78rem">📖 線上考前複習教材 p.${q.page}</div>`:'';
+    return`<div class="review-item"><div class="review-item-header ${hdr}">${icon} &nbsp;第 ${i+1} 題 &nbsp;${typeLbl}</div><div class="review-q">${q.q.replace(/\n/g,'<br>')}</div><div class="review-answer"><div>您的答案：${selText}</div>${!a.correct?`<div style="color:var(--green);margin-top:.25rem;font-weight:600">正確答案：${ansText}</div>`:''}</div><div class="review-explanation"><strong>📖 解析：</strong><br>${q.exp.replace(/\n/g,'<br>')}</div>${lawHtml}${pageHtml}</div>`;
   }).join('');
   showPage('pageReview');
 }
