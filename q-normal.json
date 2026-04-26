@@ -603,7 +603,7 @@
         "25%"
       ],
       "ans": [
-        1
+        0
       ],
       "exp": "勞保保費負擔：政府負擔10%（一般民間受僱者），雇主負擔70%，勞工負擔20%。（職業工會被保險人：政府40%，勞工60%）",
       "calc": false,
@@ -917,431 +917,386 @@
       "page": 39
     }
   ],
-  "multis": [
+  "multis": [],
+  "combo_singles": [
     {
       "id": "N001",
+      "type": "single",
+      "combo": true,
       "q": "關於長照需求評估工具，下列哪些正確？\nA. 工具性日常生活活動能力評估（IADL）\nB. 認知功能評估\nC. 失能等級評估\nD. 癌症分期評估",
       "opts": [
-        "A",
         "B",
-        "C",
-        "D"
+        "A",
+        "AB",
+        "ABC"
       ],
       "ans": [
-        0,
-        1,
         2
       ],
-      "exp": "A、B、C為長照評估工具：IADL評估工具性日常活動、認知功能評估（CDR等）、失能等級（Barthel量表）。D癌症分期非長照評估工具。",
-      "calc": false,
+      "exp": "依教材p.76，長照需求評估工具為：A工具性日常生活活動能力評估（IADL）及B認知功能評估。C癌症分期評估非長照評估工具；D失能等級評估（Barthel量表）為功能評估而非「需求評估工具」的核心項目。",
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
-      "page": 20
+      "page": 76
     },
     {
       "id": "N002",
+      "type": "single",
+      "combo": true,
       "q": "107年公務人員退撫改革內容，下列哪些正確？\nA. 提高提撥費率\nB. 政府撥補\nC. 延後月退起支年齡\nD. 調整退休計算基準",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D（以上皆是）"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均為改革內容（共8項）：提高提撥費率至最高18%、政府撥補、延後起支年齡至65歲、調整計算基準（最後15年平均）等。",
-      "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi",
       "page": 42
     },
     {
       "id": "N003",
+      "type": "single",
+      "combo": true,
       "q": "勞退新制的特色，下列哪些正確？\nA. 勞工一定可以領到退休金\nB. 退休金為個人可攜式帳戶\nC. 雇主可明確估計退休金成本\nD. 退休金沒有最低保證收益",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：勞工確定可領（DC）、個人帳戶可攜帶、雇主成本確定（6%）。D錯誤：勞退新制有最低保證收益（保證收益率）。",
-      "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "multi",
       "page": 15
     },
     {
       "id": "N004",
+      "type": "single",
+      "combo": true,
       "q": "不得作為遺囑見證人，下列哪些符合民法第1198條？\nA. 未成年人\nB. 受監護宣告之人\nC. 繼承人的配偶\nD. 無利害關係的成年友人",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C不得為見證人：未成年人、受監護或輔助宣告之人、繼承人及其配偶或直系血親。D一般成年友人（無利害關係）可擔任。",
-      "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi",
       "page": 68
     },
     {
       "id": "N005",
+      "type": "single",
+      "combo": true,
       "q": "公教年金改革所得替代率天花板計算，下列哪些正確？\nA. 年資35年、118年後天花板為60%\nB. 往右（年份越晚）每年少1.5%\nC. 往上（年資加1）每年加0.5%\nD. 往下（年資減1）每年減1.5%",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確：35年75%為起點；118年後35年60%；往右每年少1.5%；往上加0.5%；往下減1.5%。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 49
     },
     {
       "id": "N006",
+      "type": "single",
+      "combo": true,
       "q": "勞保舊制老年一次給付，下列哪些敘述正確？\nA. 退前3年平均投保薪資為計算基礎\nB. 前15年每年1個基數\nC. 後15年每年2個基數\nD. 60歲後最多可再加5個基數",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確。注意：勞退舊制（勞基法）基數為前15年×2、後15年×1；而勞保舊制為前15年×1、後15年×2，剛好相反，務必區分。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 30
     },
     {
       "id": "N007",
+      "type": "single",
+      "combo": true,
       "q": "遺產稅計算，下列哪些財產免計入遺產？\nA. 指定受益人的人壽保險理賠金\nB. 軍公教勞農保險金\nC. 無受益人的保險金\nD. 互助金",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABCD",
+        "BD",
+        "ABD"
       ],
       "ans": [
-        0,
-        1,
         3
       ],
       "exp": "A、B、D免計入遺產：人壽保險指定受益人理賠金、軍公教勞農保保險金、互助金均免遺產稅。C無受益人的保險金需計入遺產（由遺產繼承）。",
-      "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "multi",
       "page": 70
     },
     {
       "id": "N008",
+      "type": "single",
+      "combo": true,
       "q": "夫妻剩餘財產分配請求權，計算各自婚後財產時，哪些應扣除？\nA. 婚前財產\nB. 因繼承取得之財產\nC. 因受贈取得之財產\nD. 婚後薪資儲蓄",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C應扣除：婚前財產、繼承取得、受贈（無償取得）之財產均應扣除，不計入剩餘財產分配。D婚後薪資屬婚後財產，需計入分配。",
-      "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi",
       "page": 69
     },
     {
       "id": "N009",
+      "type": "single",
+      "combo": true,
       "q": "公務人員退撫制度，月退休金的給付方式，下列哪些選項存在？\nA. 一次退休金\nB. 月退休金\nC. 兼領1/2一次金與1/2月退休金\nD. 分期10年給付",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "公務人員退撫退休金給付方式包含A、B、C三種：全額一次退、全額月退、兼領半數一次金+半數月退。D分期10年給付不是法定選項。",
-      "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi",
       "page": 31
     },
     {
       "id": "N010",
+      "type": "single",
+      "combo": true,
       "q": "勞保老年給付，下列哪些敘述正確？\nA. 年資達15年以上可選年金\nB. 年資未達15年只能領一次金\nC. 延後退休每年增加4%\nD. 提前退休每年減少5%",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：15年以上可選年金或一次金；未達15年只能領一次金（1年1基數）；延後每年加4%。D錯誤：提前退休每年「減4%」（不是5%）。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 27
     },
     {
       "id": "N011",
+      "type": "single",
+      "combo": true,
       "q": "遺囑的種類，依民法規定，台灣承認哪些遺囑形式？\nA. 自書遺囑\nB. 公證遺囑\nC. 密封遺囑\nD. 口授遺囑",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "民法承認五種遺囑：自書遺囑、公證遺囑、密封遺囑、代筆遺囑、口授遺囑（A、B、C、D均正確，另加代筆遺囑為第五種）。",
-      "calc": false,
       "law": "民法繼承編（第1186條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi",
       "page": 68
     },
     {
       "id": "N012",
+      "type": "single",
+      "combo": true,
       "q": "公教退撫月退休金，下列哪些方式可以選擇？\nA. 按月領取到終身\nB. 展期至法定起支年齡再領\nC. 提前領但每年減4%（減額月退）\nD. 一次請領全部現值",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "公教退撫月退選項：A終身月退、B展期月退（等到起支年齡）、C減額月退（提前但打折），D一次請領現值不是月退選項（屬一次退）。",
-      "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi",
       "page": 31
     },
     {
       "id": "N013",
+      "type": "single",
+      "combo": true,
       "q": "勞保保費負擔比例，下列哪些敘述正確（受僱勞工）？\nA. 雇主負擔70%\nB. 勞工負擔20%\nC. 政府負擔10%\nD. 雇主負擔80%",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "受僱勞工勞保費負擔：雇主70%、勞工20%、政府10%，合計100%。D錯誤，雇主並非80%。職業工會被保險人則為政府40%、勞工60%。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": null
     },
     {
       "id": "N014",
+      "type": "single",
+      "combo": true,
       "q": "民法繼承，下列哪些情況適用代位繼承？\nA. 繼承人在繼承開始前死亡\nB. 繼承人喪失繼承權\nC. 繼承人主動拋棄繼承\nD. 繼承人出國未回",
       "opts": [
-        "A",
         "B",
-        "C",
-        "D"
+        "A",
+        "AB",
+        "ABC"
       ],
       "ans": [
-        0,
-        1
+        2
       ],
       "exp": "民法第1140條：第一順位繼承人於繼承開始前死亡或「喪失繼承權」，由其直系血親卑親屬代位繼承。C拋棄繼承不適用代位繼承，D出國亦不適用。",
-      "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi",
       "page": 70
     },
     {
       "id": "N015",
+      "type": "single",
+      "combo": true,
       "q": "勞退新制月退休金計算三步驟，下列哪些正確？\nA. 步驟1：帳戶累積期用勞退報酬率\nB. 步驟2：月退金額計算用保證收益率\nC. 步驟3：月退折現用退休後報酬率\nD. 步驟2：月退金額計算用勞退報酬率",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：步驟1帳戶累積用勞退報酬率（3.4%）；步驟2月退計算用保證收益率（1.1473%）；步驟3折現用退休後報酬率（3.6%）。D錯誤。",
-      "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "multi",
       "page": 30
     },
     {
       "id": "N016",
+      "type": "single",
+      "combo": true,
       "q": "公保費率，下列哪些敘述正確？\nA. 採彈性費率制度\nB. 費率範圍7%至15%\nC. 年金費率（111年）約10.16%\nD. 一次請領費率（111年）約7.83%",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確：公保採彈性費率（7%至15%）；111年1月：年金費率10.16%（私校教職員）、一次請領費率7.83%（公教）。",
-      "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "multi",
       "page": 39
     },
     {
       "id": "N017",
+      "type": "single",
+      "combo": true,
       "q": "財政部認定「以保單規避遺產稅」的態樣，下列哪些是常見態樣？\nA. 重病期間投保\nB. 高齡投保\nC. 躉繳投保\nD. 保費遠高於應繳遺產稅",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均屬財政部8大態樣常見類型，明顯以避稅為目的的保險安排可能被國稅局認定補稅，需特別注意。",
-      "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "multi",
       "page": 7
     },
     {
       "id": "N018",
+      "type": "single",
+      "combo": true,
       "q": "台灣遺產稅改革（長照財源），下列哪些敘述正確？\nA. 稅率由10%調增至20%以內\nB. 增加稅收撥入長照基金\nC. 贈與稅同步調整\nD. 免稅額由1,200萬提高至1,333萬",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：遺贈稅由10%調增至最高20%，增加稅收撥入長照基金，遺產稅及贈與稅同步調整。D說法需查最新規定（免稅額數字可能已調整）。",
-      "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
       "page": 19
     },
     {
       "id": "N019",
+      "type": "single",
+      "combo": true,
       "q": "勞退舊制（勞基法）退休條件，下列哪些符合退休資格？\nA. 工作10年以上年滿60歲\nB. 工作15年以上年滿55歲\nC. 工作25年以上（不限年齡）\nD. 工作5年以上年滿65歲",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "勞退舊制退休條件：A工作10年以上年滿60歲、B工作15年以上年滿55歲、C工作25年以上（任何年齡）均符合。D工作5年/65歲不是法定條件之一。",
-      "calc": false,
       "law": "勞動基準法第五十三條至五十六條",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030001",
-      "type": "multi",
       "page": 30
     },
     {
       "id": "N020",
+      "type": "single",
+      "combo": true,
       "q": "勞保老年年金A式限制，以下哪些情況不得領A式（只能領B式）？\nA. 同時領取勞保老年年金\nB. 同時領取公保養老年金\nC. 有欠繳保費不計入年資的情形\nD. 曾領取社會福利津貼",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均屬不得領國保A式的情況：領取勞保/公保年金、有欠繳記錄、同時領社福津貼（低收入老人生活津貼等）。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 26
     }
   ]
