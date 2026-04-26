@@ -20,7 +20,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 26
     },
     {
       "id": "N002",
@@ -38,7 +39,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 27
     },
     {
       "id": "N003",
@@ -56,7 +58,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N004",
@@ -74,7 +77,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N005",
@@ -92,7 +96,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N006",
@@ -110,7 +115,8 @@
       "calc": false,
       "law": "軍人保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030014",
-      "type": "single"
+      "type": "single",
+      "page": 41
     },
     {
       "id": "N007",
@@ -128,7 +134,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     },
     {
       "id": "N008",
@@ -146,7 +153,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N009",
@@ -164,7 +172,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N010",
@@ -182,7 +191,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 38
     },
     {
       "id": "N011",
@@ -200,7 +210,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "single"
+      "type": "single",
+      "page": 68
     },
     {
       "id": "N012",
@@ -218,7 +229,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "single"
+      "type": "single",
+      "page": 69
     },
     {
       "id": "N013",
@@ -236,7 +248,8 @@
       "calc": false,
       "law": "所得稅法第14條",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340003",
-      "type": "single"
+      "type": "single",
+      "page": 62
     },
     {
       "id": "N014",
@@ -254,7 +267,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 59
     },
     {
       "id": "N015",
@@ -272,7 +286,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 31
     },
     {
       "id": "N016",
@@ -290,7 +305,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N017",
@@ -308,7 +324,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 15
     },
     {
       "id": "N018",
@@ -326,7 +343,8 @@
       "calc": false,
       "law": "勞動基準法第五十三條至五十六條",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030001",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N019",
@@ -344,7 +362,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N020",
@@ -362,7 +381,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 27
     },
     {
       "id": "N021",
@@ -380,7 +400,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 27
     },
     {
       "id": "N022",
@@ -398,7 +419,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     },
     {
       "id": "N023",
@@ -416,7 +438,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N024",
@@ -434,7 +457,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 31
     },
     {
       "id": "N025",
@@ -452,7 +476,8 @@
       "calc": false,
       "law": "軍人保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030014",
-      "type": "single"
+      "type": "single",
+      "page": 41
     },
     {
       "id": "N026",
@@ -470,7 +495,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N027",
@@ -488,7 +514,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 27
     },
     {
       "id": "N028",
@@ -506,7 +533,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N029",
@@ -524,7 +552,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N030",
@@ -542,7 +571,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "single"
+      "type": "single",
+      "page": 73
     },
     {
       "id": "N031",
@@ -560,7 +590,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "single"
+      "type": "single",
+      "page": 69
     },
     {
       "id": "N032",
@@ -578,7 +609,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "N033",
@@ -596,7 +628,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     },
     {
       "id": "N034",
@@ -614,7 +647,8 @@
       "calc": false,
       "law": "勞動基準法第五十三條至五十六條",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030001",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N035",
@@ -632,7 +666,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "single"
+      "type": "single",
+      "page": 70
     },
     {
       "id": "N036",
@@ -650,7 +685,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     },
     {
       "id": "N037",
@@ -668,7 +704,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "N038",
@@ -686,7 +723,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 42
     },
     {
       "id": "N039",
@@ -704,7 +742,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N040",
@@ -722,7 +761,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "single"
+      "type": "single",
+      "page": 31
     },
     {
       "id": "N041",
@@ -740,7 +780,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "single"
+      "type": "single",
+      "page": 68
     },
     {
       "id": "N042",
@@ -758,7 +799,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 27
     },
     {
       "id": "N043",
@@ -776,7 +818,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     },
     {
       "id": "N044",
@@ -794,7 +837,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "single"
+      "type": "single",
+      "page": 70
     },
     {
       "id": "N045",
@@ -812,7 +856,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 30
     },
     {
       "id": "N046",
@@ -830,7 +875,8 @@
       "calc": false,
       "law": "民法親屬編（第1005條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "single"
+      "type": "single",
+      "page": 69
     },
     {
       "id": "N047",
@@ -848,7 +894,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 19
     },
     {
       "id": "N048",
@@ -866,7 +913,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "single"
+      "type": "single",
+      "page": 39
     }
   ],
   "multis": [
@@ -888,7 +936,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "N002",
@@ -909,7 +958,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi"
+      "type": "multi",
+      "page": 42
     },
     {
       "id": "N003",
@@ -929,7 +979,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "multi"
+      "type": "multi",
+      "page": 15
     },
     {
       "id": "N004",
@@ -949,7 +1000,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi"
+      "type": "multi",
+      "page": 68
     },
     {
       "id": "N005",
@@ -970,7 +1022,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 49
     },
     {
       "id": "N006",
@@ -991,7 +1044,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 30
     },
     {
       "id": "N007",
@@ -1011,7 +1065,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "multi"
+      "type": "multi",
+      "page": 70
     },
     {
       "id": "N008",
@@ -1031,7 +1086,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi"
+      "type": "multi",
+      "page": 69
     },
     {
       "id": "N009",
@@ -1051,7 +1107,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi"
+      "type": "multi",
+      "page": 31
     },
     {
       "id": "N010",
@@ -1071,7 +1128,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 27
     },
     {
       "id": "N011",
@@ -1092,7 +1150,8 @@
       "calc": false,
       "law": "民法繼承編（第1186條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi"
+      "type": "multi",
+      "page": 68
     },
     {
       "id": "N012",
@@ -1112,7 +1171,8 @@
       "calc": false,
       "law": "公務人員退休資遣撫卹法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=S0080029",
-      "type": "multi"
+      "type": "multi",
+      "page": 31
     },
     {
       "id": "N013",
@@ -1132,7 +1192,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": null
     },
     {
       "id": "N014",
@@ -1151,7 +1212,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "multi"
+      "type": "multi",
+      "page": 70
     },
     {
       "id": "N015",
@@ -1171,7 +1233,8 @@
       "calc": false,
       "law": "勞工退休金條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030020",
-      "type": "multi"
+      "type": "multi",
+      "page": 30
     },
     {
       "id": "N016",
@@ -1192,7 +1255,8 @@
       "calc": false,
       "law": "公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=H0030003",
-      "type": "multi"
+      "type": "multi",
+      "page": 39
     },
     {
       "id": "N017",
@@ -1213,7 +1277,8 @@
       "calc": false,
       "law": "遺產及贈與稅法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340045",
-      "type": "multi"
+      "type": "multi",
+      "page": 7
     },
     {
       "id": "N018",
@@ -1233,7 +1298,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 19
     },
     {
       "id": "N019",
@@ -1253,7 +1319,8 @@
       "calc": false,
       "law": "勞動基準法第五十三條至五十六條",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0030001",
-      "type": "multi"
+      "type": "multi",
+      "page": 30
     },
     {
       "id": "N020",
@@ -1274,7 +1341,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 26
     }
   ]
 }
