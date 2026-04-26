@@ -20,7 +20,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 14
     },
     {
       "id": "E002",
@@ -38,7 +39,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E003",
@@ -56,7 +58,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E004",
@@ -74,7 +77,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 7
     },
     {
       "id": "E005",
@@ -92,7 +96,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 12
     },
     {
       "id": "E006",
@@ -110,7 +115,8 @@
       "calc": false,
       "law": "國民年金法、勞工保險條例、公教人員保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 15
     },
     {
       "id": "E007",
@@ -128,7 +134,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "E008",
@@ -146,7 +153,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 19
     },
     {
       "id": "E009",
@@ -164,7 +172,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 14
     },
     {
       "id": "E010",
@@ -182,7 +191,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "E011",
@@ -200,7 +210,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "single"
+      "type": "single",
+      "page": 60
     },
     {
       "id": "E012",
@@ -218,7 +229,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "single"
+      "type": "single",
+      "page": 60
     },
     {
       "id": "E013",
@@ -236,7 +248,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 31
     },
     {
       "id": "E014",
@@ -254,7 +267,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "E015",
@@ -272,7 +286,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E016",
@@ -290,7 +305,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E017",
@@ -308,7 +324,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E018",
@@ -326,7 +343,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 7
     },
     {
       "id": "E019",
@@ -344,7 +362,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "single"
+      "type": "single",
+      "page": 60
     },
     {
       "id": "E020",
@@ -362,7 +381,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "single"
+      "type": "single",
+      "page": 60
     },
     {
       "id": "E021",
@@ -380,7 +400,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E022",
@@ -398,7 +419,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 14
     },
     {
       "id": "E023",
@@ -416,7 +438,8 @@
       "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "single"
+      "type": "single",
+      "page": 17
     },
     {
       "id": "E024",
@@ -434,7 +457,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "E025",
@@ -452,7 +476,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 59
     },
     {
       "id": "E026",
@@ -470,7 +495,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 8
     },
     {
       "id": "E027",
@@ -488,7 +514,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 8
     },
     {
       "id": "E028",
@@ -506,7 +533,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 19
     },
     {
       "id": "E029",
@@ -524,7 +552,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E030",
@@ -542,7 +571,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 14
     },
     {
       "id": "E031",
@@ -560,7 +590,8 @@
       "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "single"
+      "type": "single",
+      "page": 17
     },
     {
       "id": "E032",
@@ -578,7 +609,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": null
     },
     {
       "id": "E033",
@@ -596,7 +628,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E034",
@@ -614,7 +647,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 12
     },
     {
       "id": "E035",
@@ -632,7 +666,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "single"
+      "type": "single",
+      "page": 7
     },
     {
       "id": "E036",
@@ -650,7 +685,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E037",
@@ -668,7 +704,8 @@
       "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "single"
+      "type": "single",
+      "page": 17
     },
     {
       "id": "E038",
@@ -686,7 +723,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E039",
@@ -704,7 +742,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E040",
@@ -722,7 +761,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E041",
@@ -740,7 +780,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 15
     },
     {
       "id": "E042",
@@ -758,7 +799,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "single"
+      "type": "single",
+      "page": 24
     },
     {
       "id": "E043",
@@ -776,7 +818,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 20
     },
     {
       "id": "E044",
@@ -794,7 +837,8 @@
       "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "single"
+      "type": "single",
+      "page": 17
     },
     {
       "id": "E045",
@@ -812,7 +856,8 @@
       "calc": false,
       "law": "保險法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "single"
+      "type": "single",
+      "page": 61
     },
     {
       "id": "E046",
@@ -830,7 +875,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "single"
+      "type": "single",
+      "page": 14
     },
     {
       "id": "E047",
@@ -848,7 +894,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "single"
+      "type": "single",
+      "page": 7
     },
     {
       "id": "E048",
@@ -866,7 +913,8 @@
       "calc": false,
       "law": "民法繼承編（第1138條以下）",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001",
-      "type": "single"
+      "type": "single",
+      "page": 59
     }
   ],
   "multis": [
@@ -889,7 +937,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 31
     },
     {
       "id": "E002",
@@ -909,7 +958,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 14
     },
     {
       "id": "E003",
@@ -929,7 +979,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "E004",
@@ -949,7 +1000,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "multi"
+      "type": "multi",
+      "page": 60
     },
     {
       "id": "E005",
@@ -968,7 +1020,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi"
+      "type": "multi",
+      "page": 15
     },
     {
       "id": "E006",
@@ -989,7 +1042,8 @@
       "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "multi"
+      "type": "multi",
+      "page": 17
     },
     {
       "id": "E007",
@@ -1010,7 +1064,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "E008",
@@ -1030,7 +1085,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi"
+      "type": "multi",
+      "page": 24
     },
     {
       "id": "E009",
@@ -1051,7 +1107,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 15
     },
     {
       "id": "E010",
@@ -1071,7 +1128,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 59
     },
     {
       "id": "E011",
@@ -1091,7 +1149,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "E012",
@@ -1111,7 +1170,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi"
+      "type": "multi",
+      "page": 24
     },
     {
       "id": "E013",
@@ -1131,7 +1191,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 14
     },
     {
       "id": "E014",
@@ -1151,7 +1212,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "E015",
@@ -1171,7 +1233,8 @@
       "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi"
+      "type": "multi",
+      "page": 24
     },
     {
       "id": "E016",
@@ -1192,7 +1255,8 @@
       "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi"
+      "type": "multi",
+      "page": 12
     },
     {
       "id": "E017",
@@ -1212,7 +1276,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 15
     },
     {
       "id": "E018",
@@ -1232,7 +1297,8 @@
       "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "multi"
+      "type": "multi",
+      "page": 7
     },
     {
       "id": "E019",
@@ -1252,7 +1318,8 @@
       "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi"
+      "type": "multi",
+      "page": 20
     },
     {
       "id": "E020",
@@ -1272,7 +1339,8 @@
       "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi"
+      "type": "multi",
+      "page": 7
     }
   ]
 }
