@@ -401,7 +401,7 @@
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
       "type": "single",
-      "page": 20
+      "page": 21
     },
     {
       "id": "E022",
@@ -917,429 +917,386 @@
       "page": 59
     }
   ],
-  "multis": [
+  "multis": [],
+  "combo_singles": [
     {
       "id": "E001",
+      "type": "single",
+      "combo": true,
       "q": "有關人口老化的影響，下列哪些正確？\nA. 退休規劃應考慮退休時的平均餘命\nB. 高齡社會定義為老年人口比率超過14%\nC. 人口老化使繳保費人數減少，社會保險財務產生缺口\nD. 長壽風險也包含未來醫療支出增加",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確。A:需考慮平均餘命確保資金足夠；B:高齡社會14%；C:繳費人口減少導致財務缺口；D:長壽風險包含醫療費增加。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 31
     },
     {
       "id": "E002",
+      "type": "single",
+      "combo": true,
       "q": "社會保險主要特色，下列哪些正確？\nA. 全民納保，強制參加\nB. 提供最低保障額度\nC. 具有財富重分配的效果\nD. 個人可自由選擇是否加入",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：全民納保強制參加、提供最低保障、具財富重分配效果。D錯誤：社會保險採強制納保，不得自由選擇退出。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 14
     },
     {
       "id": "E003",
+      "type": "single",
+      "combo": true,
       "q": "長期照護服務，下列哪些屬於「社區式照顧」？\nA. 日間照顧\nB. 居家服務\nC. 家庭托顧\nD. 交通接送（往返日照中心）",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "CD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        2,
-        3
+        1
       ],
       "exp": "A、C、D屬社區式照顧：日間照顧、家庭托顧、交通接送。B居家服務屬居家式照顧。",
-      "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
       "page": 20
     },
     {
       "id": "E004",
+      "type": "single",
+      "combo": true,
       "q": "小額終老保險規範，下列哪些正確？\nA. 預定危險發生率採壽險業經驗生命表100%\nB. 預定利率為年息2%\nC. 投保年齡放寬至84歲\nD. 繳費期間最短3年",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確。D錯誤：繳費期間為6年以上（非3年）。",
-      "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "multi",
       "page": 60
     },
     {
       "id": "E005",
+      "type": "single",
+      "combo": true,
       "q": "下列哪些屬於「確定給付制（DB）」的退休保障制度？\nA. 國民年金\nB. 勞退新制\nC. 勞工保險\nD. 私校退撫儲金",
       "opts": [
-        "A",
-        "B",
         "C",
-        "D"
+        "A",
+        "AB",
+        "AC"
       ],
       "ans": [
-        0,
-        2
+        3
       ],
       "exp": "A、C屬DB制：國民年金、公保、勞保、軍保、勞退舊制、公教退撫舊制。B勞退新制、D私校退撫屬DC制。",
-      "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi",
       "page": 15
     },
     {
       "id": "E006",
+      "type": "single",
+      "combo": true,
       "q": "職工福利金的來源，下列哪些正確？\nA. 創立時資本總額提撥1%至5%\nB. 每月營業收入提撥0.05%至0.15%\nC. 每個職員薪資內各扣0.5%\nD. 下腳變價時提撥20%~40%",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均為職工福利金法定來源：資本提撥、營業收入提撥、薪資扣款、下腳變價提撥，四項全部正確。（依勞委會92年3月24日勞福利一字第0920016167號令，「其他企業組織」指平時僱用職工50人以上之金融機構、公司、行號、農漁牧場等。）",
-      "calc": false,
       "law": "職工福利金條例及勞動部（原勞委會）相關令釋",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020010",
-      "type": "multi",
       "page": 17
     },
     {
       "id": "E007",
+      "type": "single",
+      "combo": true,
       "q": "保單活化政策，下列哪些敘述正確？\nA. 僅開放已繳費期滿的特定終身壽險申請\nB. 可轉換為年金險、醫療險或長照險\nC. 轉換至健康險需填寫健康告知書\nD. 3年內未領取給付可回復原契約",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確：限定保單種類、可轉換三種、健康險需告知、3年內可回復。",
-      "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
       "page": 20
     },
     {
       "id": "E008",
+      "type": "single",
+      "combo": true,
       "q": "國民年金保險，下列哪些人不得參加？\nA. 已領取勞保老年年金給付者\nB. 已領取公教保養老年金給付者\nC. 25歲服替代役（非軍保）者\nD. 112年10月1日以後領取社保老年給付者",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABCD",
+        "BD",
+        "ABD"
       ],
       "ans": [
-        0,
-        1,
         3
       ],
       "exp": "A、B、D不得參加：領年金類給付者（勞保年金、公教保年金）不得參加；112/10/01後領過任何社保老年給付者也不得參加。C服替代役（非軍保）者仍應加保。",
-      "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi",
       "page": 24
     },
     {
       "id": "E009",
+      "type": "single",
+      "combo": true,
       "q": "台灣未來年金改革的方向，下列哪些正確？\nA. 成立儲備基金撥補勞保與退撫財務缺口\nB. 退休基金法人化提高投資績效\nC. 職業退休金走向DC確定提撥制\nD. 建立勞退自選機制鼓勵自願提撥",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均為台灣年金改革方向，均正確。另外還包含：透過賦稅優惠鼓勵退休儲蓄與保險。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 15
     },
     {
       "id": "E010",
+      "type": "single",
+      "combo": true,
       "q": "逆向抵押貸款（以房養老）的特色，下列哪些正確？\nA. 借款人不需定期還款\nB. 貸款餘額隨時間遞增\nC. 借款目的為退休生活費補充\nD. 借款人需繳納月息",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：不需定期還款、餘額遞增、補充退休收入。D錯誤：借款人不需每月繳息，利息計入貸款餘額，待身故後一次清償。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 59
     },
     {
       "id": "E011",
+      "type": "single",
+      "combo": true,
       "q": "長照服務的「居家式照顧」項目，下列哪些正確？\nA. 居家服務\nB. 日間照顧\nC. 居家無障礙環境改善\nD. 生活輔具購買或租借",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "CD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        2,
-        3
+        1
       ],
       "exp": "A、C、D屬居家式照顧。B日間照顧屬社區式照顧。居家式照顧包含居家服務、營養餐飲、居家無障礙、生活輔具等。",
-      "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
       "page": 20
     },
     {
       "id": "E012",
+      "type": "single",
+      "combo": true,
       "q": "國民年金A式給付，哪些情況不得領取A式（只能領B式）？\nA. 有欠繳保費不能計入年資\nB. 領取社會福利津貼（低收入老人生活津貼等）\nC. 領取勞保老年年金給付\nD. 曾欠繳但已全數補繳者",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C不得領A式：欠繳保費不計年資、領取社福津貼、領取年金類老年給付。D曾欠繳但已補繳者不受限制（10年內可補繳）。",
-      "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi",
       "page": 24
     },
     {
       "id": "E013",
+      "type": "single",
+      "combo": true,
       "q": "社會保險的主要功能，下列哪些正確？\nA. 提供最低生活保障\nB. 具有強制儲蓄性質\nC. 達成財富重分配效果\nD. 個人可依風險高低決定保費",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：社會保險提供最低保障、具強制儲蓄性質、有財富重分配效果。D錯誤：社會保險保費不依個人風險高低計算（不同於商業保險）。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 14
     },
     {
       "id": "E014",
+      "type": "single",
+      "combo": true,
       "q": "長照2.0四個錢包（給付項目），下列哪些屬於？\nA. 照顧及專業服務\nB. 輔具及居家無障礙環境改善\nC. 住院急性醫療費用\nD. 喘息服務",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABCD",
+        "BD",
+        "ABD"
       ],
       "ans": [
-        0,
-        1,
         3
       ],
       "exp": "長照2.0四個錢包：照顧及專業服務、交通接送服務、輔具及居家無障礙環境改善、喘息服務。C住院急性醫療費用屬健保，非長照。",
-      "calc": false,
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
-      "page": 20
+      "page": 21
     },
     {
       "id": "E015",
+      "type": "single",
+      "combo": true,
       "q": "下列哪些人符合參加國民年金保險的資格（假設未加保其他社保）？\nA. 年滿25歲未滿65歲的國民\nB. 年滿18歲未滿25歲的國民\nC. 旅居海外但戶籍在台灣的國民\nD. 年滿25歲服替代役（非軍保）者",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "CD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        2,
-        3
+        1
       ],
       "exp": "A、C、D符合資格：25歲以上未滿65歲、戶籍在台旅居海外、服替代役（非軍保）。B未滿25歲不符合（國保起保年齡25歲）。",
-      "calc": false,
       "law": "國民年金法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0050013",
-      "type": "multi",
       "page": 24
     },
     {
       "id": "E016",
+      "type": "single",
+      "combo": true,
       "q": "世界銀行建議的三層退休保障，下列哪些敘述正確？\nA. 第一層為政府社會保險\nB. 第二層為老闆給的職業退休金\nC. 第三層為個人自備退休金\nD. 三層加起來才能充分保障退休生活",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "BCD",
+        "ACD",
+        "ABCD",
+        "AB"
       ],
       "ans": [
-        0,
-        1,
-        2,
-        3
+        2
       ],
       "exp": "A、B、C、D均正確：第一層社會保險、第二層職業退休金（DB或DC）、第三層個人自備，三層缺一不可才能確保退休生活品質。",
-      "calc": false,
       "law": "退休基金協會RFA課程教材",
       "lawUrl": "https://rfa.pension.org.tw/",
-      "type": "multi",
       "page": 12
     },
     {
       "id": "E017",
+      "type": "single",
+      "combo": true,
       "q": "下列哪些屬於「確定提撥制（DC）」的退休制度？\nA. 勞退新制\nB. 農民退休儲金\nC. 勞工保險老年年金\nD. 私校退撫儲金",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABCD",
+        "BD",
+        "ABD"
       ],
       "ans": [
-        0,
-        1,
         3
       ],
       "exp": "A、B、D屬DC制：勞退新制（94/07起）、農民退休儲金、私校退撫儲金。C勞工保險老年年金屬DB制（確定給付）。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 15
     },
     {
       "id": "E018",
+      "type": "single",
+      "combo": true,
       "q": "小額終老保險的設計目的與特色，下列哪些正確？\nA. 保費低廉，適合高齡者\nB. 身故給付最高90萬元\nC. 可補充老年基本保障\nD. 每人可無限購買",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：設計用於補充高齡者基本保障，身故或失能給付90萬元，保費相對低廉。D錯誤：每人最多只能購買4張。",
-      "calc": false,
       "law": "保險法及主管機關函令",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390002",
-      "type": "multi",
       "page": 7
     },
     {
       "id": "E019",
+      "type": "single",
+      "combo": true,
       "q": "長期照護的評估工具，下列哪些是目前長照需求評估使用的？\nA. 工具性日常生活活動能力評估（IADL）\nB. 認知功能評估\nC. 失能等級評估（Barthel量表）\nD. 癌症分期評估",
       "opts": [
-        "A",
         "B",
-        "C",
-        "D"
+        "A",
+        "AB",
+        "ABC"
       ],
       "ans": [
-        0,
-        1,
         2
       ],
-      "exp": "A、B、C為長照需求評估工具。D癌症分期評估非長照評估工具，長照對象不限癌症病患，而是以日常生活功能障礙為主要評估標準。",
-      "calc": false,
+      "exp": "依教材p.76，長照需求評估工具為：A工具性日常生活活動能力評估（IADL）及B認知功能評估。C癌症分期評估非長照評估工具；D失能等級評估（Barthel量表）為功能評估而非「需求評估工具」的核心項目。",
       "law": "長期照顧服務法",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020225",
-      "type": "multi",
-      "page": 20
+      "page": 76
     },
     {
       "id": "E020",
+      "type": "single",
+      "combo": true,
       "q": "社會保險的財務風險，下列哪些描述正確？\nA. 人口老化加速財務缺口擴大\nB. 勞保基金預估2031年可能不足\nC. 隨收隨付制在高齡化下財務壓力大\nD. 完全提存準備制不受人口結構影響",
       "opts": [
-        "A",
-        "B",
-        "C",
-        "D"
+        "AB",
+        "ABC",
+        "BC",
+        "ABCD"
       ],
       "ans": [
-        0,
-        1,
-        2
+        1
       ],
       "exp": "A、B、C正確：人口老化加速缺口、勞保2031年危機、隨收隨付制受人口老化衝擊大。D並非完全正確，完全提存制雖較穩定，仍受投資報酬與長壽風險影響。",
-      "calc": false,
       "law": "勞工保險條例",
       "lawUrl": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0050001",
-      "type": "multi",
       "page": 7
     }
   ]
