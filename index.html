@@ -147,7 +147,8 @@
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
-  .badge-calc { background: #fff7ed; color: #c2410c; }
+  .badge-calc  { background: #fff7ed; color: #c2410c; }
+  .badge-combo { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
 
 </style>
 
@@ -443,8 +444,9 @@ async function loadQuestionBank(level) {
     if (!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     state.qBank[level] = {
-      singles: data.singles,
-      multis:  data.multis
+      singles:       data.singles       || [],
+      multis:        data.multis        || [],
+      combo_singles: data.combo_singles || []
     };
     return true;
   } catch(e) {
@@ -733,9 +735,12 @@ async function startQuiz(level) {
   }
 
   const bank = state.qBank[level];
-  const singles = shuffle(bank.singles.filter(q=>q.type==='single'||!q.type)).slice(0,15).map(q=>shuffleOpts({...q,type:'single'}));
-  const multis  = shuffle(bank.multis).slice(0,5).map(q=>shuffleOpts({...q,type:'multi'}));
-  const questions = [...singles, ...multis];
+  // 一般單選題15題
+  const normalSingles = shuffle(bank.singles.filter(q=>!q.combo)).slice(0,15).map(q=>shuffleOpts({...q,type:'single'}));
+  // 複選式單選題5題（格式符合真實考試）
+  const comboSingles  = shuffle(bank.combo_singles||[]).slice(0,5).map(q=>({...q,type:'single'}));
+  // 合併後隨機排列（前15一般單選，後5複選式單選）
+  const questions = [...normalSingles, ...comboSingles];
 
   state.quiz = { level, questions, currentIdx:0, answers:questions.map(()=>({selected:[],confirmed:false,correct:null})), score:0 };
 
@@ -762,7 +767,7 @@ function renderQuestion(){
   const badge=document.getElementById('qtypeBadge');const notice=document.getElementById('multiNotice');
   if(q.type==='single'){badge.textContent='單選題';badge.className='question-type-badge badge-single';notice.classList.add('hidden');}
   else{badge.textContent='複選題';badge.className='question-type-badge badge-multi';notice.classList.remove('hidden');}
-  document.getElementById('multiHint').classList.toggle('hidden',q.type!=='multi');
+  document.getElementById('multiHint').classList.toggle('hidden',q.type!=='multi'||q.combo);
   document.getElementById('qText').innerHTML=q.q.replace(/\n/g,'<br>');
   const list=document.getElementById('optionsList');
   list.className='options-list'+(q.type==='multi'?' multi':'');
@@ -793,7 +798,7 @@ function renderQuestion(){
   }else{expArea.innerHTML='';}
   const nextBtn=document.getElementById('nextBtn');const multiConfirm=document.getElementById('multiConfirmBtn');
   if(a.confirmed){nextBtn.style.display='inline-flex';nextBtn.textContent=currentIdx<total-1?'下一題 →':'查看成績 →';multiConfirm.classList.add('hidden');}
-  else{nextBtn.style.display='none';multiConfirm.classList.toggle('hidden',q.type!=='multi');}
+  else{nextBtn.style.display='none';multiConfirm.classList.toggle('hidden',q.type!=='multi'||q.combo);}
 }
 
 function getOptionClass(q,a,idx){
