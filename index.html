@@ -438,7 +438,8 @@ function getProgressKey() {
 const LEVEL_FILES = { 1:'q-easy.json', 2:'q-normal.json', 3:'q-hard.json' };
 
 async function loadQuestionBank(level) {
-  if (state.qBank[level]) return true; // 已快取
+  // ★ 每次開測驗都重新從伺服器載入，確保新增的題目立即生效
+  // （不使用記憶體快取，避免新題目無法顯示的問題）
   try {
     const res = await fetch(LEVEL_FILES[level] + '?v=' + Date.now());
     if (!res.ok) throw new Error('HTTP '+res.status);
@@ -451,6 +452,11 @@ async function loadQuestionBank(level) {
     return true;
   } catch(e) {
     console.error('載入題庫失敗:', e);
+    // 若載入失敗，嘗試用舊快取（如果有的話）
+    if (state.qBank[level]) {
+      console.warn('使用舊版題庫快取');
+      return true;
+    }
     return false;
   }
 }
