@@ -158,7 +158,7 @@
 <div class="card" id="mainCard">
 
 <div class="admin-bar">
-  <span>NBS-奈AI 模擬測驗系統 v5</span>
+  <span>NBS-奈AI 模擬測驗系統 v4</span>
   <a onclick="toggleAdmin()">⚙ 管理後台</a>
 </div>
 
@@ -183,7 +183,7 @@
     <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
       <div class="section-title">LINE 官方帳號連結</div>
       <div class="form-group">
-        <input class="form-input" type="text" id="adminLineUrl" placeholder="https://line.me/R/ti/p/@你的官方帳號ID" style="font-size:.82rem">
+        <input class="form-input" type="text" id="adminLineUrl" placeholder="https://line.me/R/ti/p/@577xbjrk"k" style="font-size:.82rem">
         <div class="form-hint">設定後，未通過驗證的使用者會看到可點擊的LINE官方帳號連結</div>
       </div>
       <button class="btn btn-gold btn-sm" onclick="saveLineUrl()">儲存連結</button>
@@ -240,7 +240,7 @@
 <div id="pageDashboard" class="hidden">
   <div class="card-header">
     <div class="header-badge">學習儀表板</div>
-    <div class="header-title">NBS-奈AI 退休規劃模擬測驗</div>
+    <div class="header-title">NBS-奈AI 模擬測驗</div>
     <div class="header-sub">每次隨機抽題，選項順序也會打亂，讓練習更有效</div>
     <div class="gold-line"></div>
   </div>
@@ -347,6 +347,25 @@
   <div id="upgradeNotice" class="hidden upgrade-notice">
     <div class="upgrade-icon">🎉</div><div id="upgradeText"></div>
   </div>
+  <!-- 付費版引導 Modal -->
+  <div id="paywallModal" class="hidden" style="position:fixed;inset:0;background:rgba(15,32,68,.75);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem">
+    <div style="background:var(--white);border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .4s ease">
+      <div style="background:linear-gradient(135deg,var(--navy),#1a3565);padding:1.75rem 2rem 1.5rem;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:.5rem">🎉</div>
+        <div style="font-family:'Noto Serif TC',serif;color:var(--white);font-size:1.3rem;font-weight:700;margin-bottom:.4rem" id="paywallTitle">恭喜！簡易關卡通關！</div>
+        <div style="color:rgba(255,255,255,.7);font-size:.85rem">您已累計達到升級門檻</div>
+      </div>
+      <div style="padding:1.75rem 2rem">
+        <div style="background:#fffbf0;border:1.5px solid var(--gold);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.88rem;line-height:1.7;color:#78350f">
+          💰 <strong>普通／複雜關卡為付費版功能</strong><br>
+          加入 LINE 官方帳號聯絡管理員，即可申請開通付費版，繼續挑戰更高難度！
+        </div>
+        <div id="paywallLineBtn" style="margin-bottom:.75rem"></div>
+        <button class="btn btn-outline" style="width:100%;margin-top:.5rem" onclick="closePaywall()">稍後再說</button>
+      </div>
+    </div>
+  </div>
+
   <div class="result-actions">
     <button class="btn btn-outline" onclick="showReview()">查看解析</button>
     <button class="btn btn-gold" onclick="retryQuiz()">再測一次</button>
@@ -490,7 +509,7 @@ function showDashboard() {
     const streak = ud.passCount  ? (ud.passCount[i-1] ||0) : 0;
 
     // 複雜（level 3）需管理員開通
-    const adminLocked  = (i===3 && state.user && !state.user.hard);
+    const adminLocked  = ((i===2 || i===3) && state.user && !state.user.hard); // 普通和複雜都需要管理員開通
     const levelLocked  = (i > ud.level);
     const isLocked     = adminLocked || levelLocked;
 
@@ -499,7 +518,7 @@ function showDashboard() {
     if (lock) lock.style.display = isLocked ? 'block' : 'none';
 
     if (adminLocked) {
-      prog.innerHTML = '<span style="color:var(--gold);font-size:.68rem">🔒 需要管理員開通</span>';
+      prog.innerHTML = `<span style="color:var(--gold);font-size:.68rem">💰 付費版・請聯絡管理員開通</span>`;
       bar.style.width = '0%';
     } else if (levelLocked) {
       prog.textContent = '尚未解鎖';
@@ -568,7 +587,7 @@ async function doLogin() {
     errEl.style.display='block'; return;
   }
   if (!result.valid && result.reason === 'disabled') {
-    const lineUrl = localStorage.getItem('rfa_line_url')||'';
+    const lineUrl = localStorage.getItem('rfa_line_url')||'https://line.me/R/ti/p/@577xbjrk';
     const lineHtml = lineUrl
       ? `💬 <a href="${lineUrl}" target="_blank" style="color:var(--red);font-weight:700">點此加入 LINE 官方帳號</a><br>`
       : `💬 請聯絡管理員：${ADMIN_EMAIL}<br>`;
@@ -669,7 +688,7 @@ async function renderAdminPanel() {
         </tbody></table>`;
   }
   const urlEl=document.getElementById('adminLineUrl');
-  if(urlEl) urlEl.value=localStorage.getItem('rfa_line_url')||'';
+  if(urlEl) urlEl.value=localStorage.getItem('rfa_line_url')||'https://line.me/R/ti/p/@577xbjrk';
 }
 
 async function addMember() {
@@ -717,11 +736,11 @@ function shuffleOpts(q){
 }
 
 async function startQuiz(level) {
-  // 複雜關卡需要管理員開通
-  if (level===3 && state.user && !state.user.hard) {
+  // 普通和複雜關卡需要管理員開通
+  if ((level===2 || level===3) && state.user && !state.user.hard) {
     // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
     // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
-    alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
+    alert('普通和複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
     return;
   }
 
@@ -913,6 +932,11 @@ function finishQuiz(){
   const noticeEl=document.getElementById('upgradeNotice');
   // 升級提示由 GAS saveScore 回呼處理（因為升級判斷在GAS端）
   noticeEl.classList.add('hidden'); // 預設隱藏，GAS確認升級後再顯示
+  // 付費版提示：若本次通過後達到5次門檻，顯示付費引導
+  const currentCount = (ud.passCount||[0,0,0])[level-1] || 0;
+  if(passed && currentCount >= UPGRADE_N) {
+    showPaywallNotice(level);
+  }
   showPage('pageResult');
 }
 
@@ -935,6 +959,38 @@ function showReview(){
   showPage('pageReview');
 }
 function showResult(){showPage('pageResult');}
+
+// ══ 付費版引導 ══
+function showPaywallNotice(level) {
+  const lvNames = ['簡易','普通','複雜'];
+  const nextLvName = lvNames[level] || '下一關卡'; // level=1→普通, level=2→複雜
+  const lineUrl = localStorage.getItem('rfa_line_url') || 'https://line.me/R/ti/p/@577xbjrk';
+
+  const modal = document.getElementById('paywallModal');
+  const title = document.getElementById('paywallTitle');
+  const lineBtn = document.getElementById('paywallLineBtn');
+
+  if (!modal) return;
+
+  title.textContent = `🎉 恭喜！${lvNames[level-1]}關卡已解鎖！`;
+
+  lineBtn.innerHTML = lineUrl
+    ? `<a href="${lineUrl}" target="_blank" class="btn btn-gold" style="width:100%;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:.5rem">
+        💬 點此加入 LINE 官方帳號申請開通
+       </a>`
+    : `<div style="font-size:.85rem;color:var(--muted)">請聯絡管理員：ingbaker@gmail.com</div>`;
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closePaywall() {
+  const modal = document.getElementById('paywallModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
 function retryQuiz(){startQuiz(state.quiz.level);}
 function backToDashboard(){showDashboard();}
 
