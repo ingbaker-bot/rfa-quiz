@@ -509,7 +509,7 @@ function showDashboard() {
     const streak = ud.passCount  ? (ud.passCount[i-1] ||0) : 0;
 
     // 複雜（level 3）需管理員開通
-    const adminLocked  = ((i===2 || i===3) && state.user && !state.user.hard); // 普通和複雜都需要管理員開通
+    const adminLocked  = ((i===3) && state.user && !state.user.hard); // 複雜需要管理員開通
     const levelLocked  = (i > ud.level);
     const isLocked     = adminLocked || levelLocked;
 
