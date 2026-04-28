@@ -736,11 +736,11 @@ function shuffleOpts(q){
 }
 
 async function startQuiz(level) {
-  // 普通和複雜關卡需要管理員開通
-  if ((level===2 || level===3) && state.user && !state.user.hard) {
+  // 複雜關卡需要管理員開通
+  if ((level===3) && state.user && !state.user.hard) {
     // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
     // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
-    alert('普通和複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
+    alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
     return;
   }
 
