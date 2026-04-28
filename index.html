@@ -347,7 +347,7 @@
   <div id="upgradeNotice" class="hidden upgrade-notice">
     <div class="upgrade-icon">🎉</div><div id="upgradeText"></div>
   </div>
-  <!-- 付費版引導 Modal -->
+  <!-- 抖內版引導 Modal -->
   <div id="paywallModal" class="hidden" style="position:fixed;inset:0;background:rgba(15,32,68,.75);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem">
     <div style="background:var(--white);border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .4s ease">
       <div style="background:linear-gradient(135deg,var(--navy),#1a3565);padding:1.75rem 2rem 1.5rem;text-align:center">
@@ -357,8 +357,8 @@
       </div>
       <div style="padding:1.75rem 2rem">
         <div style="background:#fffbf0;border:1.5px solid var(--gold);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.88rem;line-height:1.7;color:#78350f">
-          💰 <strong>普通／複雜關卡為付費版功能</strong><br>
-          加入 LINE 官方帳號聯絡管理員，即可申請開通付費版，繼續挑戰更高難度！
+          💰 <strong>普通／複雜關卡為抖內版功能</strong><br>
+          加入 LINE 官方帳號聯絡管理員，即可申請開通抖內版，繼續挑戰更高難度！
         </div>
         <div id="paywallLineBtn" style="margin-bottom:.75rem"></div>
         <button class="btn btn-outline" style="width:100%;margin-top:.5rem" onclick="closePaywall()">稍後再說</button>
@@ -518,7 +518,7 @@ function showDashboard() {
     if (lock) lock.style.display = isLocked ? 'block' : 'none';
 
     if (adminLocked) {
-      prog.innerHTML = `<span style="color:var(--gold);font-size:.68rem">💰 付費版・請聯絡管理員開通</span>`;
+      prog.innerHTML = `<span style="color:var(--gold);font-size:.68rem">💰 抖內版・請聯絡管理員開通</span>`;
       bar.style.width = '0%';
     } else if (levelLocked) {
       prog.textContent = '尚未解鎖';
@@ -932,7 +932,7 @@ function finishQuiz(){
   const noticeEl=document.getElementById('upgradeNotice');
   // 升級提示由 GAS saveScore 回呼處理（因為升級判斷在GAS端）
   noticeEl.classList.add('hidden'); // 預設隱藏，GAS確認升級後再顯示
-  // 付費版提示：若本次通過後達到5次門檻，顯示付費引導
+  // 抖內版提示：若本次通過後達到5次門檻，顯示抖內引導
   const currentCount = (ud.passCount||[0,0,0])[level-1] || 0;
   if(passed && currentCount >= UPGRADE_N) {
     showPaywallNotice(level);
@@ -960,7 +960,7 @@ function showReview(){
 }
 function showResult(){showPage('pageResult');}
 
-// ══ 付費版引導 ══
+// ══ 抖內版引導 ══
 function showPaywallNotice(level) {
   const lvNames = ['簡易','普通','複雜'];
   const nextLvName = lvNames[level] || '下一關卡'; // level=1→普通, level=2→複雜
