@@ -240,7 +240,7 @@
 <div id="pageDashboard" class="hidden">
   <div class="card-header">
     <div class="header-badge">學習儀表板</div>
-    <div class="header-title">NBS-奈AI 退休規劃模擬測驗</div>
+    <div class="header-title">NBS-奈AI 模擬測驗</div>
     <div class="header-sub">每次隨機抽題，選項順序也會打亂，讓練習更有效</div>
     <div class="gold-line"></div>
   </div>
@@ -509,7 +509,7 @@ function showDashboard() {
     const streak = ud.passCount  ? (ud.passCount[i-1] ||0) : 0;
 
     // 複雜（level 3）需管理員開通
-    const adminLocked  = ((i===3) && state.user && !state.user.hard); // 複雜需要管理員開通
+    const adminLocked  = ((i===2 || i===3) && state.user && !state.user.hard); // 普通和複雜都需要管理員開通
     const levelLocked  = (i > ud.level);
     const isLocked     = adminLocked || levelLocked;
 
@@ -736,11 +736,11 @@ function shuffleOpts(q){
 }
 
 async function startQuiz(level) {
-  // 複雜關卡需要管理員開通
-  if ((level===3) && state.user && !state.user.hard) {
+  // 普通和複雜關卡需要管理員開通
+  if ((level===2 || level===3) && state.user && !state.user.hard) {
     // 檢查 GAS 是否有開通複雜關卡（v2欄或特別標記）
     // 目前以 state.user.v2 判斷，或後台在 Sheets 設定
-    alert('複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
+    alert('普通和複雜關卡需要管理員開通才能使用。\n請聯絡管理員申請開通。\nEmail：' + ADMIN_EMAIL);
     return;
   }
 
